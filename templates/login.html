@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Login {% endblock %}</h1>
+    <hr>
+    <p><b>Enter login info:</b></p>
+    <form method="post" action="{{ url_for('login_user') }}">
+        <label for="login">Username</label>
+        <input type="text" name="login" id="login" placeholder="for ex.: horse" value="{{ request.form['login'] }}">
+        <label for="pass">Password</label>
+        <input type="password" name="pass" id="pass" placeholder="for ex.: horse" value="{{ request.form['pass'] }}">
+        <button type="submit" id="user_btn" name="user_btn">login me</button>
+    </form>
+    <br><br>
+{% endblock %}

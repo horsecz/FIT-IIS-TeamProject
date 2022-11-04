@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Home {% endblock %}</h1>
+
+    <h2>Best IIS app ever created</h2>
+    <hr>
+    <p><b>All users:</b> (very sensitive info so you need to click the button)</p>
+    <form method="post">
+        <button type="submit" id="user_btn" name="user_btn" href="{{ url_for('get_user') }}">show me what you got</button>
+    </form>
+    <br><br>
+
+    <p><b>Categories:</b></p>
+    {% for x in categories %}
+    <p>{{x['name']}}</p>
+    {% endfor %}
+    <br>
+    <p><b>Products:</b></p>
+    {% for x in products %}
+        <p>{{x['name']}} (ID {{x['id']}})</p>
+    {% endfor %}
+    <br>
+    <p><b>Orders:</b></p>
+    {% for x in orders %}
+        <p>ID {{x['id']}} (buyer ID {{x['buyer']}}): product ID {{x['product']}} for {{x['price']}} IIS Coins per piece</p>
+    {% endfor %}
+    <br>
+    <hr>
+    <br>
+
+    <p><b>Add new category</b></p>
+    <form method="post" action="{{ url_for('addcat') }}">
+    <label for="catname">Category name</label>
+        <input type="text" name="catname" id="catname" placeholder="name (ex.: 69xd)" value="{{ request.form['catname'] }}">
+        <button type="submit" id="newcat" name="newcat">do it</button>
+    </form>
+    <br>
+    <p><b>Login</b></p>
+    {% if logged == True %}
+        <p>You are currently logged in as {{username}}</p>
+        <form method="post" action="{{ url_for('logout') }}">
+            <button type="submit" id="logoutbtn" name="logoutbtn">log out</button>
+        </form>
+    {% else %}
+        <p>Viewing this page as invador. Please log in!</p>
+        <form method="post" action="{{ url_for('login') }}">
+            <button type="submit" id="loginbtn" name="loginbtn">proceed</button>
+        </form>
+    {% endif %}
+    <br>
+{% endblock %}

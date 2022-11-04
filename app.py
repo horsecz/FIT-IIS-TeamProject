@@ -1,9 +1,12 @@
+from multiprocessing import synchronize
 from unicodedata import category
 from flask import request, jsonify
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
+from flask import Flask, render_template, redirect, url_for
+import json
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -13,69 +16,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-@app.route('/', methods=['GET'])
-@cross_origin()
-def get():
-    # test if db is created and data is inserted
-    print(User.query.all())
-    return jsonify({'msg': 'Hello World'})
+user_logged_in = False
+username = ""
 
-@app.route('/user', methods=['GET'])
-@cross_origin()
-def get_user():
-    # get all results and return json
-    users = User.query.all()
-    user_schema = UserSchema(many=True)
-    return jsonify(user_schema.dump(users))
+#####
+###     DB
+#####
 
-
-@app.route('/product', methods=['GET'])
-@cross_origin()
-def get_product():
-    # get all results and return json
-    products = Product.query.all()
-    product_schema = ProductSchema(many=True)
-    return jsonify(product_schema.dump(products))
-
-@app.route('/category', methods=['GET'])
-@cross_origin()
-def get_category():
-    # get all results and return json
-    categories = Category.query.all()
-    category_schema = CategorySchema(many=True)
-    return jsonify(category_schema.dump(categories))
-
-@app.route('/orders', methods=['GET'])
-@cross_origin()
-def get_order():
-    # get all results and return json
-    orders = Order.query.all()
-    order_schema = OrderSchema(many=True)
-    return jsonify(order_schema.dump(orders))
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-def create_db():
-    app.app_context().push()
-    db.drop_all()
-    db.create_all()
-    db.session.add(User('email@email.com', 'Peter', '1995-1-1', '7th Street', 'abc123', 1, 905240384))
-    db.session.add(User('email@email2.com', 'Peter2', '1996-1-1', '8th Street', 'abc1234', 1, 905240354))
-    db.session.add(Category('root', None, False))
-    db.session.commit()
-    db.session.add(Category('fruit', 1, False))
-    db.session.commit()
-    db.session.add(Category('vegetable', 1, False))
-    db.session.commit()
-    db.session.add(Category('apple', 2, True))
-    db.session.commit()
-    db.session.add(Product('green_apple', 1, 250, 2, 24, 1, 'fajne jabko', False, None, None))
-    db.session.commit()
-    db.session.add(Order(1, 1, 2, 48, '2021-01-01', 1))
-    db.session.commit()
-    
-    
 # schemas;
 
 class User(db.Model):
@@ -166,3 +113,141 @@ class Order(db.Model):
 class OrderSchema(ma.Schema):
     class Meta:
         fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
+
+
+        
+
+@app.route('/', methods=['GET'])
+@cross_origin()
+def home():
+    return render_template('/index.html', categories=getCategories(), products=getProducts(), orders=getOrders(), logged=user_logged_in, username=getUsername())
+
+@app.route('/', methods=['POST'])
+def get_user():
+    # get all results and return json
+    users = User.query.all()
+    user_schema = UserSchema(many=True)
+    return jsonify(user_schema.dump(users))
+
+@app.route('/ctgadd', methods=['POST'])
+def addcat():
+    catname = request.form.get("catname")
+    db.session.add(Category(catname, None, False))
+    db.session.commit()
+    return redirect(url_for('home'))
+
+@app.route("/login", methods=["POST"])
+def login():
+    return render_template('/login.html')
+
+@app.route("/login_user", methods=["POST"])
+def login_user():
+    global user_logged_in
+    global username
+    username = request.form.get("login")
+    password = request.form.get("pass")
+    if (username == "horse" and password == "horse"):
+        user_logged_in = True
+        return redirect(url_for('home'))
+    else:
+        return "Invalid username or password!"
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    global user_logged_in
+    user_logged_in = False
+    return redirect(url_for('home'))
+
+
+
+
+
+@app.route('/product', methods=['GET'])
+@cross_origin()
+def get_product():
+    # get all results and return json
+    products = Product.query.all()
+    product_schema = ProductSchema(many=True)
+    return jsonify(product_schema.dump(products))
+
+@app.route('/category', methods=['GET'])
+@cross_origin()
+def get_category():
+    # get all results and return json
+    categories = Category.query.all()
+    category_schema = CategorySchema(many=True)
+    return jsonify(category_schema.dump(categories))
+
+@app.route('/orders', methods=['GET'])
+@cross_origin()
+def get_order():
+    # get all results and return json
+    orders = Order.query.all()
+    order_schema = OrderSchema(many=True)
+    return jsonify(order_schema.dump(orders))
+
+
+
+
+@app.route('/edit', methods=['GET'])
+@cross_origin()
+def edit_user():
+    try:
+        db.session.query(User).filter(User.name == 'Peter').update({User.name:'Debilek'}, synchronize_session=False)
+    except Exception as e:
+        print('Chyba pri editu ('+str(e)+')')
+    # get all results and return json
+    users = User.query.all()
+    user_schema = UserSchema(many=True)
+    return jsonify(user_schema.dump(users))
+
+def create_db():
+    app.app_context().push()
+    db.drop_all()
+    db.create_all()
+    db.session.add(User('email@email.com', 'Peter', '1995-1-1', '7th Street', 'abc123', 1, 905240384))
+    db.session.add(User('email@email2.com', 'Peter2', '1996-1-1', '8th Street', 'abc1234', 1, 905240354))
+    db.session.add(Category('root', None, False))
+    db.session.commit()
+    db.session.add(Category('fruit', 1, False))
+    db.session.commit()
+    db.session.add(Category('vegetable', 1, False))
+    db.session.commit()
+    db.session.add(Category('apple', 2, True))
+    db.session.commit()
+    db.session.add(Product('green_apple', 1, 250, 2, 24, 1, 'fajne jabko', False, None, None))
+    db.session.commit()
+    db.session.add(Order(1, 1, 2, 48, '2021-01-01', 1))
+    db.session.commit()
+
+
+######
+###     "BACKEND"
+######
+
+def getCategories():
+    categories = Category.query.all()
+    category_schema = CategorySchema(many=True)
+    return category_schema.dump(categories)
+
+def getOrders():
+    categories = Order.query.all()
+    category_schema = OrderSchema(many=True)
+    return category_schema.dump(categories)
+
+def getProducts():
+    categories = Product.query.all()
+    category_schema = ProductSchema(many=True)
+    return category_schema.dump(categories)
+
+def getUsername():
+    global username
+    return username
+    
+#####
+###     INIT
+#####
+
+if __name__ == '__main__':
+    create_db()
+    app.run(debug=True)
