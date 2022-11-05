@@ -28,13 +28,20 @@
     <hr>
     <br>
 
-    <p><b>Add new category</b></p>
-    <form method="post" action="{{ url_for('addcat') }}">
-    <label for="catname">Category name</label>
-        <input type="text" name="catname" id="catname" placeholder="name (ex.: 69xd)" value="{{ request.form['catname'] }}">
-        <button type="submit" id="newcat" name="newcat">do it</button>
+    <!--
+        TESTING ZONE
+        - test something in live app by clicking on button & observe the results
+    -->
+    <p><b>Development testing zone</b></p>
+    <form method="post" action="{{ url_for('testFunction') }}">
+    <label for="catname">Do something</label>
+        <!-- 
+        <input type="text" name="textfield" id="textfield" placeholder="some text" value="{{ request.form['textfield'] }}"> 
+        -->
+        <button type="submit" id="greatButton" name="greatButton">do it</button>
     </form>
     <br>
+
     <p><b>Login</b></p>
     {% if logged == True %}
         <p>You are currently logged in as {{username}}</p>

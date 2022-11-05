@@ -1,127 +1,48 @@
+###
+#   module:     app.py   
+#   Main app module
+###
+
+### external modules
 from multiprocessing import synchronize
 from unicodedata import category
-from flask import request, jsonify
-from flask_marshmallow import Marshmallow
-from flask_cors import CORS, cross_origin
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, redirect, url_for
-import json
-import random
+from flask_cors import cross_origin
+from flask import render_template, redirect, url_for, request, jsonify
 
-app = Flask(__name__)
-CORS(app)
+### our modules
+import database
+import backend as be
+import globals
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:postgres@localhost:5432/postgres'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
+### make global variables and cross module variables/classes less ugly
+app = globals.app
+db = database.db
+user_logged_in = globals.user_logged_in
+username = globals.username
+User = database.User
+UserSchema = database.UserSchema
+Category = database.Category
+CategorySchema = database.CategorySchema
+Order = database.Order
+OrderSchema = database.OrderSchema
+Product = database.Product
+ProductSchema = database.ProductSchema
 
-user_logged_in = False
-username = ""
-
-#####
-###     DB
-#####
-
-# schemas;
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100))
-    name = db.Column(db.String(100))
-    birth_date = db.Column(db.Date)
-    address = db.Column(db.String(100))
-    password = db.Column(db.String(100))
-    role = db.Column(db.Integer)
-    phone_number = db.Column(db.Integer)
-    
-    def __init__(self, email, name, birth_date, address, password, role, phone_number):
-        self.email = email
-        self.name = name
-        self.birth_date = birth_date
-        self.address = address
-        self.password = password
-        self.role = role
-        self.phone_number = phone_number
-
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number')
-        
-
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    category = db.Column(db.Integer, db.ForeignKey('category.id'))
-    quantity = db.Column(db.Integer)
-    seller = db.Column(db.Integer, db.ForeignKey('user.id'))
-    price = db.Column(db.Integer)
-    sell_type = db.Column(db.Integer)
-    description = db.Column(db.String(100))
-    self_harvest = db.Column(db.Boolean)
-    begin_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
-    
-    def __init__(self, name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date):
-        self.name = name
-        self.category = category
-        self.quantity = quantity
-        self.seller = seller 
-        self.price = price
-        self.sell_type = sell_type
-        self.description = description
-        self.self_harvest = self_harvest
-        self.begin_date = begin_date
-        self.end_date = end_date
-        
-class ProductSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name', 'category', 'quantity', 'seller', 'price', 'sell_type', 'description', 'self_harvest', 'begin_date', 'end_date')
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    higher_category = db.Column(db.Integer, db.ForeignKey('category.id'))
-    leaf = db.Column(db.Boolean)
-    
-    def __init__(self, name, higher_category, leaf):
-        self.name = name
-        self.higher_category = higher_category
-        self.leaf = leaf
-
-class CategorySchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name', 'higher_category', 'leaf')
-        
-class Order(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    buyer = db.Column(db.Integer, db.ForeignKey('user.id'))
-    product = db.Column(db.Integer, db.ForeignKey('product.id'))
-    quantity = db.Column(db.Integer)
-    price = db.Column(db.Integer)
-    date = db.Column(db.Date)
-    status = db.Column(db.Integer)
-    
-    def __init__(self, buyer, product, quantity, price, date, status):
-        self.buyer = buyer
-        self.product = product
-        self.quantity = quantity
-        self.price = price
-        self.date = date
-        self.status = status
-
-class OrderSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
-
-
-        
-
+##
+### Pages
+##
 @app.route('/', methods=['GET'])
 @cross_origin()
 def home():
-    return render_template('/index.html', categories=getCategories(), products=getProducts(), orders=getOrders(), logged=user_logged_in, username=getUsername())
+    return render_template('/index.html', categories=database.getCategories(), products=database.getProducts(), orders=database.getOrders(), logged=user_logged_in, username=be.getUsername())
 
+@app.route("/login", methods=["POST"])
+def login():
+    return render_template('/login.html')
+
+##
+### Actions, requests
+##
 @app.route('/', methods=['POST'])
 def get_user():
     # get all results and return json
@@ -129,16 +50,18 @@ def get_user():
     user_schema = UserSchema(many=True)
     return jsonify(user_schema.dump(users))
 
-@app.route('/ctgadd', methods=['POST'])
-def addcat():
-    catname = request.form.get("catname")
-    db.session.add(Category(catname, None, False))
-    db.session.commit()
-    return redirect(url_for('home'))
+@app.route('/testFunction', methods=['POST'])
+def testFunction():
+    x = database.getCategoryByName('root')
+    if x == None:
+        print('not found this shit')
+        return redirect(url_for('home'))
 
-@app.route("/login", methods=["POST"])
-def login():
-    return render_template('/login.html')
+    #result = database.modifyData(database.Category, x['id'], 'name', 'definitely not fruit')
+    result = database.removeData(database.Category, x['id'])
+    if (result != None):
+        print(result)
+    return redirect(url_for('home'))
 
 @app.route("/login_user", methods=["POST"])
 def login_user():
@@ -157,10 +80,6 @@ def logout():
     global user_logged_in
     user_logged_in = False
     return redirect(url_for('home'))
-
-
-
-
 
 @app.route('/product', methods=['GET'])
 @cross_origin()
@@ -186,9 +105,6 @@ def get_order():
     order_schema = OrderSchema(many=True)
     return jsonify(order_schema.dump(orders))
 
-
-
-
 @app.route('/edit', methods=['GET'])
 @cross_origin()
 def edit_user():
@@ -201,53 +117,11 @@ def edit_user():
     user_schema = UserSchema(many=True)
     return jsonify(user_schema.dump(users))
 
-def create_db():
-    app.app_context().push()
-    db.drop_all()
-    db.create_all()
-    db.session.add(User('email@email.com', 'Peter', '1995-1-1', '7th Street', 'abc123', 1, 905240384))
-    db.session.add(User('email@email2.com', 'Peter2', '1996-1-1', '8th Street', 'abc1234', 1, 905240354))
-    db.session.add(Category('root', None, False))
-    db.session.commit()
-    db.session.add(Category('fruit', 1, False))
-    db.session.commit()
-    db.session.add(Category('vegetable', 1, False))
-    db.session.commit()
-    db.session.add(Category('apple', 2, True))
-    db.session.commit()
-    db.session.add(Product('green_apple', 1, 250, 2, 24, 1, 'fajne jabko', False, None, None))
-    db.session.commit()
-    db.session.add(Order(1, 1, 2, 48, '2021-01-01', 1))
-    db.session.commit()
-
-
-######
-###     "BACKEND"
-######
-
-def getCategories():
-    categories = Category.query.all()
-    category_schema = CategorySchema(many=True)
-    return category_schema.dump(categories)
-
-def getOrders():
-    categories = Order.query.all()
-    category_schema = OrderSchema(many=True)
-    return category_schema.dump(categories)
-
-def getProducts():
-    categories = Product.query.all()
-    category_schema = ProductSchema(many=True)
-    return category_schema.dump(categories)
-
-def getUsername():
-    global username
-    return username
     
 #####
-###     INIT
+###     INIT AND RUN
 #####
 
 if __name__ == '__main__':
-    create_db()
+    database.create_db()
     app.run(debug=True)
