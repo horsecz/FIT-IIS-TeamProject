@@ -36,9 +36,42 @@ ProductSchema = database.ProductSchema
 def home():
     return render_template('/index.html', categories=database.getCategories(), products=database.getProducts(), orders=database.getOrders(), logged=user_logged_in, username=be.getUsername())
 
-@app.route("/login", methods=["POST"])
+@app.route("/nav/offers", methods=["GET"])
+def offers():
+    return render_template('/offers.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/login", methods=["GET"])
 def login():
-    return render_template('/login.html')
+    return render_template('/login.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/registration", methods=["GET"])
+def registration():
+    return render_template('/registration.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/user/customer", methods=["GET"])
+def user_customer():
+    return render_template('/user/customer.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/user/farmer", methods=["GET"])
+def user_farmer():
+    return render_template('/user/farmer.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/user/settings", methods=["GET"])
+def user_settings():
+    return render_template('/user/settings.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/admin/categories", methods=["GET"])
+def admin_categories():
+    return render_template('/admin/categories.html', logged=user_logged_in, username=be.getUsername())
+
+@app.route("/nav/admin/suggestions", methods=["GET"])
+def admin_suggestions():
+    return render_template('/admin/suggestions.html', logged=user_logged_in, username=be.getUsername())
+    
+@app.route("/nav/admin/users", methods=["GET"])
+def admin_users():
+    return render_template('/admin/users.html', logged=user_logged_in, username=be.getUsername())
+
 
 ##
 ### Actions, requests
@@ -49,6 +82,10 @@ def get_user():
     users = User.query.all()
     user_schema = UserSchema(many=True)
     return jsonify(user_schema.dump(users))
+
+###
+### For development purposes only
+###
 
 @app.route('/testFunction', methods=['POST'])
 def testFunction():
@@ -63,59 +100,49 @@ def testFunction():
         print(result)
     return redirect(url_for('home'))
 
-@app.route("/login_user", methods=["POST"])
+###
+###
+###
+
+@app.route("/login", methods=["POST"])
 def login_user():
     global user_logged_in
     global username
     username = request.form.get("login")
     password = request.form.get("pass")
-    if (username == "horse" and password == "horse"):
+    if (be.validateUser(username, password)):
         user_logged_in = True
+        be.setUsername(username)
         return redirect(url_for('home'))
     else:
         return "Invalid username or password!"
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["GET"])
 def logout():
     global user_logged_in
     user_logged_in = False
     return redirect(url_for('home'))
 
-@app.route('/product', methods=['GET'])
-@cross_origin()
-def get_product():
-    # get all results and return json
-    products = Product.query.all()
-    product_schema = ProductSchema(many=True)
-    return jsonify(product_schema.dump(products))
-
-@app.route('/category', methods=['GET'])
-@cross_origin()
-def get_category():
-    # get all results and return json
-    categories = Category.query.all()
-    category_schema = CategorySchema(many=True)
-    return jsonify(category_schema.dump(categories))
-
-@app.route('/orders', methods=['GET'])
-@cross_origin()
-def get_order():
-    # get all results and return json
-    orders = Order.query.all()
-    order_schema = OrderSchema(many=True)
-    return jsonify(order_schema.dump(orders))
-
-@app.route('/edit', methods=['GET'])
-@cross_origin()
-def edit_user():
-    try:
-        db.session.query(User).filter(User.name == 'Peter').update({User.name:'Debilek'}, synchronize_session=False)
-    except Exception as e:
-        print('Chyba pri editu ('+str(e)+')')
-    # get all results and return json
-    users = User.query.all()
-    user_schema = UserSchema(many=True)
-    return jsonify(user_schema.dump(users))
+@app.route("/register", methods=["POST"])
+def register_user():
+    global user_logged_in
+    global username
+    username = request.form.get("login")
+    password = request.form.get("pass")
+    password2 = request.form.get("pass_repeat")
+    name = request.form.get("name")
+    role = request.form.get("role")
+    if (password != password2):
+        return "Both passwords must match!"
+    result = be.newUser(username, password, name, role)
+    if (result == 0):
+        user_logged_in = True
+        be.setUsername(username)
+        return redirect(url_for('home'))     # or: after registration page
+    elif (result == 1):
+        return "User exists!"
+    elif (result == 2):
+        return "Invalid password!"
 
     
 #####

@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Login {% endblock %}</h1>
+    <h1>{% block title %} Přihlášení {% endblock %}</h1>
     <hr>
-    <p><b>Enter login info:</b></p>
+    <p><b>Přihlašte se zadáním vašeho jména a hesla:</b></p>
     <form method="post" action="{{ url_for('login_user') }}">
-        <label for="login">Username</label>
+        <label for="login">Uživatelské jméno</label>
         <input type="text" name="login" id="login" placeholder="for ex.: horse" value="{{ request.form['login'] }}">
-        <label for="pass">Password</label>
+        <br>
+        <label for="pass">Heslo</label>
         <input type="password" name="pass" id="pass" placeholder="for ex.: horse" value="{{ request.form['pass'] }}">
-        <button type="submit" id="user_btn" name="user_btn">login me</button>
+        <button type="submit" id="user_btn" name="user_btn">přihlásit se</button>
     </form>
+    <p>Ještě u nás nemáte účet? <a href="{{ url_for('registration') }}">Registrujte se</a></p>
     <br><br>
 {% endblock %}

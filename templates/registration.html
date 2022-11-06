@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Registrace {% endblock %}</h1>
+    <hr>
+    <p><b>Registrační formulář:</b></p>
+    <form method="post" action="{{ url_for('register_user') }}">
+        <label for="login">E-mail</label>
+        <input type="text" name="login" id="login" placeholder="Například: jmeno@email.cz" value="{{ request.form['login'] }}">
+        <br>
+        <label for="pass">Heslo</label>
+        <input type="password" name="pass" id="pass" placeholder="Například:        " value="{{ request.form['pass'] }}">
+        <br>
+        <label for="pass">Zopakujte heslo</label>
+        <input type="password" name="pass_repeat" id="pass_repeat" placeholder="same as first one" value="{{ request.form['pass_repeat'] }}">
+        <br>
+        <label for="name">Vaše jméno</label>
+        <input type="text" name="name" id="name" placeholder="for ex.: Beelanda" value="{{ request.form['name'] }}">
+        <br>
+        <label for="role">Uživatelská role</label>
+        <select name="role" id="role" value="{{ request.form['role'] }}">
+            <option value=0>Farmář</option>
+            <option value=1>Zákazník</option>
+        </select>
+        <br>
+
+        <button type="submit" id="user_btn" name="user_btn">registruj!</button>
+    </form>
+    <br><br>
+{% endblock %}

@@ -4,25 +4,63 @@
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - BestIISApp</title>
     <style>
-        .message {
-            padding: 10px;
-            margin: 5px;
-            background-color: #f3f3f3
+        .nav {
+            background-color: #ffffff;
+            margin: 0;
+            list-style-type: none;
+            padding: 0;
+            display: inline;
         }
-        nav a {
+        .page_select {
+            color: #f85262;
+            font-size: 2em;
+            margin-left: 40px;
+            text-decoration: solid;
+            float: left;
+            padding: 0cm;
+        }
+        .page_select:hover {
+            color: #ff0101;
+            font-size: 2em;
+            margin-left: 40px;
+            text-decoration: none;
+            float: left;
+        }
+        .a_login {
+            color: #000000;
+            font-size: 1em;
+            margin-left: 10px;
+            text-decoration: solid;
+            float: right;
+        }
+        loginline {
+            float: right;
             color: #d64161;
-            font-size: 3em;
-            margin-left: 50px;
+            font-size: 1.25em;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 7px;
             text-decoration: none;
         }
-
     </style>
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="#">About</a>
+            <a class="page_select" href="{{ url_for('home') }}">Domů</a>
+            <a class="page_select" href="{{ url_for('offers') }}">Nabídky</a>
+            <a class="page_select" href="{{ url_for('user_customer') }}">Zákazník</a>
+            <a class="page_select" href="{{ url_for('user_farmer') }}">Farmář</a>
+            <a class="page_select" href="{{ url_for('admin_categories') }}">Správa kategorií</a>
+            <a class="page_select" href="{{ url_for('admin_suggestions') }}">Schvalování návrhů</a>
+            <a class="page_select" href="{{ url_for('admin_users') }}">Správa uživatelů</a>
+            {% if logged == True %}
+                <loginline>Prohlížíte si stránku jako <a style="float:none; margin-left: 0px;" class="a_login" href="{{ url_for('user_settings') }}"><b>{{username}}</b></a>. <a class="a_login" href="{{ url_for('logout') }}">Odhlásit se</a></loginline>
+            {% else %}
+                <loginline>Prohlížíte si stránku jako <b>Host</b>. <a class="a_login" href="{{ url_for('login') }}">Přihlásit se</a></loginline>
+            {% endif %}
+            <br>
     </nav>
+    <br>
     <hr>
     <div class="content">
         {% block content %} {% endblock %}

@@ -1,15 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Home {% endblock %}</h1>
-
-    <h2>Best IIS app ever created</h2>
+    <h1>{% block title %} Domovská stránka {% endblock %}</h1>
     <hr>
-    <p><b>All users:</b> (very sensitive info so you need to click the button)</p>
-    <form method="post">
-        <button type="submit" id="user_btn" name="user_btn" href="{{ url_for('get_user') }}">show me what you got</button>
-    </form>
-    <br><br>
-
+    <p><b>Development testing zone</b></p>
     <p><b>Categories:</b></p>
     {% for x in categories %}
     <p>{{x['name']}}</p>
@@ -25,14 +18,11 @@
         <p>ID {{x['id']}} (buyer ID {{x['buyer']}}): product ID {{x['product']}} for {{x['price']}} IIS Coins per piece</p>
     {% endfor %}
     <br>
-    <hr>
-    <br>
-
     <!--
         TESTING ZONE
         - test something in live app by clicking on button & observe the results
     -->
-    <p><b>Development testing zone</b></p>
+    <p><b>Test some action</b></p>
     <form method="post" action="{{ url_for('testFunction') }}">
     <label for="catname">Do something</label>
         <!-- 
@@ -40,19 +30,5 @@
         -->
         <button type="submit" id="greatButton" name="greatButton">do it</button>
     </form>
-    <br>
-
-    <p><b>Login</b></p>
-    {% if logged == True %}
-        <p>You are currently logged in as {{username}}</p>
-        <form method="post" action="{{ url_for('logout') }}">
-            <button type="submit" id="logoutbtn" name="logoutbtn">log out</button>
-        </form>
-    {% else %}
-        <p>Viewing this page as invador. Please log in!</p>
-        <form method="post" action="{{ url_for('login') }}">
-            <button type="submit" id="loginbtn" name="loginbtn">proceed</button>
-        </form>
-    {% endif %}
     <br>
 {% endblock %}
