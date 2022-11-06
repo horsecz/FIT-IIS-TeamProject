@@ -108,11 +108,12 @@ def testFunction():
 def login_user():
     global user_logged_in
     global username
-    username = request.form.get("login")
+    login = request.form.get("login")
     password = request.form.get("pass")
-    if (be.validateUser(username, password)):
+    if (be.validateUser(login, password)):
         user_logged_in = True
-        be.setUsername(username)
+        user = database.getUserByEmail(login)
+        be.setUsername(user['name'])
         return redirect(url_for('home'))
     else:
         return "Invalid username or password!"
@@ -127,17 +128,18 @@ def logout():
 def register_user():
     global user_logged_in
     global username
-    username = request.form.get("login")
+    login = request.form.get("login")
     password = request.form.get("pass")
     password2 = request.form.get("pass_repeat")
     name = request.form.get("name")
     role = request.form.get("role")
     if (password != password2):
         return "Both passwords must match!"
-    result = be.newUser(username, password, name, role)
+    result = be.newUser(login, password, name, role)
     if (result == 0):
         user_logged_in = True
-        be.setUsername(username)
+        user = database.getUserByEmail(login)
+        be.setUsername(user['name'])
         return redirect(url_for('home'))     # or: after registration page
     elif (result == 1):
         return "User exists!"
