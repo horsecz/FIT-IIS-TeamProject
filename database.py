@@ -24,8 +24,9 @@ class User(db.Model):
     password = db.Column(db.String(DB_STRING_SHORT_MAX))
     role = db.Column(db.Integer)
     phone_number = db.Column(db.Integer)
+    is_farmer = db.Column(db.Integer)
     
-    def __init__(self, email, name, birth_date, address, password, role, phone_number):
+    def __init__(self, email, name, birth_date, address, password, role, phone_number, is_farmer):
         self.email = email
         self.name = name
         self.birth_date = birth_date
@@ -33,10 +34,13 @@ class User(db.Model):
         self.password = password
         self.role = role
         self.phone_number = phone_number
+        self.is_farmer = is_farmer
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number')
+        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'is_farmer')
+
+unregistered_user = User(None, None, None, None, None, -1, None, None)
         
 
 class Product(db.Model):
@@ -115,17 +119,10 @@ def create_db():
     db.session.commit()
 
     # add dummy data (dev purposes)
-    db.session.add(User('email@email.com', 'Peter', '1995-1-1', '7th Street', 'abc123', 1, 905240384))
-    db.session.add(User('email@email2.com', 'Peter2', '1996-1-1', '8th Street', 'abc1234', 1, 905240354))
-    db.session.add(Category('fruit', 1, False))
-    db.session.commit()
-    db.session.add(Category('vegetable', 1, False))
-    db.session.commit()
-    db.session.add(Category('apple', 2, True))
-    db.session.commit()
-    db.session.add(Product('green_apple', 1, 250, 2, 24, 1, 'fajne jabko', False, None, None))
-    db.session.commit()
-    db.session.add(Order(1, 1, 2, 48, '2021-01-01', 1))
+    db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 2, 905240384, 0))
+    db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, 0))
+    db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 0, 905240384, 0))
+    db.session.add(Category('root', None, False))
     db.session.commit()
 
 #
@@ -269,12 +266,12 @@ def getProducts():
 
 # returns: 0 OK; 1 too long string; 2 user exists
 # TODO: co je povinny udaj a co ne ? [pripsat sem jako parametr]
-def addUser(email, name, password, role):
+def addUser(email, name, password, role, isFarmer):
     if len(name) > DB_STRING_SHORT_MAX or len(password) > DB_STRING_SHORT_MAX:
         return 1
     if isUserEmail(email):
         return 2
-    db.session.add(User(email, name, None, None, password, role, None))
+    db.session.add(User(email, name, None, None, password, role, None, isFarmer))
     db.session.commit()
     return 0
 

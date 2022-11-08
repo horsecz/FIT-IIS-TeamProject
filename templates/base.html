@@ -4,27 +4,16 @@
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - BestIISApp</title>
     <style>
-        .nav {
-            background-color: #ffffff;
-            margin: 0;
+        ul {
+            background-color: #222;
+            overflow: hidden;
+            margin-top: -10px;
             list-style-type: none;
-            padding: 0;
-            display: inline;
+            display: block;
         }
         .page_select {
-            color: #f85262;
-            font-size: 2em;
-            margin-left: 40px;
-            text-decoration: solid;
-            float: left;
-            padding: 0cm;
-        }
-        .page_select:hover {
-            color: #ff0101;
-            font-size: 2em;
-            margin-left: 40px;
+            display: block;
             text-decoration: none;
-            float: left;
         }
         .a_login {
             color: #000000;
@@ -42,26 +31,213 @@
             margin-top: 7px;
             text-decoration: none;
         }
+        .button_topbar {
+            background-color: #222;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        .button_topbar:hover {
+            background-color: #4C9F50; /* Green */
+            cursor: pointer;
+        }
+        .button_topbar:active {
+            background-color: #5B7F50; /* Green */
+        }
+        h1 {
+            text-align: center;
+        }
+        .button_topbar_current {
+            background-color: #4C9F50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .button_topbar_login {
+            background-color: #222;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            display: block;
+            text-decoration: ;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        .button_topbar_login:hover {
+            background-color: #010101; /* Green */
+            cursor: pointer;
+        }
+        .button_topbar_login:active {
+            background-color: #000000; /* Green */
+        }
+
+        .login_form {
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 20px;
+            width: 30%;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .login_form_textbox {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .login_form_button {
+            background-color: #333;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 14px;
+            transition: 0.2s;
+            float: none;
+            margin: 0 auto;
+            margin-top: 20px;
+            border-radius: 0.2cm;
+        }
+
+        .login_form_button:hover {
+            background-color: #333333; /* Green */
+            cursor: pointer;
+        }
+
+        .register_form {
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 35px;
+            width: 20%;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .admin_users_form {
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 35px;
+            width: 75%;
+            margin: 0 auto;
+            margin-top: 50px;
+            margin-left: 50px;
+            margin-right: 50px;
+            border: 1px solid #999;
+        }
+
+        .admin_users_form_nohover {
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 35px;
+            width: 75%;
+            margin: 0 auto;
+            margin-top: 50px;
+            margin-left: 50px;
+            margin-right: 50px;
+            border: 1px solid #999;
+        }
+
+        .admin_users_form:hover {
+            background-color: #eaeaea;
+            cursor: pointer;
+        }
+
+        .admin_users_form_textbox {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .admin_users_form_button {
+            background-color: #333;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 14px;
+            transition: 0.2s;
+            float: none;
+            margin: 0 auto;
+            margin-top: 20px;
+            border-radius: 0.2cm;
+        }
+
+        .admin_users_form_button:hover {
+            background-color: #333333; /* Green */
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <nav>
-            <a class="page_select" href="{{ url_for('home') }}">Domů</a>
-            <a class="page_select" href="{{ url_for('offers') }}">Nabídky</a>
-            <a class="page_select" href="{{ url_for('user_customer') }}">Zákazník</a>
-            <a class="page_select" href="{{ url_for('user_farmer') }}">Farmář</a>
-            <a class="page_select" href="{{ url_for('admin_categories') }}">Správa kategorií</a>
-            <a class="page_select" href="{{ url_for('admin_suggestions') }}">Schvalování návrhů</a>
-            <a class="page_select" href="{{ url_for('admin_users') }}">Správa uživatelů</a>
+    <ul>
+            {% for x in nav_pages %}
+                {% if x[1] == False %}
+                    {% if x[0] == 'admin_categories' or x[0] == 'admin_suggestions' %}
+                        {% if user['role'] >= 1 %} 
+                            <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                        {% endif %}
+                    {% elif x[0] == 'admin_users' %} 
+                        {% if user['role'] == 2 %}
+                            <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                        {% endif %}
+                    {% elif x[0] == 'user_farmer' or x[0] == 'user_customer' %}
+                        {% if user['role'] >= 0 %}
+                            {% if user['is_farmer'] != 0 %}
+                                <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                            {% else %}
+                                {% if x[0] == 'user_customer' %}
+                                    <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% else %} 
+                            <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                    {% endif %}
+                {% else %}
+                    <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar_current" type="button" value="{{ x[2] }}"></a>
+                {% endif %}
+            {% endfor %}
+
             {% if logged == True %}
-                <loginline>Prohlížíte si stránku jako <a style="float:none; margin-left: 0px;" class="a_login" href="{{ url_for('user_settings') }}"><b>{{username}}</b></a>. <a class="a_login" href="{{ url_for('logout') }}">Odhlásit se</a></loginline>
+                <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Odhlásit se"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="{{ user['name'] }}"></a>
             {% else %}
-                <loginline>Prohlížíte si stránku jako <b>Host</b>. <a class="a_login" href="{{ url_for('login') }}">Přihlásit se</a></loginline>
+                <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Přihlásit se"></a>
             {% endif %}
             <br>
-    </nav>
+    </ul>
     <br>
-    <hr>
     <div class="content">
         {% block content %} {% endblock %}
     </div>

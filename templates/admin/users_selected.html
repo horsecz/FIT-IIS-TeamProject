@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Uživatel '{{ selectedUser['email'] }}' {% endblock %}</h1>
+    <root style="display: inline-flex">
+        <form method="post" action="{{ url_for('admin_users') }}">
+            <p><b>Jméno:</b> {{ name }}</p>
+            <p><b>Farmář:</b>
+                {% if selectedUser['is_farmer'] == True %} 
+                    Ano
+                {% else %}
+                    Ne
+                {% endif %}
+            </p>
+            <p><b>Oprávnění:</b>
+                {% if selectedUser['role'] == 2 %}
+                    Administrátor
+                {% elif selectedUser['role'] == 1 %}
+                    Moderátor
+                {% elif selectedUser['role'] == 0 %}
+                    Běžný uživatel
+                {% endif %}
+            </p>
+            <p><b>Narozen:</b> {{ selectedUser['birth_date'] }}</p>
+            <p><b>Adresa:</b> {{ selectedUser['address'] }}</p>
+            <p><b>Telefon:</b> {{ selectedUser['phone_number'] }}</p>
+        </form>
+    </root>
+    <br><br>
+{% endblock %}
