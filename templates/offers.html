@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
+    <hr>
+    <p><b>This page is not completed</b></p>
+    <form method="get" action="{{ url_for('home') }}">
+        <button type="submit" id="user_btn" name="user_btn">leave</button>
+    </form>
+    <br><br>
+{% endblock %}

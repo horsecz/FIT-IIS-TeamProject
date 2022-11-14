@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Registrace nového uživatele {% endblock %}</h1>
+    <root style="display: inline-flex; float:inline-end;">
+    <div class="login_form" style="float: none">
+        <form method="post" action="{{ url_for('register_user') }}">
+            <p style="text-align: center;">Zaregistrujte se zadáním požadovaných údajů.</p>
+            <br><br>
+            <label for="login" style="font-weight: bold;">E-mail</label>
+            <input type="text" class="login_form_textbox" name="login" id="login" placeholder="abc@email.com" value="{{ request.form['login'] }}">
+            <br>
+            <label for="pass" style="font-weight: bold;">Heslo</label>
+            <input type="password" class="login_form_textbox" name="pass" id="pass" placeholder="" value="{{ request.form['pass'] }}">
+            <br>
+            <label for="pass" style="font-weight: bold;">Zopakujte heslo</label>
+            <input type="password" class="login_form_textbox" name="pass_repeat" id="pass_repeat" placeholder="" value="{{ request.form['pass_repeat'] }}">
+            <br>
+            <label for="name" style="font-weight: bold;">Vaše jméno</label>
+            <input type="text" class="login_form_textbox" name="name" id="name" placeholder="Pavel Novák" value="{{ request.form['name'] }}">
+            <br>
+            <label for="role" style="font-weight: bold;">Uživatelská role</label>
+            <select name="role" class="login_form_textbox" id="role" value="{{ request.form['role'] }}">
+                <option value=0>Zákazník</option>
+                <option value=1>Farmář</option>
+            </select>
+            {% if error == 1 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">E-mailová adresa je již používána!</p>
+            {% elif error == 2 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Heslo musí mít nejméně 5 znaků.</p>
+            {% elif error == 4 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Hesla se neshodují!</p>
+            {% elif error == 3 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Uvedené jméno je příliš dlouhé!</p>
+            {% endif %}
+            <button type="submit" class="login_form_button" id="user_btn" name="user_btn">Zaregistrovat se</button>
+        </form>
+    </div>
+
+    <div class="register_form" style="float: none; height: 30%; width: 25%;">
+        <p style="font-weight: bold;">Zákazník</p>
+        Nakupuje produkty, navrhuje nové kategorie produktů. Také se může zůčastnit samosběrů.
+        <br><br>
+        <p style="font-weight: bold;">Farmář</p>
+        Jako farmář máte navíc kromě běžných zákaznických funkcí k dispozici i možnost vytvářet nové produkty, prodávat je či pořádat samosběry.
+    </div>
+    </root>
+    <br><br>
+{% endblock %}
