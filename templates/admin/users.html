@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Správa uživatelů {% endblock %}</h1>
+    <h1>{% block title %} User management {% endblock %}</h1>
     <root style="display:inline-flex;">
         {% for x in all_users %}
             <form method="post" action="{{ url_for('admin_selected_user_action', id=x['id']) }}">
@@ -11,37 +11,32 @@
                     <div class="admin_users_form_nohover">
                 {% endif %}
                         <h3 style="margin-bottom: 0.8cm;">{{ x['email'] }}</h3>
-                        <p><b>Jméno:</b> {{ x['name'] }}</p>
-                        <p><b>Farmář:</b>
-                            {% if x['is_farmer'] == True %} 
-                                Ano
-                            {% else %}
-                                Ne
-                            {% endif %}
-                        </p>
-                        <p><b>Oprávnění:</b>
-                            {% if x['role'] == 2 %}
-                                Administrátor
+                        <p><b>Name:</b> {{ x['name'] }}</p>
+                        <p><b>Authority:</b>
+                            {% if x['role'] == 0 %}
+                                Administrator
                             {% elif x['role'] == 1 %}
-                                Moderátor
-                            {% elif x['role'] == 0 %}
-                                Běžný uživatel
+                                Moderator
+                            {% elif x['role'] == 2 %}
+                                User (Farmer)
+                            {% elif x['role'] == 3 %}
+                                User (Customer)
                             {% endif %}
                         </p>
-                        <p><b>Narozen:</b> {{ x['birth_date'] }}</p>
-                        <p><b>Adresa:</b> {{ x['address'] }}</p>
-                        <p><b>Telefon:</b> {{ x['phone_number'] }}</p>
+                        <p><b>Birthday:</b> {{ x['birth_date'] }}</p>
+                        <p><b>Address:</b> {{ x['address'] }}</p>
+                        <p><b>Phone number:</b> {{ x['phone_number'] }}</p>
                         {% if selectedID == x['id'] %}
                             {% if error == 1 %}
-                                <p style="text-align: center; font-weight: bold; color: red;">Nemůžete smazat vlastní účet!</p>
+                                <p style="text-align: center; font-weight: bold; color: red;">You can not remove your own account!</p>
                             {% endif %}
                             {% if confirm == True %}
-                                <p style="text-align: center; font-weight: bold; color: brown;">Opravdu chcete smazat tento účet?</p>
+                                <p style="text-align: center; font-weight: bold; color: brown;">Proceed?</p>
                             {% endif %}
                             {% if confirm != True %}
-                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="0">Smazat uživatele</button>
+                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="0">Remove user</button>
                             {% else %} 
-                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="1">Smazat uživatele</button>
+                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="1">Yes</button>
                             {% endif %}
                         {% endif %}
                     </div>

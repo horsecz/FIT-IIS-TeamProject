@@ -204,21 +204,19 @@
             {% for x in nav_pages %}
                 {% if x[1] == False %}
                     {% if x[0] == 'admin_categories' or x[0] == 'admin_suggestions' %}
-                        {% if user['role'] >= 1 %} 
+                        {% if user['role'] <= 1 %} 
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                         {% endif %}
                     {% elif x[0] == 'admin_users' %} 
-                        {% if user['role'] == 2 %}
+                        {% if user['role'] == 0 %}
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                         {% endif %}
                     {% elif x[0] == 'user_farmer' or x[0] == 'user_customer' %}
-                        {% if user['role'] >= 0 %}
-                            {% if user['is_farmer'] != 0 %}
+                        {% if user['role'] <= 2 %}
+                            <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                        {% else %}
+                            {% if x[0] == 'user_customer' and user['role'] == 3 %}
                                 <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
-                            {% else %}
-                                {% if x[0] == 'user_customer' %}
-                                    <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
-                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% else %} 
@@ -230,10 +228,10 @@
             {% endfor %}
 
             {% if logged == True %}
-                <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Odhlásit se"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
                 <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="{{ user['name'] }}"></a>
             {% else %}
-                <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Přihlásit se"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Log in"></a>
             {% endif %}
             <br>
     </ul>

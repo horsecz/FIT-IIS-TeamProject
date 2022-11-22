@@ -1,28 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Uživatel '{{ selectedUser['email'] }}' {% endblock %}</h1>
+    <h1>{% block title %} User '{{ selectedUser['email'] }}' {% endblock %}</h1>
     <root style="display: inline-flex">
         <form method="post" action="{{ url_for('admin_users') }}">
-            <p><b>Jméno:</b> {{ name }}</p>
-            <p><b>Farmář:</b>
+            <p><b>Name:</b> {{ name }}</p>
+            <p><b>Is Farmer:</b>
                 {% if selectedUser['is_farmer'] == True %} 
-                    Ano
+                    Yes
                 {% else %}
-                    Ne
+                    No
                 {% endif %}
             </p>
-            <p><b>Oprávnění:</b>
+            <p><b>Authority:</b>
                 {% if selectedUser['role'] == 2 %}
-                    Administrátor
+                    Administrator
                 {% elif selectedUser['role'] == 1 %}
-                    Moderátor
+                    Moderator
                 {% elif selectedUser['role'] == 0 %}
-                    Běžný uživatel
+                    Basic user
                 {% endif %}
             </p>
-            <p><b>Narozen:</b> {{ selectedUser['birth_date'] }}</p>
-            <p><b>Adresa:</b> {{ selectedUser['address'] }}</p>
-            <p><b>Telefon:</b> {{ selectedUser['phone_number'] }}</p>
+            <p><b>Birthday:</b> {{ selectedUser['birth_date'] }}</p>
+            <p><b>Address:</b> {{ selectedUser['address'] }}</p>
+            <p><b>Phone number:</b> {{ selectedUser['phone_number'] }}</p>
         </form>
     </root>
     <br><br>

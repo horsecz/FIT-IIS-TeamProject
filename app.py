@@ -142,8 +142,8 @@ def register_user():
     name = request.form.get("name")
     isFarmer = request.form.get("role")
     if (password != password2):
-        return render_template('/registration.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=4)
-    result = be.newUser(login, password, name, 0, isFarmer)
+        return render_template('/registration.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=-1)
+    result = be.newUser(login, password, name, 2 + isFarmer)
     if (result == 0):
         user_logged_in = True
         user = database.getUserByEmail(login)
