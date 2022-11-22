@@ -229,7 +229,7 @@
 
             {% if logged == True %}
                 <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
-                <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="{{ user['name'] }}"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>
             {% else %}
                 <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Log in"></a>
             {% endif %}

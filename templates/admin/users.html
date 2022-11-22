@@ -34,10 +34,11 @@
                                 <p style="text-align: center; font-weight: bold; color: brown;">Proceed?</p>
                             {% endif %}
                             {% if confirm != True %}
-                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="0">Remove user</button>
+                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="0">Remove account</button>
                             {% else %} 
                                 <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="1">Yes</button>
                             {% endif %}
+                            <button class="login_form_button" id="modify_btn" name="modify_btn" value="0">Modify</button>
                         {% endif %}
                     </div>
                 {% if selectedID != x['id'] %}

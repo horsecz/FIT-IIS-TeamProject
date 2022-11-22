@@ -114,6 +114,10 @@ def create_db():
 
     # create root category
     db.session.add(Category('root', None, False))
+    root = getCategoryByName('root')
+    
+    db.session.add(Category('Fruit', root['id'], False))
+    db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
 
     # add dummy data (dev purposes)

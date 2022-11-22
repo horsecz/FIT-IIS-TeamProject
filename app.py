@@ -81,7 +81,6 @@ def admin_users():
     be.navigationSetPageActive('admin_users')
     return render_template('/admin/users.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=None)
 
-
 ##
 ### Actions, requests
 ##
@@ -131,7 +130,7 @@ def logout():
     global user_logged_in
     user_logged_in = False
     globals.logged_user = database.unregistered_user
-    return redirect(url_for('home'))
+    return redirect(url_for('home')) 
 
 @app.route("/register", methods=["POST"])
 def register_user():
@@ -158,9 +157,12 @@ def admin_selected_user(id):
 
 @app.route("/nav/admin/users/<int:id>", methods=["POST"])
 def admin_selected_user_action(id):
-    if request.form['user_btn'] == "0":
+    if 'user_btn' in request.form.keys() and request.form['user_btn'] == "0":
         return render_template('/admin/users.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=id, error=0, confirm=True)
 
+    if 'modify_btn' in request.form.keys() and request.form['modify_btn'] == "0":
+        return render_template('/admin/users_selected.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
+    
     if globals.logged_user['id'] == id:
         s = id
         error = 1
@@ -169,6 +171,36 @@ def admin_selected_user_action(id):
         s = None
         error = 0
     return render_template('/admin/users.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
+    
+@app.route("/nav/admin/user_selected/<int:id>", methods=["POST"])
+def admin_user_selected(id):
+    error = 0
+    name = request.form['name']
+    email = request.form['email']
+    role = request.form['role']
+    permissions = request.form['permissions']
+    birthday = request.form['birthday']
+    address = request.form['address']
+    phone = request.form['phone']
+
+    new_role = 4
+    if (int(role) < 0):
+        new_role = permissions
+    else:
+        new_role = role
+
+    user = database.getUser(id)
+    # TODO: not working ... (wont detect 'no changes done' after Proceed button)
+    if (user['name'] == name and user['email'] == email and user['role'] == new_role and user['birth_date'] == birthday and user['address'] == address and user['phone_number'] == phone):
+        return render_template('/admin/users_selected.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
+    
+    database.modifyData(database.User, id, 'name', name)
+    database.modifyData(database.User, id, 'email', email)
+    database.modifyData(database.User, id, 'role', new_role)
+    database.modifyData(database.User, id, 'birth_date', birthday)
+    database.modifyData(database.User, id, 'address', address)
+    database.modifyData(database.User, id, 'phone_number', phone)
+    return render_template('/admin/users_selected.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error)
     
 
     

@@ -24,7 +24,7 @@ def isUserAdmin(user):
 # loads navigation bar pages
 def navigationLoadPages():
     globals.nav_pages = [['home', False, 'Home'], 
-    ['offers', False, 'Offers'], ['user_customer', False, 'Customer'], ['user_farmer', False, 'Farmer'], 
+    ['offers', False, 'Farmers'], ['user_customer', False, 'Suggestions'], ['user_farmer', False, 'My Products'], 
     ['admin_categories', False, 'Category suggestions'], ['admin_suggestions', False, 'Category management'], ['admin_users', False, 'User management']]
 
 # sets page active in navigation bar
