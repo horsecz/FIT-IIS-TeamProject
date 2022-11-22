@@ -1,47 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Registrace nového uživatele {% endblock %}</h1>
+    <h1>{% block title %} Registration of new account {% endblock %}</h1>
     <root style="display: inline-flex; float:inline-end;">
     <div class="login_form" style="float: none">
         <form method="post" action="{{ url_for('register_user') }}">
-            <p style="text-align: center;">Zaregistrujte se zadáním požadovaných údajů.</p>
+            <p style="text-align: center;">Fill this form to complete registration.</p>
             <br><br>
             <label for="login" style="font-weight: bold;">E-mail</label>
-            <input type="text" class="login_form_textbox" name="login" id="login" placeholder="abc@email.com" value="{{ request.form['login'] }}">
+            <input type="text" class="login_form_textbox" name="login" id="login" placeholder="yourname@email.com" value="{{ request.form['login'] }}">
             <br>
-            <label for="pass" style="font-weight: bold;">Heslo</label>
+            <label for="pass" style="font-weight: bold;">Password</label>
             <input type="password" class="login_form_textbox" name="pass" id="pass" placeholder="" value="{{ request.form['pass'] }}">
             <br>
-            <label for="pass" style="font-weight: bold;">Zopakujte heslo</label>
+            <label for="pass" style="font-weight: bold;">Repeat password</label>
             <input type="password" class="login_form_textbox" name="pass_repeat" id="pass_repeat" placeholder="" value="{{ request.form['pass_repeat'] }}">
             <br>
-            <label for="name" style="font-weight: bold;">Vaše jméno</label>
-            <input type="text" class="login_form_textbox" name="name" id="name" placeholder="Pavel Novák" value="{{ request.form['name'] }}">
+            <label for="name" style="font-weight: bold;">Your name</label>
+            <input type="text" class="login_form_textbox" name="name" id="name" placeholder="Jake Paul" value="{{ request.form['name'] }}">
             <br>
-            <label for="role" style="font-weight: bold;">Uživatelská role</label>
+            <label for="role" style="font-weight: bold;">User role</label>
             <select name="role" class="login_form_textbox" id="role" value="{{ request.form['role'] }}">
-                <option value=0>Zákazník</option>
-                <option value=1>Farmář</option>
+                <option value=0>Customer</option>
+                <option value=1>Farmer</option>
             </select>
             {% if error == 1 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">E-mailová adresa je již používána!</p>
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">This e-mail is already used by another account!</p>
             {% elif error == 2 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Heslo musí mít nejméně 5 znaků.</p>
-            {% elif error == 4 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Hesla se neshodují!</p>
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Password must be atleast 5 characters long!</p>
+            {% elif error == -1 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Passwords does not match!</p>
             {% elif error == 3 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Uvedené jméno je příliš dlouhé!</p>
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Your name is too long.</p>
+            {% elif error == 4 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Invalid format of e-mail address.</p>
             {% endif %}
-            <button type="submit" class="login_form_button" id="user_btn" name="user_btn">Zaregistrovat se</button>
+            <button type="submit" class="login_form_button" id="user_btn" name="user_btn">Register</button>
         </form>
     </div>
 
     <div class="register_form" style="float: none; height: 30%; width: 25%;">
-        <p style="font-weight: bold;">Zákazník</p>
-        Nakupuje produkty, navrhuje nové kategorie produktů. Také se může zůčastnit samosběrů.
+        <p style="font-weight: bold;">Customer</p>
+        Buys products, suggests new product categories. As a customer, you can also participate in self collections.
+        Suitable for most users.
         <br><br>
-        <p style="font-weight: bold;">Farmář</p>
-        Jako farmář máte navíc kromě běžných zákaznických funkcí k dispozici i možnost vytvářet nové produkty, prodávat je či pořádat samosběry.
+        <p style="font-weight: bold;">Farmer</p>
+        As a farmer, on the top of basic customer features, you can also make new products, sell them or announce self collections.
+        Suitable for businessmen.
     </div>
     </root>
     <br><br>
