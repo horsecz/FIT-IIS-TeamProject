@@ -1,10 +1,225 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
-    <hr>
-    <p><b>This page is not completed</b></p>
-    <form method="get" action="{{ url_for('home') }}">
-        <button type="submit" id="user_btn" name="user_btn">leave</button>
-    </form>
+    <h1>{% block title %} {{ user['name'] }}'s profile {% endblock %}</h1>
+    <navigation style="display:flex;">
+        <div class="register_form" style="display: inline-flex; float:none;">
+            {% for x in [['user_settings', 0, 'About me'], ['user_settings_orders', 1, 'Orders'], ['user_settings_calendar', 2, 'Calendar']] %}
+                <a style="text-decoration: none;" href="{{ url_for(x[0]) }}" >
+                    {% if page == x[1] %}
+                        <input class="profile_navigation_button_current" type="button" value="{{ x[2] }}">
+                    {% else %}
+                        <input class="profile_navigation_button" type="button" value="{{ x[2] }}">
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </navigation>
+    <root style="display:flex;">
+        {% if page == 0 %}
+        <div class="register_form">
+            <p style="font-weight: bold; text-align: center;">Personal information</p>
+            <br>
+            <br>
+            {% if edit == true and editType == 0%}
+                <form method="post" action="{{ url_for('user_settings_edit_save', t=0) }}">
+            {% endif %}
+            <label for="birthday"><b>Birthday</b></label>
+            <input class="profile_user_data" type="text" name="birthday" id="birthday" value="{{ user['birth_date'] }}">
+            <label for="address"><b>Address</b></label>
+            <input class="profile_user_data" type="text" name="address" id="address" value="{{ user['address'] }}">
+            <label for="phone"><b>Phone number</b></label>
+            <input class="profile_user_data" type="text" name="phone" id="phone" value="{{ user['phone_number'] }}">
+            {% if saved == true and editType == 0 %}
+                {% if error == 0 %}
+                    <p style="text-align:center; font-weight: bold; color:green;">Data saved successfully.</p>
+                {% elif error == 1 %}
+                    <p style="text-align:center; font-weight: bold; color:grey;">No changes were made.</p>
+                {% endif %}
+            {% endif %}
+            {% if edit == true and editType == 0 %}
+                <button type="submit" id="personal_save" class="login_form_button" value="0">Save</button>
+                </form>
+            {% else %}
+                <div id="editDisabled"></div>
+                <a style="text-decoration: none;" href="{{ url_for('user_settings_edit_personal') }}">
+                    <input id="personal_edit" class="login_form_button" type="button" value="Edit">
+                </a>
+            {% endif %}
+        </div>
+
+        <script>
+            if (document.getElementById('editDisabled')) {
+                document.getElementById('birthday').disabled = true;
+                document.getElementById('address').disabled = true;
+                document.getElementById('phone').disabled = true;
+            } else {
+                document.getElementById('birthday').className = "profile_user_data_edit";
+                document.getElementById('address').className = "profile_user_data_edit";
+                document.getElementById('phone').className = "profile_user_data_edit";
+            }
+        </script>
+
+
+        <div class="register_form" style="height: 50%;">
+            <p style="font-weight: bold; text-align: center;">Login information</p>
+            <br>
+            <br>
+            {% if edit == true and editType == 1 and confirmPass != false %}
+                <form method="post" action="{{ url_for('user_settings_edit_save', t=1) }}">
+            {% elif edit == true and editType == 1 and confirmPass == false %}
+                <form method="post" action="{{ url_for('user_settings_edit_save', t=2) }}">
+            {% endif %}
+            <label for="email"><b>E-mail</b></label>
+            <input class="profile_user_data" type="text" name="email" id="email" value="{{ user['email'] }}">
+            <label for="password"><b>Password</b></label>
+            {% if edit == true and editType == 1 %}
+                {% if confirmPass == false %}
+                    <input class="profile_user_data" type="text" name="password" id="password" value="{{ newPass }}">
+                {% else %}
+                    <input class="profile_user_data" type="text" name="password" id="password" value="{{ user['password'] }}">
+                {% endif %}
+            {% else %}
+                <input class="profile_user_data" type="text" name="password" id="password" value="*****">
+            {% endif %}
+            {% if edit == true and editType == 1 and confirmPass == false %}
+                <label for="password"><b>Repeat password</b></label>
+                <input class="profile_user_data_edit" type="text" name="passconfirm" id="passconfirm" value="" placeholder="Repeat new password">
+            {% endif %}
+            {% if saved == true and editType == 1 %}
+                {% if error == 0 %}
+                    <p style="text-align:center; font-weight: bold; color:green;">Data saved successfully.</p>
+                {% elif error == 1 %}
+                    <p style="text-align:center; font-weight: bold; color:grey;">No changes were made.</p>
+                {% elif error == 2 %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Passwords does not match!</p>
+                {% endif %}
+            {% endif %}
+            {% if edit == true and editType == 1 %}
+                <button type="submit" id="login_save" class="login_form_button" value="0">Save</button>
+                </form>
+            {% else %}
+                <div id="editDisabled_login"></div>
+                <a style="text-decoration: none;" href="{{ url_for('user_settings_edit_login') }}">
+                    <input id="login_edit" class="login_form_button" type="button" value="Edit">
+                </a>
+            {% endif %}
+        </div>
+
+        <script>
+            if (document.getElementById('editDisabled_login')) {
+                document.getElementById('email').disabled = true;
+                document.getElementById('password').disabled = true;
+            } else {
+                document.getElementById('email').className = "profile_user_data_edit";
+                document.getElementById('password').className = "profile_user_data_edit";
+            }
+        </script>
+
+        <div class="register_form">
+            <p style="font-weight: bold; text-align: center;">Other</p>
+            <br>
+            <br>
+            {% if user['role'] < 2 %}
+            <label for="role"><b>Advanced permissions</b></label>
+            {% else %}
+                <label for="role"><b>User role</b></label>
+            {% endif %}
+            {% if user['role'] == 0 %}
+                <input disabled=true class="profile_user_data" type="text" name="role" id="role" value="Administrator">
+            {% elif user['role'] == 1 %}
+                <input disabled=true class="profile_user_data" type="text" name="role" id="role" value="Moderator">
+            {% elif user['role'] == 2 %}
+                <input disabled=true class="profile_user_data" type="text" name="role" id="role" value="Farmer">
+            {% elif user['role'] == 3 %}
+                <input disabled=true class="profile_user_data" type="text" name="role" id="role" value="Customer">
+            {% endif %}
+            <label for="orders_stat"><b>Created orders</b></label>
+            <input disabled=true class="profile_user_data" type="text" name="orders_stat" id="orders_stat" value="{{ getLoggedUserOrders() | length() }}">
+            <label for="sells_stat"><b>Accepted orders</b></label>
+            <input disabled=true class="profile_user_data" type="text" name="sells_stat" id="sells_stat" value="{{ getLoggedUserSells() | length() }}">
+            <label for="account_remove"><b>Remove your account</b></label>
+            <a style="text-decoration: none;" href="{{ url_for('user_settings_accountRemoval') }}">
+            <button class="login_form_button" type="text" name="account_remove" id="account_remove" value=0>Remove account</button>
+            </a>
+        </div>
+        {% elif page == 1 %}
+        <div class="register_form">
+            {% if user_orders | length() == 0 %}
+                <p style="text-align: center;">You have no orders yet! Create a new one by ordering some of available products.</p>
+                <input class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Order a product">
+            {% else %}
+            <table style="margin: 5px; padding: 5px;">
+                <tr>
+                    <th class="profile_orders_table_row">Order number</th>
+                    <th class="profile_orders_table_row">Date</th>
+                    <th class="profile_orders_table_row">Status</th>
+                </tr>
+                {% for order in user_orders %}
+                <tr>
+                    <td class="profile_orders_table_row"><b>{{ order['id'] }}</b></td>
+                    <td class="profile_orders_table_row">{{ order['date'] }}</td>
+                    <td class="profile_orders_table_row">
+                    {% if order['status'] == 0 %}
+                        Completed
+                    {% elif order['status'] == 1 %}
+                        Processing
+                    {% elif order['status'] == 2 %}
+                        In Complaint
+                    {% elif order['status'] == 3 %}
+                        Returned
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+        {% elif page == 2 %}
+            <div class="register_form">
+            {% if user_calendar | length() == 0 %}
+                <p style="text-align: center;">No calendar events found. Did you know, that you can add self collection event here, while you are going through our products?</p>
+                <input class="login_form_button" type="button" id="new_event_btn" name="new_event_btn" value="Browse products">
+            {% else %}
+                <table style="margin: 5px; padding: 5px;">
+                    <tr>
+                        <th class="profile_orders_table_row">#</th>
+                        <th class="profile_orders_table_row">Start</th>
+                        <th class="profile_orders_table_row">End</th>
+                        <th class="profile_orders_table_row">Location</th>
+                    </tr>
+                    {% for sc in user_calendar %}
+                    {% set cnt = 1 %}
+                    <tr>
+                        <td class="profile_orders_table_row">{{ cnt }}</td>
+                        <td class="profile_orders_table_row">{{ sc[1] }}</td>
+                        <td class="profile_orders_table_row">{{ sc[2] }}</td>
+                        <td class="profile_orders_table_row">{{ getSelfCollectionLocation(sc) }}</td>
+                    </tr>
+                    {% set cnt = cnt + 1 %}
+                    {% endfor %}
+                </table>
+            {% endif %}
+            </div>
+        {% else %}
+            <div class="register_form">
+                <p style="text-align: center;">Are you sure you want to remove your account?</p>
+                <br>
+                <br>
+                <form method="post" action="{{ url_for('user_settings_removeAccount') }}">
+                    <label for="password"><b>Enter your password</b></label>
+                    <input class="login_form_textbox" type="text" id="password" name="password" value="" placeholder="Password">
+                    {% if error == 0 %}
+                        <p style="text-align: center; color:darkred; font-weight: bold;">Invalid password.</p>
+                    {% elif error == 1 %} 
+                        <p style="text-align: center; color:darkred; font-weight: bold;">Unable to remove this account.</p>
+                    {% endif %}
+
+                    <button class="login_form_button" type="submit" value="0" id="remove_btn" name="remove_btn">Yes, remove my account.</button>
+                </form>
+            </div>
+        {% endif %}
+    </root>
     <br><br>
 {% endblock %}

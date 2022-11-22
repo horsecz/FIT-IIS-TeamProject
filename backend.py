@@ -11,6 +11,81 @@ db = database
 nav_current_page = globals.nav_current_page
 logged_user = globals.logged_user
 
+def loadJinjaGlobals():
+    app = globals.app
+    app.jinja_env.globals.update(getSelfCollectionLocation=getSelfCollectionLocation)
+    app.jinja_env.globals.update(getLoggedUserOrders=getLoggedUserOrders)
+    app.jinja_env.globals.update(getLoggedUserSells=getLoggedUserSells)
+
+def getLoggedUserSells():
+    list = []
+    product_list = []
+    user = getLoggedUser()
+    if user == None:
+        return list
+
+    for product in database.getProducts():
+        if database.isSellingProduct(product['id'], user['id']):
+            product_list.append(product)
+
+    if len(product_list) == 0:
+        return list
+    
+    for order in database.getOrders():
+        if order['product'] in product_list:
+            list.append(order)
+    
+    return list
+
+def getLoggedUserOrders():
+    list = []
+    user = getLoggedUser()
+    if user == None:
+        return list
+    
+    for order in database.getOrders():
+        if user['id'] == order['buyer']:
+            list.append(order)
+    
+    return list
+
+
+# returns address string if OK; 1 if product not found; 2 if seller/user not found
+def getSelfCollectionLocation(event):
+    product_id = event[0]
+    product = database.getProduct(product_id)
+    if (product == None):
+        return 1
+    seller = database.getUser(product['seller'])
+    if (seller == None):
+        return 2
+    return seller['address']
+
+def removeCalendarEvent(calendar, event):
+    calendar.remove(event)
+
+def addCalendarEvent(calendar, product_id):
+    event = []
+    prod = database.getProduct(product_id)
+    date_f = prod['begin_date']
+    date_t = prod['end_date']
+    event.append(product_id)
+    event.append(date_f)
+    event.append(date_t)
+    calendar.append(event)
+
+def getUserCalendar(user):
+    calendar_id_list = user['calendar']
+    return calendar_id_list
+
+def getUserOrders(user):
+    id = user['id']
+    order_id_list = []
+    for order_row in database.getOrders():
+        if (order_row['buyer'] == id):
+            order_id_list.append(order_row['id'])
+    return order_id_list
+
 def isUserModerator(user):
     if (user['role'] == 1):
         return True
@@ -57,6 +132,11 @@ def validateUser(login, password):
     return False
 
 def getLoggedUser():
+    if (globals.logged_user == None or globals.user_logged_in == False):
+        return database.unregistered_user
+    user_id = globals.logged_user['id']
+    new_user = database.getUser(user_id)
+    globals.logged_user = new_user
     return globals.logged_user
 
 def setLoggedUser(user):
