@@ -101,6 +101,37 @@ def getSelfCollectionLocation(event):
 #   Backend functions
 ###
 
+def getCategorySuggestions(closed=None):
+    suggs = database.getCategorySuggestions()
+    if (closed == None):
+        return suggs
+    else:
+        closed_suggs = []
+        for x in suggs:
+            if x['status'] != 0:
+                closed_suggs.append(x)
+        return closed_suggs 
+
+# returns list of all categories under 'Vegetables' category
+def getVegetables():
+    veggies = []
+    r = database.getCategoryByName('Vegetables')
+    veggies_id = r['id']
+    for cat in database.getCategories():
+        if (cat['higher_category'] == veggies_id):
+            veggies.append(cat)
+    return veggies
+
+# returns list of all categories under 'Fruits' category
+def getFruits():
+    fruits = []
+    r = database.getCategoryByName('Fruits')
+    fruits_id = r['id']
+    for cat in database.getCategories():
+        if (cat['higher_category'] == fruits_id):
+            fruits.append(cat)
+    return fruits
+
 # returns user row element in UserSchema format
 # primary searches by USER ID, if specified, EMAIL is used instead
 # if both specified, searches by both and if found, returns first non NoneType value
@@ -205,7 +236,7 @@ def isUserAdmin(user):
 def navigationLoadPages():
     globals.nav_pages = [['home', False, 'Home'], 
     ['offers', False, 'Farmers'], ['user_customer', False, 'Suggestions'], ['user_farmer', False, 'My Products'], 
-    ['admin_categories', False, 'Category suggestions'], ['admin_suggestions', False, 'Category management'], ['admin_users', False, 'User management']]
+    ['admin_suggestions', False, 'Category suggestions'], ['admin_categories', False, 'Category management'], ['admin_users', False, 'User management']]
 
 # sets page active in navigation bar
 def navigationSetPageActive(page_name):

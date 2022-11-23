@@ -69,13 +69,17 @@ def user_settings():
 @app.route("/nav/admin/categories", methods=["GET"])
 def admin_categories():
     be.navigationSetPageActive('admin_categories')
-    return render_template('/admin/categories.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    fruits = be.getFruits()
+    veggies = be.getVegetables()
+    return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
 
 @app.route("/nav/admin/suggestions", methods=["GET"])
 def admin_suggestions():
     be.navigationSetPageActive('admin_suggestions')
-    return render_template('/admin/suggestions.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
-    
+    suggestions = be.getCategorySuggestions()
+    closed_suggestions = be.getCategorySuggestions(closed=True)
+    return render_template('/admin/suggestions.html', cat_suggestions=suggestions, closed_suggestions=closed_suggestions, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+
 @app.route("/nav/admin/users", methods=["GET"])
 def admin_users():
     be.navigationSetPageActive('admin_users')

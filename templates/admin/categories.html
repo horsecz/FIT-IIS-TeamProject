@@ -1,10 +1,68 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
-    <hr>
-    <p><b>This page is not completed</b></p>
-    <form method="get" action="{{ url_for('home') }}">
-        <button type="submit" id="user_btn" name="user_btn">leave</button>
-    </form>
+    <h1>{% block title %} Category management {% endblock %}</h1>
+    <br>
+    <root class="contents" style="display: inline-flexbox;">
+        <div class="register_form box" style="width: 95%;">
+            <p><b>Fruits</b></p>
+
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row" style="width: 100%;"></th>
+                </tr>
+                {% for cat in fruit_categories %}
+                <tr class="profile_orders_table_row_action" onclick="">
+                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
+                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
+                    <td class="profile_orders_table_row"></td>
+                    
+                    <td hidden=true class="profile_orders_table_row">
+                        <input id="f_remove{{ loop.index }}" type="button" value="Remove" class="login_form_button" style="margin: 0px;">
+                    </td>
+                    <td hidden=true class="profile_orders_table_row">
+                        <input id="f_edit{{ loop.index }}" type="button" value="Edit" class="login_form_button" style="margin: 0px;">
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            </table>
+        </div>
+
+        <div class="register_form box" style="width: 95%;">
+            <p><b>Vegetables</b></p>
+
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row" style="width: 100%;"></th>
+                </tr>
+                {% for cat in veggie_categories %}
+                <tr class="profile_orders_table_row_action" onclick="showButtons(loop.index)">
+                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
+                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
+                    <td class="profile_orders_table_row"></td>
+
+                    <td id="buttonsRow" hidden=true class="profile_orders_table_row">
+                        <input id="v_remove{{ loop.index }}" type="button" value="Remove" class="login_form_button" style="margin: 0px;">
+                    </td>
+                    <td id="buttonsRow2{{ loop.index }}" hidden=true class="profile_orders_table_row">
+                        <input id="v_edit{{ loop.index }}" type="button" value="Edit" class="login_form_button" style="margin: 0px;">
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </root>
+
+    <script>
+        function showButtons(index) {
+            document.getElementById('buttonsRow').hidden = false;
+            document.getElementById('buttonsRow2'+index).hidden = false;
+        }
+    </script>
+
     <br><br>
 {% endblock %}
