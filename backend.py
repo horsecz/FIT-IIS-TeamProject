@@ -23,6 +23,32 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(getLoggedUserOrders=getLoggedUserOrders)
     app.jinja_env.globals.update(getLoggedUserSells=getLoggedUserSells)
     app.jinja_env.globals.update(getUsedCurrency=getUsedCurrency)
+    app.jinja_env.globals.update(orderStatusToString=orderStatusToString)
+    app.jinja_env.globals.update(productSellTypeToString=productSellTypeToString)
+    app.jinja_env.globals.update(getMaxStringLength=getMaxStringLength)
+
+def getMaxStringLength():
+    return database.DB_STRING_LONG_MAX
+
+def productSellTypeToString(sell_type):
+    if sell_type == 0:
+        return "in pieces"
+    elif sell_type == 1:
+        return "in 1 kg"
+    elif sell_type == 2:
+        return "in 1 g"
+    else:
+        return "Unknown"
+
+def orderStatusToString(order_status):
+    if order_status == 0:
+        return "Completed"
+    elif order_status == 1:
+        return "Processing"
+    elif order_status == -1:
+        return "Cancelled"
+    else:
+        return "Unknown"
 
 def getUsedCurrency():
     return "ISC"
@@ -113,6 +139,9 @@ def removeUser(user_id=None):
 
 # returns 0 OK; 1 exceeded maximum product quantity
 def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
+    user_id = int(user_id)
+    product_id = int(product_id)
+    quantity = int(quantity)
     if (date == None):
         today = datetime.datetime.today()
         day = today.day
@@ -146,6 +175,9 @@ def addCalendarEvent(user, product_id):
     event.append(date_t)
     calendar.append(event)
     database.modifyData(database.User, user['id'], 'calendar', calendar)
+
+def getCalendarEvent(calendar, index):
+    return calendar[index]
 
 def getUserCalendar(user):
     calendar_id_list = user['calendar']

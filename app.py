@@ -81,6 +81,25 @@ def admin_users():
     be.navigationSetPageActive('admin_users')
     return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=None)
 
+@app.route("/nav/user/settings/order/<int:id>", methods=["GET"])
+def user_settings_order(id):
+    be.navigationSetPageActive('user_settings')
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    return render_template('/user/settings/order.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, actionShow=True)
+
+@app.route("/nav/user/settings/calendar/<int:id>", methods=["GET"])
+def user_settings_event(id):
+    be.navigationSetPageActive('user_settings')
+    cal = be.getUserCalendar(be.getLoggedUser())
+    print(id)
+    event = be.getCalendarEvent(cal, id)
+    prod = database.getProduct(event[0])
+    seller = database.getUser(prod['seller'])
+    return render_template('/user/settings/calendar.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id, actionShow=True)
+
+
 ##
 ### Actions, requests
 ##
@@ -275,6 +294,93 @@ def user_settings_removeAccount():
     be.logoutUser()
     return redirect(url_for('home')) 
 
+@app.route("/nav/user/settings/order/cancel%id=<int:id>", methods=["GET"])
+def user_settings_order_cancel(id):
+    be.navigationSetPageActive('user_settings')
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    return render_template('/user/settings/order_cancel.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller)
+
+@app.route("/nav/user/settings/order/cancel/go%id=<int:id>", methods=["POST"])
+def user_settings_order_cancel_go(id):
+    be.navigationSetPageActive('user_settings')
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    database.modifyData(database.Order, id, 'status', -1)
+    return redirect(url_for('user_settings_orders'))
+
+@app.route("/nav/user/settings/order/repeat%id=<int:id>%page=<int:page>", methods=["GET"])
+def user_settings_order_repeat(id, page):
+    be.navigationSetPageActive('user_settings')
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    if (page == 0):
+        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=0)
+    elif (page == 1):
+        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=1)
+    elif (page == 2):
+        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=2)
+    else:
+        print('order created')
+        return redirect(url_for('user_settings_orders'))
+
+@app.route("/nav/new_order/<int:id><int:isRepeat>", methods=["GET"])
+def new_order(id, isRepeat):
+    if (isRepeat == 1):
+        order = database.getOrder(id)
+        prod = database.getProduct(order['product'])
+        quantity = order['quantity']
+        seller = database.getUser(prod['seller'])
+        sProds = []
+        for prods in database.getProducts():
+            if prods['seller'] == seller['id']:
+                sProds.append(prods)
+        return render_template('/new_order.html', repeatedOrder=True, sellerProducts=sProds, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, oldQuantity=quantity)
+    else:
+        prod = database.getProduct(id)
+        seller = database.getUser(prod['seller'])
+        sProds = []
+        for prods in database.getProducts():
+            if prods['seller'] == seller['id']:
+                sProds.append(prods)
+        return render_template('/new_order.html', sellerProducts=sProds, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller)
+    
+@app.route("/nav/user/settings/calendar/remove_q%id=<int:id>", methods=["GET"])
+def user_settings_calendar_remove_q(id):
+    be.navigationSetPageActive('user_settings')
+    cal = be.getUserCalendar(be.getLoggedUser())
+    event = be.getCalendarEvent(cal, id)
+    prod = database.getProduct(event[0])
+    seller = database.getUser(prod['seller'])
+    return render_template('/user/settings/calendar_cancel.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id)
+
+@app.route("/nav/user/settings/calendar/remove%id=<int:id>", methods=["POST"])
+def user_settings_calendar_remove(id):
+    be.navigationSetPageActive('user_settings')
+    loggedUser = be.getLoggedUser()
+    cal = be.getUserCalendar(loggedUser)
+    event = be.getCalendarEvent(cal, id)
+    cal.remove(event)
+
+    database.modifyData(database.User, loggedUser['id'], 'calendar', cal)
+    return redirect(url_for('user_settings_calendar'))
+
+
+
+### TODO:
+### Dont create order immediately but create sub-step 'summary' page and then create order
+@app.route("/nav/new_order/go", methods=["POST"])
+def new_order_go():
+    buyer = request.form['buyer_id']
+    product = request.form['product']
+    quantity = request.form['quantity']
+
+    be.addOrder(buyer, product, quantity)
+    print('order created!')
+    return redirect(url_for('home'))
 #####
 ###     INIT AND RUN
 #####

@@ -126,6 +126,10 @@
             background-color: #333333; /* Green */
             cursor: pointer;
         }
+        .login_form_button:disabled {
+            cursor: not-allowed;
+            background-color: #666666;
+        }
 
         .register_form {
             border-radius: 10px;
@@ -263,6 +267,14 @@
             box-sizing: border-box;
         }
 
+        .profile_orders_table_row_action:hover {
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
     </style>    
 </head>
 <body>

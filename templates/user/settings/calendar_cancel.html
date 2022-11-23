@@ -1,0 +1,17 @@
+{% extends 'user/settings/calendar.html' %}
+{% block calendar_content %}
+    <p style="text-align: center; font-weight: bold;">Removing event from calendar</p>
+    <br><br>
+    <p>Are you sure you wanna remove this event from your calendar?</p>
+
+    <form method="post" action="{{ url_for('user_settings_calendar_remove', id=eventIndex) }}">
+        <button type="submit" style="float:inline-start;" class="login_form_button" id="cancel_button" name="cancel_button" value="0">Yes</button>
+        <input onclick="calendarDefault()" style="float:inline-end;" type="button" class="login_form_button" id="cancel_cancel" name="cancel_cancel" value="No">
+        <br><br><br>
+    </form>
+<script>
+    function calendarDefault() {
+        window.location = "{{ url_for('user_settings_event', id=eventIndex) }}";
+    }
+</script>
+{% endblock %}
