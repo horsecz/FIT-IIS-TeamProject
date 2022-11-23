@@ -143,21 +143,23 @@
             </a>
         </div>
         {% elif page == 1 %}
-        <div class="register_form">
+        <div class="register_form" style="width: auto;">
             {% if user_orders | length() == 0 %}
                 <p style="text-align: center;">You have no orders yet! Create a new one by ordering some of available products.</p>
                 <input class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Order a product">
             {% else %}
-            <table style="margin: 5px; padding: 5px;">
+            <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
                     <th class="profile_orders_table_row">Order number</th>
                     <th class="profile_orders_table_row">Date</th>
+                    <th class="profile_orders_table_row">Price</th>
                     <th class="profile_orders_table_row">Status</th>
                 </tr>
                 {% for order in user_orders %}
                 <tr>
                     <td class="profile_orders_table_row"><b>{{ order['id'] }}</b></td>
                     <td class="profile_orders_table_row">{{ order['date'] }}</td>
+                    <td class="profile_orders_table_row">{{ order['price'] }} {{ getUsedCurrency() }}</td>
                     <td class="profile_orders_table_row">
                     {% if order['status'] == 0 %}
                         Completed
@@ -190,14 +192,12 @@
                         <th class="profile_orders_table_row">Location</th>
                     </tr>
                     {% for sc in user_calendar %}
-                    {% set cnt = 1 %}
                     <tr>
-                        <td class="profile_orders_table_row">{{ cnt }}</td>
+                        <td class="profile_orders_table_row">{{ loop.index }}</td>
                         <td class="profile_orders_table_row">{{ sc[1] }}</td>
                         <td class="profile_orders_table_row">{{ sc[2] }}</td>
                         <td class="profile_orders_table_row">{{ getSelfCollectionLocation(sc) }}</td>
                     </tr>
-                    {% set cnt = cnt + 1 %}
                     {% endfor %}
                 </table>
             {% endif %}

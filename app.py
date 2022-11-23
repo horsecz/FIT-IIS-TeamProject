@@ -98,8 +98,10 @@ def get_user():
 @app.route('/testFunction', methods=['POST'])
 def testFunction():
     user = be.getLoggedUser()
-    cal = be.getUserCalendar(user)
-    be.addCalendarEvent(cal, 2)
+    be.addCalendarEvent(user, 2)
+
+    prod = database.getProduct(1)
+    be.addOrder(user['id'], 1, 5)
     return redirect(url_for('home'))
 
 ###
@@ -111,8 +113,7 @@ def login_user():
     login = request.form.get("login")
     password = request.form.get("pass")
     if (be.validateUser(login, password)):
-        globals.user_logged_in = True
-        user = database.getUserByEmail(login)
+        user = be.getUserRow(user_email=login)
         be.setLoggedUser(user)
         return redirect(url_for('home'))
     else:
@@ -120,8 +121,7 @@ def login_user():
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    globals.user_logged_in = False
-    globals.logged_user = database.unregistered_user
+    be.logoutUser()
     return redirect(url_for('home')) 
 
 @app.route("/register", methods=["POST"])
@@ -136,8 +136,7 @@ def register_user():
         return render_template('/registration.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=-1)
     result = be.newUser(login, password, name, 2 + isFarmer)
     if (result == 0):
-        globals.user_logged_in = True
-        user = database.getUserByEmail(login)
+        user = be.getUserRow(user_email=login)
         be.setLoggedUser(user)
         return redirect(url_for('home'))     # or: after registration page
     else:
@@ -159,10 +158,9 @@ def admin_selected_user_action(id):
         s = id
         error = 1
     else:
-        r = database.removeData(User, id)
+        r = be.removeUser(id)
         if (r != None):
-            print(r)
-            return "Internal error: Unable to remove this account. Please contact website administrator.<br><br>Error:<br>"+r
+            return be.printInternalError(r)
         s = None
         error = 0
     return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
@@ -184,26 +182,30 @@ def admin_user_selected(id):
     else:
         new_role = role
 
-    user = database.getUser(id)
+    user = be.getUserRow(id)
     # TODO: not working ... (wont detect 'no changes done' after Proceed button)
     if (user['name'] == name and user['email'] == email and str(user['role']) == new_role and str(user['birth_date']) == birthday and user['address'] == address and str(user['phone_number']) == phone):
         return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
     
-    database.modifyData(database.User, id, 'name', name)
-    database.modifyData(database.User, id, 'email', email)
-    database.modifyData(database.User, id, 'role', new_role)
-    database.modifyData(database.User, id, 'birth_date', birthday)
-    database.modifyData(database.User, id, 'address', address)
-    database.modifyData(database.User, id, 'phone_number', phone)
+    be.editUserData(id, 'name', name)
+    be.editUserData(id, 'email', email)
+    be.editUserData(id, 'role', new_role)
+    be.editUserData(id, 'birth_date', birthday)
+    be.editUserData(id, 'address', address)
+    be.editUserData(id, 'phone_number', phone)
     return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error)
     
 @app.route("/nav/user/settings/orders", methods=["GET"])
 def user_settings_orders():
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=1, user_orders=be.getUserOrders(be.getLoggedUser()))
+    user = be.getLoggedUser()
+    orders = be.getUserOrders(user)
+    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=1, user_orders=orders)
 
 @app.route("/nav/user/settings/calendar", methods=["GET"])
 def user_settings_calendar():
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=2, user_calendar=be.getUserCalendar(be.getLoggedUser()))
+    user = be.getLoggedUser()
+    cal = be.getUserCalendar(user)
+    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=2, user_calendar=cal)
 
 
 @app.route("/nav/user/settings/account_removal", methods=["GET"])
@@ -229,12 +231,11 @@ def user_settings_edit_save(t):
         if (bday == user['birth_date'] and address == user['address'] and phone == str(user['phone_number'])):
             return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=1)
         
-        database.modifyData(database.User, user['id'], 'birth_date', bday)
-        database.modifyData(database.User, user['id'], 'address', address)
-        database.modifyData(database.User, user['id'], 'phone_number', phone)
+        be.editUserData(user['id'], 'birth_date', bday)
+        be.editUserData(user['id'], 'address', address)
+        be.editUserData(user['id'], 'phone_number', phone)
         return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=0)
     elif (t == 1):
-        print('t=1')
         email = request.form['email']
         password = request.form['password']
         user = be.getLoggedUser()
@@ -245,12 +246,11 @@ def user_settings_edit_save(t):
         if (email == user['email']):
             return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
         
-        database.modifyData(database.User, user['id'], 'email', email)
+        be.editUserData(user['id'], 'email', email)
         if (password == user['password']):
             return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
         return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
     else:
-        print('t=2')
         email = request.form['email']
         password = request.form['password']
         repeat = request.form['passconfirm']
@@ -259,8 +259,8 @@ def user_settings_edit_save(t):
         if (repeat != password):
             return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=2)
         
-        database.modifyData(database.User, user['id'], 'email', email)
-        database.modifyData(database.User, user['id'], 'password', password)
+        be.editUserData(user['id'], 'email', email)
+        be.editUserData(user['id'], 'password', password)
         return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
     
 @app.route("/nav/user/settings/remove", methods=["POST"])
@@ -269,16 +269,10 @@ def user_settings_removeAccount():
     if (password != globals.logged_user['password']):
             return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=3, user_calendar=be.getUserCalendar(be.getLoggedUser()), error=0)
     
-    be.getLoggedUser()
-    removal_id = globals.logged_user['id']
-    removal_data = globals.logged_user
-    r = database.removeData(User, removal_id)
+    r = be.removeUser()
     if (r != None):
-        print(r)
-        return "Internal error: Unable to remove this account. Please contact website administrator.<br><br>Error:<br>"+r
-
-    globals.user_logged_in = False
-    globals.logged_user = database.unregistered_user
+        return be.printInternalError(r)
+    be.logoutUser()
     return redirect(url_for('home')) 
 
 #####
@@ -288,7 +282,6 @@ def user_settings_removeAccount():
 if __name__ == '__main__':
     be.navigationLoadPages()
     be.loadJinjaGlobals()
-    globals.user_logged_in = False
-    globals.logged_user = database.unregistered_user
-    database.create_db()
+    be.logoutUser()
+    be.init()
     app.run(debug=True)

@@ -315,7 +315,7 @@ def addCategory(name):
     return 0
 
 # returns: 0 OK; 1 buyer id invalid; 2 product id invalid; 3 quantity invalid; 4 price invalid
-def addOrder(buyer_id, product_id, quantity, price):
+def addOrder(buyer_id, product_id, quantity, price, date=None, status=None):
     if not isUserID(buyer_id):
         return 1
     if not isProduct(product_id):
@@ -325,7 +325,7 @@ def addOrder(buyer_id, product_id, quantity, price):
     if price < 0:
         return 4
 
-    db.session.add(Order(buyer_id, product_id, quantity, price, None, None))
+    db.session.add(Order(buyer_id, product_id, quantity, price, date, status))
     db.session.commit()
     return 0
 

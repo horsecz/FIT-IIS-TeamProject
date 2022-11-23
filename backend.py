@@ -6,16 +6,26 @@
 import globals
 import database
 import re
+import datetime
 
 db = database
 nav_current_page = globals.nav_current_page
 logged_user = globals.logged_user
 
+###
+#   Functions and variables available in FrontEnd (Jinja2)
+###
+
+# load and init all functions to jinja2
 def loadJinjaGlobals():
     app = globals.app
     app.jinja_env.globals.update(getSelfCollectionLocation=getSelfCollectionLocation)
     app.jinja_env.globals.update(getLoggedUserOrders=getLoggedUserOrders)
     app.jinja_env.globals.update(getLoggedUserSells=getLoggedUserSells)
+    app.jinja_env.globals.update(getUsedCurrency=getUsedCurrency)
+
+def getUsedCurrency():
+    return "ISC"
 
 def getLoggedUserSells():
     list = []
@@ -61,10 +71,72 @@ def getSelfCollectionLocation(event):
         return 2
     return seller['address']
 
-def removeCalendarEvent(calendar, event):
-    calendar.remove(event)
+###
+#   Backend functions
+###
 
-def addCalendarEvent(calendar, product_id):
+# returns user row element in UserSchema format
+# primary searches by USER ID, if specified, EMAIL is used instead
+# if both specified, searches by both and if found, returns first non NoneType value
+def getUserRow(user_id=None, user_email=None):
+    if (user_id == None) and (user_email == None):
+        return None
+
+    if (user_id != None) and (user_email != None):
+        r = database.getUser(user_id)
+        if (r != None):
+            return r
+        else:
+            return database.getUser(user_email)
+    
+    if (user_id != None):
+        return database.getUser(user_id)
+
+    if (user_email != None):
+        return database.getUserByEmail(user_email)
+
+def editUserData(user_id, user_data, value):
+    database.modifyData(database.User, user_id, user_data, value)
+
+# returns None OK; or string of error/exception
+def removeUser(user_id=None):
+    if user_id == None:
+        getLoggedUser()
+        removal_id = globals.logged_user['id']
+        r = database.removeData(database.User, removal_id)
+        return r
+    else:
+        removal_id = user_id
+        r = database.removeData(database.User, removal_id)
+        return r
+
+
+# returns 0 OK; 1 exceeded maximum product quantity
+def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
+    if (date == None):
+        today = datetime.datetime.today()
+        day = today.day
+        month = today.month
+        year = today.year
+        date = str(year) + "-" + str(month) + "-" + str(day)
+
+    prod = database.getProduct(product_id)
+    if (price == None):
+        price = prod['price'] * quantity
+
+    if (prod['quantity'] < quantity):
+        return 1
+
+    database.addOrder(user_id, product_id, quantity, price, date, status)
+    return 0
+
+def removeCalendarEvent(user, event):
+    calendar = user['calendar']
+    calendar.remove(event)
+    database.modifyData(database.User, user['id'], 'calendar', calendar)
+
+def addCalendarEvent(user, product_id):
+    calendar = user['calendar']
     event = []
     prod = database.getProduct(product_id)
     date_f = prod['begin_date']
@@ -73,6 +145,7 @@ def addCalendarEvent(calendar, product_id):
     event.append(date_f)
     event.append(date_t)
     calendar.append(event)
+    database.modifyData(database.User, user['id'], 'calendar', calendar)
 
 def getUserCalendar(user):
     calendar_id_list = user['calendar']
@@ -80,11 +153,11 @@ def getUserCalendar(user):
 
 def getUserOrders(user):
     id = user['id']
-    order_id_list = []
+    order_list = []
     for order_row in database.getOrders():
         if (order_row['buyer'] == id):
-            order_id_list.append(order_row['id'])
-    return order_id_list
+            order_list.append(order_row)
+    return order_list
 
 def isUserModerator(user):
     if (user['role'] == 1):
@@ -141,3 +214,14 @@ def getLoggedUser():
 
 def setLoggedUser(user):
     globals.logged_user = user
+    globals.user_logged_in = True
+
+def logoutUser():
+    globals.user_logged_in = False
+    globals.logged_user = database.unregistered_user
+
+def printInternalError(additional_text):
+    return "Internal error: Unable to remove this account. Please contact website administrator.<br><br>Error:<br>"+additional_text
+
+def init():
+    database.create_db()
