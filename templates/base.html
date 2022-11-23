@@ -197,7 +197,73 @@
             background-color: #333333; /* Green */
             cursor: pointer;
         }
-    </style>
+
+        .profile_navigation_button {
+            background-color: #222;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_navigation_button:hover {
+            background-color: #4C9F50; /* Green */
+            cursor: pointer;
+        }
+
+        .profile_navigation_button:active {
+            background-color: #000000; /* Green */
+        }
+
+        .profile_orders_table_row {
+            padding: 1em;
+        }
+
+        .profile_navigation_button_current {
+            background-color: #4C9F50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_user_data {
+            background: none;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 0px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .profile_user_data:disabled {
+            color:#000000;
+        }
+
+        .profile_user_data_edit {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+    </style>    
 </head>
 <body>
     <ul>
