@@ -17,3 +17,4 @@ user_logged_in = False          #   is user logged in?
 logged_user = None              #   logged user data
 nav_current_page = "index"      #   current opene page for navbar
 nav_pages = []                  #   list of pages in navigation bar
+path = []                       #   current navigation path

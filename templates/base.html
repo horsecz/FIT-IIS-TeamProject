@@ -126,7 +126,12 @@
             background-color: #333333; /* Green */
             cursor: pointer;
         }
-        
+
+        .login_form_button:disabled {
+            cursor: not-allowed;
+            background-color: #666666;
+        }
+
         .register_form {
             border-radius: 10px;
             background-color: #fafafa;
@@ -312,7 +317,83 @@
         .search_bar {
             padding: 10px;
         }
-    </style>
+
+
+        .profile_navigation_button {
+            background-color: #222;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_navigation_button:hover {
+            background-color: #4C9F50; /* Green */
+            cursor: pointer;
+        }
+
+        .profile_navigation_button:active {
+            background-color: #000000; /* Green */
+        }
+
+        .profile_orders_table_row {
+            padding: 1em;
+        }
+
+        .profile_navigation_button_current {
+            background-color: #4C9F50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_user_data {
+            background: none;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 0px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .profile_user_data:disabled {
+            color:#000000;
+        }
+
+        .profile_user_data_edit {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .profile_orders_table_row_action:hover {
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>    
+
 </head>
 <body>
     <ul>
@@ -337,7 +418,7 @@
                     {% else %} 
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                     {% endif %}
-                {% else %}
+                {% elif x[1] == True %}
                     <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar_current" type="button" value="{{ x[2] }}"></a>
                 {% endif %}
             {% endfor %}
@@ -350,6 +431,23 @@
             {% endif %}
             <br>
     </ul>
+    <navpath>
+        <p>
+        Current path: 
+        {% for path_part in translateNavigationPath() %}
+            {% if getCurrentPathArguments() | length() != 0 %}
+                <a style="text-decoration: none;" href="{{ url_for('home') }}"> %TODO%
+            {% else %}
+                <a style="text-decoration: none;" href="{{ url_for(getCurrentNavigationPathURL()) }}">
+            {% endif %}
+            {{ path_part }}
+            </a>
+            {% if loop.index < translateNavigationPath() | length() %}
+                > 
+            {% endif %}
+        {% endfor %}
+        </p>
+    </navpath>
     <br>
     <div class="content">
         {% block content %} {% endblock %}
