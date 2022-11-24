@@ -32,6 +32,66 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(suggestionResultToString=suggestionResultToString)
     app.jinja_env.globals.update(getUserEmail=getUserEmail)
     app.jinja_env.globals.update(checkSuggestionConflicts=checkSuggestionConflicts)
+    app.jinja_env.globals.update(getCurrentNavigationPathURL=getCurrentNavigationPathURL)
+    app.jinja_env.globals.update(translateNavigationPath=translateNavigationPath)
+    app.jinja_env.globals.update(getCurrentPathArguments=getCurrentPathArguments)
+
+def translateNavigationPath():
+    result = []
+    path_url = globals.path[0]
+    if (path_url == "home"):
+        result.append('Home')
+    elif (path_url == 'offers'):
+        result.append('Farmers')
+    elif (path_url == "login"):
+        result.append('Login page')
+    elif (path_url == 'registration'):
+        result.append('Registration')
+    elif (path_url == 'user_customer'):
+        result.append('Farmers')
+    elif (path_url == 'user_farmer'):
+        result.append('My Products')
+    elif (path_url == 'user_settings'):
+        result.append('My Profile')
+    elif (path_url == 'admin_categories'):
+        result.append('Category management')
+    elif (path_url == 'admin_suggestions'):
+        result.append('Category suggestions')
+    elif (path_url == 'admin_users'):
+        result.append('User management')
+
+    elif (path_url == 'admin_user_selected'):
+        result.append('User management')
+        result.append('User ID '+str(globals.path[1][0][1]))
+    elif (path_url == 'user_settings_orders'):
+        result.append('My Profile')
+        result.append('Orders')
+    elif (path_url == 'user_settings_calendar'):
+        result.append('My Profile')
+        result.append('Calendar')
+    elif (path_url == 'user_settings_order'):
+        result.append('My Profile')
+        result.append('Orders')
+        result.append('Order '+ str(globals.path[1][0][1]))
+    elif (path_url == 'user_settings_event'):
+        result.append('My Profile')
+        result.append('Calendar')
+        result.append('Event '+str(globals.path[1][0][1]))
+    elif (path_url == 'user_settings_accountRemoval'):
+        result.append('My Profile')
+        result.append('Account removal')
+    elif (path_url == 'new_order'):
+        result.append('New Order')
+    elif (path_url == 'admin_categories_detail'):
+        result.append('Category management')
+        result.append('Category ID '+str(globals.path[1][0][1]))
+    else:
+        print('Invalid path URL')
+
+    return result
+
+def getCurrentNavigationPathURL():
+    return globals.path[0]
 
 def checkSuggestionConflicts(sugg_id, higher_id):
     sugg = database.getCategorySuggestion(sugg_id)
@@ -145,6 +205,20 @@ def getSelfCollectionLocation(event):
 ###
 #   Backend functions
 ###
+
+def getCurrentPathArguments():
+    return globals.path[1]
+
+def setCurrentPath(url_func_name):
+    globals.path.clear()
+    globals.path.append(url_func_name)
+    globals.path.append([])
+
+def addPathArgument(key, value):
+    curr_args = globals.path[1]
+    new_arg = [key, value]
+    curr_args.append(new_arg)
+    globals.path[1] = curr_args
 
 def removeCategory(category_element):
     database.removeData(database.Category, category_element['id'])
@@ -298,17 +372,39 @@ def isUserAdmin(user):
         return True
     return False
 
+def navigationAddHiddenPage(url, text):
+    navigationAddPage(url, text, True)
+
+def navigationAddPage(url, text, hidden=False):
+    h_transl = False
+    if hidden == True:
+        h_transl = None
+    globals.nav_pages.append([url, h_transl, text])
+
 # loads navigation bar pages
 def navigationLoadPages():
-    globals.nav_pages = [['home', False, 'Home'], 
-    ['offers', False, 'Farmers'], ['user_customer', False, 'Suggestions'], ['user_farmer', False, 'My Products'], 
-    ['admin_suggestions', False, 'Category suggestions'], ['admin_categories', False, 'Category management'], ['admin_users', False, 'User management']]
+    navigationAddPage('home', 'Home')
+    navigationAddPage('offers', 'Farmers')
+    navigationAddPage('user_customer', 'Suggestions')
+    navigationAddPage('user_farmer', 'My Products')
+    navigationAddPage('admin_suggestions', 'Category suggestions')
+    navigationAddPage('admin_categories', 'Category management')
+    navigationAddPage('admin_users', 'User management')
+
+    navigationAddHiddenPage('login', 'Login page')
+    navigationAddHiddenPage('registration', 'Registration')
+    navigationAddHiddenPage('user_settings', 'My profile')
 
 # sets page active in navigation bar
 def navigationSetPageActive(page_name):
     for x in globals.nav_pages:
+        if x[1] == None:
+            if x[0] == page_name:
+                navigationPathReset(x[2], x[0], [])
+            continue
         if x[0] == page_name:
             x[1] = True
+            navigationPathReset(x[2], x[0], [])
         else:
             x[1] = False
 
