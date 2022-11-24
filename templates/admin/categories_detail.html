@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Category {{ category['name']  }} {% endblock %}</h1>
+    <br>
+    <root class="contents" style="display: inline-flexbox;">
+        <div class="register_form box" style="width: 95%;">
+            {% if category['leaf'] == False %}
+            <p><b>Subcategories of {{ category['name'] }}</b></p>
+            {% else %}
+            <p><b>Products in {{ category['name'] }}</b></p>
+            {% endif %}
+
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row" style="width: 25%;"></th>
+                    <th class="profile_orders_table_row" style="width: 100%;"></th>
+                </tr>
+                {% if category['leaf'] == False %}
+                    {% if (subcategories | length()) != 0 %}
+                        {% for cat in subcategories %}
+                        <tr style="cursor: default;" class="profile_orders_table_row_action">
+                            <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
+                            
+                            {% if edit == True and cat['id'] == editID %}
+                                <form method="post" action="{{ url_for('admin_category_edit', type=2, id=editID) }}">
+                                <td class="profile_orders_table_row">
+                                    <input class="login_form_textbox" type="text" name="newname" id="newname" value="{{ cat['name'] }}">
+                                </td>
+                            {% else %}
+                                <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['name'] }}</td>
+                            {% endif %}
+
+                            <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"></td>
+
+                            <td id="buttonsRow" class="profile_orders_table_row">
+                                {% if edit == True and cat['id'] == editID %}
+                                    <input type="button" onclick="cancel({{ category['id'] }})" id="v_cancel" class="login_form_button" style="margin: 0px;" value="Cancel">
+                                {% else %}
+                                    <button onclick="clicked(0, {{ cat['id'] }})" id="v_remove" value="Remove" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Remove</button>
+                                {% endif %}
+                            </td>
+                            <td id="buttonsRow2" class="profile_orders_table_row">
+                                {% if edit == True and cat['id'] == editID %}
+                                    <input type="submit" id="v_edit" class="login_form_button" style="margin: 0px;" value="Save">
+                                {% else %}
+                                    <button onclick="clicked(1, {{ cat['id'] }})" id="v_edit" value="Edit" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Edit</button>
+                                {% endif %}
+                            </td>
+                            {% if edit == True and cat['id'] == editID %}
+                                </form>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr style="cursor: default;" class="profile_orders_table_row_action">
+                            <td class="profile_orders_table_row"><b></b></td>
+                            <td class="profile_orders_table_row"></td>
+                            <td class="profile_orders_table_row">No subcategories</td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    {% if (getCategoryProducts(category['id']) | length() ) != 0 %}
+                        {% for cat in getCategoryProducts(category['id']) %}
+                        <tr style="cursor: default;" class="profile_orders_table_row_action">
+                            <td onclick="productClicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
+                            <td onclick="productClicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['name'] }}</td>
+                            <td onclick="productClicked(2, {{ cat['id'] }})" class="profile_orders_table_row"></td>
+
+                            <td id="buttonsRow" class="profile_orders_table_row">
+                                <button onclick="productClicked(0, {{ cat['id'] }})" id="v_remove" value="Remove" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Remove</button>
+                            </td>
+                            <td id="buttonsRow2" class="profile_orders_table_row">
+                                <button onclick="productClicked(1, {{ cat['id'] }})" id="v_edit" value="Edit" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Edit</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr  style="cursor: default;" class="profile_orders_table_row_action">
+                            <td class="profile_orders_table_row"><b></b></td>
+                            <td class="profile_orders_table_row"></td>
+                            <td class="profile_orders_table_row">No products</td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            </table>
+        </div>
+    </root>
+
+    <script>
+        function clicked(edit, id) {
+            if (edit == 0) {
+                window.location = "category_remove%id="+id;
+            } else if (edit == 1) {
+                window.location = "category_edit%id="+id+"%type=2";
+            } else {
+                window.location = "category_detail%id="+id;
+            }
+        }
+
+        function productClicked(edit, id) {
+            if (edit == 0) {
+                window.location = "product_remove%id="+id;
+            } else if (edit == 1) {
+                window.location = "product_edit%id="+id;
+            } else {
+                window.location = "product%id="+id;
+            }
+        }
+
+        function cancel(id) {
+            window.location = "category_detail%id="+id;
+        }
+    </script>
+
+    <br><br>
+{% endblock %}

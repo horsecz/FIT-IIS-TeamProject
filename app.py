@@ -76,7 +76,7 @@ def admin_categories():
 @app.route("/nav/admin/suggestions", methods=["GET"])
 def admin_suggestions():
     be.navigationSetPageActive('admin_suggestions')
-    suggestions = be.getCategorySuggestions()
+    suggestions = be.getCategorySuggestions(closed=False)
     closed_suggestions = be.getCategorySuggestions(closed=True)
     return render_template('/admin/suggestions.html', cat_suggestions=suggestions, closed_suggestions=closed_suggestions, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
 
@@ -125,6 +125,10 @@ def testFunction():
 
     prod = database.getProduct(1)
     be.addOrder(user['id'], 1, 5)
+
+    database.addCategorySuggestion('Storno', 3, True, 'Je to skvela kategorie, moc ji tu potrebujeme', user['id'])
+    sug = database.getCategorySuggestions()
+    print(str(sug))
     return redirect(url_for('home'))
 
 ###
@@ -372,7 +376,65 @@ def user_settings_calendar_remove(id):
     database.modifyData(database.User, loggedUser['id'], 'calendar', cal)
     return redirect(url_for('user_settings_calendar'))
 
+@app.route("/nav/admin/category_detail%id=<int:id>", methods=["GET"])
+def admin_categories_detail(id):
+    category = database.getCategory(id)
+    subs = be.getSubCategories(category['id'])
+    return render_template('/admin/categories_detail.html', category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+ 
+@app.route("/nav/admin/category_remove%id=<int:id>", methods=["GET"])
+def admin_categories_remove(id):
+    category = database.getCategory(id)
+    higher_id = category['higher_category']
+    be.removeCategory(category)
 
+    higher = database.getCategory(higher_id)
+    root = database.getCategoryByName('root')
+    if (higher['higher_category'] == root['id']):
+        return admin_categories()
+    else:
+        return admin_categories_detail(higher_id)
+
+@app.route("/nav/admin/category_edit%id=<int:id>%type=<int:type>", methods=["GET"])
+def admin_categories_edit(id, type):
+    category = database.getCategory(id)
+    subs = be.getSubCategories(category['id'])
+    fruits = be.getFruits()
+    veggies = be.getVegetables()
+    if (type == 1):
+        return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    else:
+        higher = database.getCategory(category['higher_category'])
+        category = higher
+        subs = be.getSubCategories(category['id'])
+        return render_template('/admin/categories_detail.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    
+
+@app.route("/nav/admin/category_edit_go%type=<int:type>%id=<int:id>", methods=["POST"])
+def admin_category_edit(type, id):
+    category = database.getCategory(id)
+    subs = be.getSubCategories(category['id'])
+    fruits = be.getFruits()
+    veggies = be.getVegetables()
+    newname = request.form['newname']
+    database.modifyData(database.Category, category['id'], 'name', newname)
+    if (type == 1):
+        return redirect(url_for('admin_categories'))
+    else:
+        return redirect(url_for('admin_categories_detail', id=category['higher_category']))
+
+@app.route("/nav/admin/suggestion_approve%id=<int:id>", methods=["GET"])
+def admin_suggestion_approve(id):
+    category = database.getCategorySuggestion(id)
+    database.modifyData(database.CategorySuggestion, id, 'status', 1)
+    database.addCategory(category['name'], category['higher_category'])
+    return admin_suggestions()
+
+@app.route("/nav/admin/suggestion_deny%id=<int:id>", methods=["GET"])
+def admin_suggestion_deny(id):
+    category = database.getCategorySuggestion(id)
+    database.modifyData(database.CategorySuggestion, id, 'status', 2)
+    return admin_suggestions()
 
 ### TODO:
 ### Dont create order immediately but create sub-step 'summary' page and then create order

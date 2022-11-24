@@ -1,59 +1,102 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Category suggestions management {% endblock %}</h1>
+    <h1>{% block title %} Category management {% endblock %}</h1>
     <br>
     <root class="contents" style="display: inline-flexbox;">
         <div class="register_form box" style="width: 95%;">
-            <p><b>New suggestions</b></p>
+            <p><b>Pending suggestions</b></p>
 
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
+                    <th class="profile_orders_table_row">#</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Name</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Will Belong To</th>
+                    <th class="profile_orders_table_row" style="width: 50%;">Description</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Suggester</th>
+                    <th class="profile_orders_table_row" style="width: 10%;"></th>
                     <th class="profile_orders_table_row"></th>
                     <th class="profile_orders_table_row"></th>
-                    <th class="profile_orders_table_row" style="width: 100%;"></th>
                 </tr>
-                {% for cat in cat_suggestions %}
-                <tr class="profile_orders_table_row_action" onclick="">
-                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
-                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
-                    <td class="profile_orders_table_row"></td>
-                    
-                    <td hidden=true class="profile_orders_table_row">
-                        <input id="s_approve{{ loop.index }}" type="button" value="Approve" class="login_form_button" style="margin: 0px;">
-                    </td>
-                    <td hidden=true class="profile_orders_table_row">
-                        <input id="s_deny{{ loop.index }}" type="button" value="Deny" class="login_form_button" style="margin: 0px;">
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+                {% if ( cat_suggestions | length() ) != 0%}
+                    {% for cat in cat_suggestions %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ loop.index }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ cat['name'] }}</b></td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getCategoryName(cat['higher_category']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['description'] }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getUserName(cat['suggester']) }} ({{ getUserEmail(cat['suggester']) }})</td>
+                        <td class="profile_orders_table_row"></td>
+
+                        <td id="buttonsRow" class="profile_orders_table_row">
+                            {% if checkSuggestionConflicts(cat['id'], cat['higher_category']) == None %}
+                                <button onclick="approve({{ cat['id'] }})" id="p_approve" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Approve</button>
+                            {% else %}
+                                <button disabled="true" onclick="approve({{ cat['id'] }})" id="p_approve" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Approve</button>
+                            {% endif %}
+                        </td>
+                        <td id="buttonsRow2" class="profile_orders_table_row">
+                            <button onclick="deny({{ cat['id'] }})" id="p_deny" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Deny</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No pending suggestions</td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                {% endif %}
             </table>
         </div>
 
         <div class="register_form box" style="width: 95%;">
-            <p><b>Closed suggestions</b></p>
+            <p><b>Finished suggestions</b></p>
 
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
-                    <th class="profile_orders_table_row"></th>
-                    <th class="profile_orders_table_row"></th>
-                    <th class="profile_orders_table_row" style="width: 100%;"></th>
+                    <th class="profile_orders_table_row">#</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Name</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Will Belong To</th>
+                    <th class="profile_orders_table_row" style="width: 50%;">Description</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Suggester</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Result</th>
                 </tr>
-                {% for cat in closed_suggestions %}
-                <tr class="profile_orders_table_row_action" onclick="showButtons(loop.index)">
-                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
-                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
-                    <td class="profile_orders_table_row"></td>
-                </tr>
-                {% endfor %}
+                {% if ( closed_suggestions | length() ) != 0%}
+                    {% for cat in closed_suggestions %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ loop.index }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ cat['name'] }}</b></td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getCategoryName(cat['higher_category']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['description'] }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getUserName(cat['suggester']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ suggestionResultToString(cat['status']) }}</td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No suggestion was finished yet</td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                {% endif %}
             </table>
         </div>
     </root>
 
     <script>
-        function showButtons(index) {
-            document.getElementById('buttonsRow').hidden = false;
-            document.getElementById('buttonsRow2'+index).hidden = false;
+        function approve(id) {
+            window.location = "suggestion_approve%id="+id;
+        }
+
+        function deny(id) {
+            window.location = "suggestion_deny%id="+id;
         }
     </script>
 

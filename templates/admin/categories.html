@@ -9,24 +9,52 @@
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
                     <th class="profile_orders_table_row"></th>
-                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row" style="width: 25%;"></th>
                     <th class="profile_orders_table_row" style="width: 100%;"></th>
                 </tr>
-                {% for cat in fruit_categories %}
-                <tr class="profile_orders_table_row_action" onclick="">
-                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
-                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
-                    <td class="profile_orders_table_row"></td>
-                    
-                    <td hidden=true class="profile_orders_table_row">
-                        <input id="f_remove{{ loop.index }}" type="button" value="Remove" class="login_form_button" style="margin: 0px;">
-                    </td>
-                    <td hidden=true class="profile_orders_table_row">
-                        <input id="f_edit{{ loop.index }}" type="button" value="Edit" class="login_form_button" style="margin: 0px;">
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
+                {% if ( fruit_categories | length() ) != 0%}
+                    {% for cat in fruit_categories %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
+
+                        {% if edit == True and cat['id'] == editID %}
+                        <form method="post" action="{{ url_for('admin_category_edit', type=1, id=editID) }}">
+                            <td class="profile_orders_table_row">
+                                <input class="login_form_textbox" type="text" name="newname" id="newname" value="{{ cat['name'] }}">
+                            </td>
+                        {% else %}
+                            <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['name'] }}</td>
+                        {% endif %}
+
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"></td>
+
+                        <td id="buttonsRow" class="profile_orders_table_row">
+                            {% if edit == True and cat['id'] == editID %}
+                                <input type="button" onclick="cancel()" id="v_cancel" class="login_form_button" style="margin: 0px;" value="Cancel">
+                            {% else %}
+                                <button onclick="clicked(0, {{ cat['id'] }})" id="v_remove" value="Remove" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Remove</button>
+                            {% endif %}
+                        </td>
+                        <td id="buttonsRow2" class="profile_orders_table_row">
+                            {% if edit == True and cat['id'] == editID %}
+                                <input type="submit" id="v_edit" class="login_form_button" style="margin: 0px;" value="Save">
+                            {% else %}
+                                <button onclick="clicked(1, {{ cat['id'] }})" id="v_edit" value="Edit" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Edit</button>
+                            {% endif %}
+                        </td>
+
+                        {% if edit == True and cat['id'] == editID %}
+                        </form>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No categories</td>
+                    </tr>
+                {% endif %}
             </table>
         </div>
 
@@ -36,31 +64,69 @@
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
                     <th class="profile_orders_table_row"></th>
-                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row" style="width: 25%;"></th>
                     <th class="profile_orders_table_row" style="width: 100%;"></th>
                 </tr>
-                {% for cat in veggie_categories %}
-                <tr class="profile_orders_table_row_action" onclick="showButtons(loop.index)">
-                    <td class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
-                    <td class="profile_orders_table_row">{{ cat['name'] }}</td>
-                    <td class="profile_orders_table_row"></td>
+                {% if ( veggie_categories | length() ) != 0%}
+                    {% for cat in veggie_categories %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ loop.index }}</b></td>
 
-                    <td id="buttonsRow" hidden=true class="profile_orders_table_row">
-                        <input id="v_remove{{ loop.index }}" type="button" value="Remove" class="login_form_button" style="margin: 0px;">
-                    </td>
-                    <td id="buttonsRow2{{ loop.index }}" hidden=true class="profile_orders_table_row">
-                        <input id="v_edit{{ loop.index }}" type="button" value="Edit" class="login_form_button" style="margin: 0px;">
-                    </td>
-                </tr>
-                {% endfor %}
+                        {% if edit == True and cat['id'] == editID %}
+                        <form method="post" action="{{ url_for('admin_category_edit', type=1, id=editID) }}">
+                            <td class="profile_orders_table_row">
+                                <input class="login_form_textbox" type="text" name="newname" id="newname" value="{{ cat['name'] }}">
+                            </td>
+                        {% else %}
+                            <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['name'] }}</td>
+                        {% endif %}
+
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"></td>
+
+                        <td id="buttonsRow" class="profile_orders_table_row">
+                            {% if edit == True and cat['id'] == editID %}
+                                <input type="button" onclick="cancel()" id="v_cancel" class="login_form_button" style="margin: 0px;" value="Cancel">
+                            {% else %}
+                                <button onclick="clicked(0, {{ cat['id'] }})" id="v_remove" value="Remove" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Remove</button>
+                            {% endif %}
+                        </td>
+                        <td id="buttonsRow2" class="profile_orders_table_row">
+                            {% if edit == True and cat['id'] == editID %}
+                                <input type="submit" id="v_edit" class="login_form_button" style="margin: 0px;" value="Save">
+                            {% else %}
+                                <button onclick="clicked(1, {{ cat['id'] }})" id="v_edit" value="Edit" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Edit</button>
+                            {% endif %}
+                        </td>
+
+                        {% if edit == True and cat['id'] == editID %}
+                        </form>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No categories</td>
+                    </tr>
+                {% endif %}
             </table>
         </div>
     </root>
 
     <script>
-        function showButtons(index) {
-            document.getElementById('buttonsRow').hidden = false;
-            document.getElementById('buttonsRow2'+index).hidden = false;
+        function clicked(edit, id) {
+            if (edit == 0) {
+                window.location = "category_remove%id="+id;
+            } else if (edit == 1) {
+                window.location = "category_edit%id="+id+"%type=1";
+            } else {
+                window.location = "category_detail%id="+id;
+            }
+        }
+
+        function cancel() {
+            window.location = "categories";
         }
     </script>
 

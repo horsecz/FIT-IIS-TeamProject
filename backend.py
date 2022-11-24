@@ -26,6 +26,51 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(orderStatusToString=orderStatusToString)
     app.jinja_env.globals.update(productSellTypeToString=productSellTypeToString)
     app.jinja_env.globals.update(getMaxStringLength=getMaxStringLength)
+    app.jinja_env.globals.update(getCategoryProducts=getCategoryProducts)
+    app.jinja_env.globals.update(getUserName=getUserName)
+    app.jinja_env.globals.update(getCategoryName=getCategoryName)
+    app.jinja_env.globals.update(suggestionResultToString=suggestionResultToString)
+    app.jinja_env.globals.update(getUserEmail=getUserEmail)
+    app.jinja_env.globals.update(checkSuggestionConflicts=checkSuggestionConflicts)
+
+def checkSuggestionConflicts(sugg_id, higher_id):
+    sugg = database.getCategorySuggestion(sugg_id)
+    parent_category = database.getCategory(higher_id)
+    if (sugg['name'] == parent_category['name']):
+        return parent_category
+    else:
+        subcats = getSubCategories(higher_id)
+        for cat in subcats:
+            if (cat['name'] == sugg['name']):
+                return cat
+    return None
+
+def getUserEmail(user_id):
+    u = database.getUser(user_id)
+    return u['email']
+
+def suggestionResultToString(result):
+    if (result == 0):
+        return "Pending"
+    elif (result == 1):
+        return "Approved"
+    else:
+        return "Denied"
+
+def getUserName(user_id):
+    u = database.getUser(user_id)
+    return u['name']
+
+def getCategoryName(category_id):
+    c = database.getCategory(category_id)
+    return c['name']
+
+def getCategoryProducts(category_id):
+    l = []
+    for prod in database.getProducts():
+        if (prod['category'] == category_id):
+            l.append(prod)
+    return l
 
 def getMaxStringLength():
     return database.DB_STRING_LONG_MAX
@@ -101,16 +146,36 @@ def getSelfCollectionLocation(event):
 #   Backend functions
 ###
 
+def removeCategory(category_element):
+    database.removeData(database.Category, category_element['id'])
+
 def getCategorySuggestions(closed=None):
     suggs = database.getCategorySuggestions()
     if (closed == None):
         return suggs
-    else:
+    elif (closed == True):
         closed_suggs = []
         for x in suggs:
             if x['status'] != 0:
                 closed_suggs.append(x)
-        return closed_suggs 
+        return closed_suggs
+    else:
+        open_suggs = []
+        for x in suggs:
+            if x['status'] == 0:
+                open_suggs.append(x)
+        return open_suggs 
+
+# looks for subcategories
+def getSubCategories(category_id):
+    result = []
+    category_element = database.getCategory(category_id)
+    for subcat in database.getCategories():
+        if subcat['higher_category'] == category_element['id']:
+            result.append(subcat)
+
+    print(result)
+    return result
 
 # returns list of all categories under 'Vegetables' category
 def getVegetables():
@@ -130,6 +195,7 @@ def getFruits():
     for cat in database.getCategories():
         if (cat['higher_category'] == fruits_id):
             fruits.append(cat)
+
     return fruits
 
 # returns user row element in UserSchema format
