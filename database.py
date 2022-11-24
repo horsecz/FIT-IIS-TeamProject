@@ -155,13 +155,16 @@ def create_db():
     # add dummy data (dev purposes)
     db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384))
     db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384))
-    db.session.add(User('farmer', 'RGB', '1995-1-1', '7th Street', 'farmer', 2, 905240384))
-    db.session.add(User('farmer2', 'RGB', '1995-1-1', '7th Street', 'farmer2', 2, 905240384))
-    db.session.add(User('farmer3', 'RGB', '1995-1-1', '7th Street', 'farmer3', 2, 905240384))
+    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384))
+    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384))
+    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384))
     db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384))
     db.session.commit()
     
     db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer')['id'], 5, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer')['id'], 2, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20'))
     db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None))
     db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
     db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
@@ -253,6 +256,14 @@ def getUserByEmail(email):
             return x
     return None
 
+def getUsersByRole(role):
+    list = getUsers()
+    result = []
+    for x in list:
+        if x['role'] == role:
+            result.append(x)
+    return result
+
 def getCategory(id):
     list = getCategories()
     for x in list:
@@ -300,6 +311,18 @@ def getCategories():
     categories = Category.query.all()
     category_schema = CategorySchema(many=True)
     return category_schema.dump(categories)
+
+def getSubCategories(id):
+    subCategories = Category.query.filter(Category.higher_category == id ).all()
+    subCategories_schema = CategorySchema(many=True)
+    return subCategories_schema.dump(subCategories)
+
+def getProductsByCategory(id):
+    products = Product.query.filter(Product.category == id).all()
+    if not products:
+        return []
+    products_schema = ProductSchema(many=True)
+    return products_schema.dump(products)
 
 def getOrders():
     orders = Order.query.all()

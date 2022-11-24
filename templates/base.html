@@ -141,19 +141,110 @@
             max-width: 100%;
             justify-content: space-between;
             flex-wrap: wrap;
+            height: 100%;
+            text-align: center;
         }
         
         .home_search {
             border-radius: 10px;
             background-color: #fafafa;
             padding: 35px;
-            width: 10%;
+            width: 40%;
+            height: 80%;
             margin: 0 auto;
-            margin-top: 50px;
-            margin-left: 20px;
-            margin-right: 20px;
+            margin-top: 30px;
             border: 1px solid #999;
             
+        }
+
+        .home_search:hover {
+            background-color: #eaeaea;
+            cursor: pointer;
+        }
+
+        .home_search h1 {
+            text-decoration: none;
+            color: black;
+            position: relative; 
+            text-align: center;
+            top: 40%;
+        }
+
+        .product_list {
+            text-decoration: none;
+            color: black;
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 35px;
+            width: 50%;
+            height: 80%;
+            margin: 0 auto;
+            margin-top: 30px;
+            border: 1px solid #999;
+            text-align: center;
+        }
+
+        .product_list:hover {
+            background-color: #eaeaea;
+            cursor: pointer;
+        }
+
+        .product_page {
+            margin: 10px;
+            text-align: center;
+        }
+
+        .product_page a{
+            text-decoration: none;
+            color: black;
+        }
+
+        .product_page a:hover {
+            border-radius: 10px;
+            background-color: #4C9F50;
+            padding: 2px;
+            border: 1px solid #999;
+        }
+
+        .product_page input[type=submit] {
+            background-color: #fafafa;
+            border: 1px solid #999;
+            color: black;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .farmers table{
+            text-decoration: none;
+            color: black;
+            border-radius: 10px;
+            background-color: #fafafa;
+            width: 50%;
+            height: 80%;
+            margin: 0 auto;
+            margin-top: 30px;
+            border: 1px solid #999;
+            text-align: center;
+        }
+
+        .farmers th{
+            text-size: 1.5em;
+        }
+
+        .farmers td:first-child:hover {
+            background-color: #4CAF50;
+            cursor: pointer;
+        }
+
+        .farmers td {
+            padding: 10px;
+            border-top: 1px solid #999;
+        }
+        
+        .product_page input[type=submit]:hover {
+            background-color: #4CAF50;
         }
         
         .admin_users_form {
@@ -216,7 +307,11 @@
         .admin_users_form_button:hover {
             background-color: #333333; /* Green */
             cursor: pointer;
-        }     
+        }
+        
+        .search_bar {
+            padding: 10px;
+        }
     </style>
 </head>
 <body>
@@ -246,7 +341,7 @@
                     <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar_current" type="button" value="{{ x[2] }}"></a>
                 {% endif %}
             {% endfor %}
-        
+            
             {% if logged == True %}
                 <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
                 <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>

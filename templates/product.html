@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="product_page">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.description }}</p>
+        <p>Seller: <a href="{{ url_for('open_farmer', id=seller['id']) }}">{{ seller['name'] }}</a></p>
+
+        <br></br>
+        {% if product['sell_type'] == 0 %}    
+            <p> Price: {{ product['price'] }}€/kg</p>
+            <p>In Stock: {{ product.quantity }} kg</p>
+        {% else %}
+            <p> Price: {{ product['price'] }}€/piece</p>
+            <p>In Stock: {{ product.quantity }}</p>
+        {% endif %}
+        
+        {% if product['self_harvest'] %}
+            <br></br>
+            <p>Self Harvest:</p>
+            <p>Harvest starts: {{ product['begin_date']}}</p>
+            <p>Harvest ends: {{ product['end_date']}}</p>
+            <br></br>
+            <a href="{{ url_for('add_to_calendar', id=product['id']) }}">
+                <button class="btn btn-primary">Add to Calendar</button>
+            </a>
+        {% else %}
+            <br></br>
+            <form action="{{ url_for('create_order', id=product['id']) }}" method="POST">
+                <label>Quantity:</label><br>
+                <input type="number" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" value="1" placeholder="Quantity">
+                <br></br>
+                <input type="submit" value="Order">
+            </form>
+        {% endif %}
+
+        {% if added %}
+                <p>Added to calendar</p>
+        {% endif %}
+        
+    </div>
+{% endblock %}
