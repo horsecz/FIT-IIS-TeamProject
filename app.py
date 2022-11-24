@@ -91,6 +91,7 @@ def get_user():
     user_schema = UserSchema(many=True)
     return jsonify(user_schema.dump(users))
 
+
 ###
 ### For development purposes only
 ###
@@ -201,8 +202,7 @@ def admin_user_selected(id):
     database.modifyData(database.User, id, 'address', address)
     database.modifyData(database.User, id, 'phone_number', phone)
     return render_template('/admin/users_selected.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error)
-    
-
+  
     
 #####
 ###     INIT AND RUN

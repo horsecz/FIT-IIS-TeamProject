@@ -50,7 +50,7 @@ class Product(db.Model):
     price = db.Column(db.Integer)
     sell_type = db.Column(db.Integer)
     description = db.Column(db.String(DB_STRING_LONG_MAX))
-    self_harvest = db.Column(db.Boolean)
+    self_harvest = db.Column(db.Boolean) 
     begin_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     
@@ -106,6 +106,7 @@ class OrderSchema(ma.Schema):
     class Meta:
         fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
 
+
 # Create database
 def create_db():
     app.app_context().push()
@@ -119,12 +120,61 @@ def create_db():
     db.session.add(Category('Fruit', root['id'], False))
     db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
+    
+    db.session.add(Category('Apple', getCategoryByName('Fruit')['id'], False))
+    db.session.add(Category('Orange', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Tomato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Potato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Cucumber', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Carrot', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Onion', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Garlic', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Lettuce', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Cabbage', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Grapes', getCategoryByName('Fruit')['id'], False))
+    db.session.add(Category('Peach', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Pear', getCategoryByName('Fruit')['id'], True))
+    db.session.commit()
+    
+    db.session.add(Category('Red Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Green Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Yellow Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Red Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Yellow Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Cherry Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Red Potato', getCategoryByName('Potato')['id'], True))
+    db.session.add(Category('White Potato', getCategoryByName('Potato')['id'], True))
+    db.session.add(Category('White Onion', getCategoryByName('Onion')['id'], True))
+    db.session.add(Category('Red Onion', getCategoryByName('Onion')['id'], True))
+    db.session.add(Category('White Cabbage', getCategoryByName('Cabbage')['id'], True))
+    db.session.add(Category('Red Cabbage', getCategoryByName('Cabbage')['id'], True))
+    db.session.add(Category('White Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.add(Category('Red Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.commit()
 
     # add dummy data (dev purposes)
     db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384))
     db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384))
     db.session.add(User('farmer', 'RGB', '1995-1-1', '7th Street', 'farmer', 2, 905240384))
+    db.session.add(User('farmer2', 'RGB', '1995-1-1', '7th Street', 'farmer2', 2, 905240384))
+    db.session.add(User('farmer3', 'RGB', '1995-1-1', '7th Street', 'farmer3', 2, 905240384))
     db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384))
+    db.session.commit()
+    
+    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None))
+    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Franks Yellow Tomato', getCategoryByName('Yellow Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Jims Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Jims Red Potato', getCategoryByName('Red Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
+    db.session.add(Product('Jims White Potato', getCategoryByName('White Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
+    db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
+    db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
+    db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
+    db.session.add(Product('Joes Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
+    db.session.add(Product('Joes Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
+    db.session.add(Product('Joes Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
     db.session.commit()
 
 #

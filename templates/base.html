@@ -64,7 +64,7 @@
             font-size: 18px;
             transition: 0.2s;
         }
-
+        
         .button_topbar_login {
             background-color: #222;
             /*background-color: #4CAF50; /* Green */
@@ -84,7 +84,7 @@
         .button_topbar_login:active {
             background-color: #000000; /* Green */
         }
-
+        
         .login_form {
             border-radius: 10px;
             background-color: #fafafa;
@@ -93,7 +93,7 @@
             margin: 0 auto;
             margin-top: 50px;
         }
-
+        
         .login_form_textbox {
             width: 100%;
             padding: 12px 20px;
@@ -121,12 +121,12 @@
             margin-top: 20px;
             border-radius: 0.2cm;
         }
-
+        
         .login_form_button:hover {
             background-color: #333333; /* Green */
             cursor: pointer;
         }
-
+        
         .register_form {
             border-radius: 10px;
             background-color: #fafafa;
@@ -135,7 +135,27 @@
             margin: 0 auto;
             margin-top: 50px;
         }
-
+        
+        .boxes {
+            display: flex;
+            max-width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .home_search {
+            border-radius: 10px;
+            background-color: #fafafa;
+            padding: 35px;
+            width: 10%;
+            margin: 0 auto;
+            margin-top: 50px;
+            margin-left: 20px;
+            margin-right: 20px;
+            border: 1px solid #999;
+            
+        }
+        
         .admin_users_form {
             border-radius: 10px;
             background-color: #fafafa;
@@ -147,7 +167,7 @@
             margin-right: 50px;
             border: 1px solid #999;
         }
-
+        
         .admin_users_form_nohover {
             border-radius: 10px;
             background-color: #fafafa;
@@ -159,12 +179,12 @@
             margin-right: 50px;
             border: 1px solid #999;
         }
-
+        
         .admin_users_form:hover {
             background-color: #eaeaea;
             cursor: pointer;
         }
-
+        
         .admin_users_form_textbox {
             width: 100%;
             padding: 12px 20px;
@@ -192,11 +212,11 @@
             margin-top: 20px;
             border-radius: 0.2cm;
         }
-
+        
         .admin_users_form_button:hover {
             background-color: #333333; /* Green */
             cursor: pointer;
-        }
+        }     
     </style>
 </head>
 <body>
@@ -226,7 +246,7 @@
                     <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar_current" type="button" value="{{ x[2] }}"></a>
                 {% endif %}
             {% endfor %}
-
+        
             {% if logged == True %}
                 <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
                 <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>
