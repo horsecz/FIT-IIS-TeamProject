@@ -1,12 +1,47 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Home {% endblock %}</h1>
-    <p><b>Development testing zone</b></p>
-    <p><b>Categories:</b></p>
-    {% for x in categories %}
-    <p>{{x['name']}}</p>
-    {% endfor %}
-    <br>
+    <div class="boxes">
+        {% if category['leaf']  %}
+            {% if products == [] %}
+                <h1>There are no products in this category</h1>
+            {% else %}
+                {% for y in products %}
+                        <a class="product_list" href="{{ url_for('product', id=y.id) }}">
+                            <div>
+                                <h3>{{ y['name'] }}</h3>
+                                {% if y['sell_type'] == 0 %}    
+                                    <p> {{ y['price'] }}€/kg</p>
+                                {% else %}
+                                    <p> {{ y['price'] }}€/piece</p>
+                                {% endif %}
+                                {% if y['self_harvest'] %}
+                                    <p>Self harvest</p>
+                                {% else %}
+                                    <p>Harvested by us</p>
+                                {% endif %}
+                            </div>
+                        </a>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% for x in categories %}
+                {% if x['name'] == 'root' %}
+                {% else %}
+                    <a class="home_search" href="{{ url_for('category', id=x['id']) }}">
+                        <div >
+                                <h1>{{ x['name'] }}</h1>
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <br><br>  
+{% endblock %}
+
+
+
+<!--
     <p><b>Products:</b></p>
     {% for x in products %}
         <p>{{x['name']}} (ID {{x['id']}})</p>
@@ -17,17 +52,13 @@
         <p>ID {{x['id']}} (buyer ID {{x['buyer']}}): product ID {{x['product']}} for {{x['price']}} IIS Coins per piece</p>
     {% endfor %}
     <br>
-    <!--
+    
         TESTING ZONE
         - test something in live app by clicking on button & observe the results
-    -->
     <p><b>Test some action</b></p>
     <form method="post" action="{{ url_for('testFunction') }}">
     <label for="catname">Do something</label>
-        <!-- 
-        <input type="text" name="textfield" id="textfield" placeholder="some text" value="{{ request.form['textfield'] }}"> 
-        -->
         <button type="submit" id="greatButton" name="greatButton">do it</button>
     </form>
     <br>
-{% endblock %}
+    -->

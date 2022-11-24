@@ -34,13 +34,13 @@ ProductSchema = database.ProductSchema
 @cross_origin()
 def home():
     be.setCurrentPath(home.__name__)
-    return render_template('/index.html', categories=database.getCategories(), products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    return render_template('/index.html', categories=database.getSubCategories(1), category=None, products=database.getProducts(), orders=database.getOrders(), logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories())
 
 @app.route("/nav/offers", methods=["GET"])
 def offers():
     be.setCurrentPath(offers.__name__)
-    return render_template('/offers.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
-
+    return render_template('/offers.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, farmers=database.getUsersByRole(2))
+    
 @app.route("/nav/login", methods=["GET"])
 def login():
     be.setCurrentPath(login.__name__)
@@ -94,6 +94,7 @@ def get_user():
     users = User.query.all()
     user_schema = UserSchema(many=True)
     return jsonify(user_schema.dump(users))
+
 
 ###
 ### For development purposes only
@@ -207,7 +208,45 @@ def admin_user_selected(id):
     be.editUserData(id, 'address', address)
     be.editUserData(id, 'phone_number', phone)
     return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error)
+  
+#renders home page with all subcategories of selected category
+@app.route("/home/<string:id>", methods=["GET"])
+def category(id):
+    cat = database.getCategory(int(id))
+    is_leaf = cat['leaf']
+    if is_leaf:
+        return render_template('/index.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id))
+    else:
+        return render_template('/index.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(id))
     
+@app.route("/product/<int:id>", methods=["GET"])
+def product(id):
+    return render_template('/product.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']))
+
+@app.route("/product/<int:id>", methods=["POST"])
+def add_to_calendar(id):
+    return render_template('/product.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']))
+
+@app.route("/product/<int:id>", methods=["POST"])
+def create_order(id):
+    return render_template('/product.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']))
+
+@app.route("/farmer/<int:id>", methods=["GET"])
+def open_farmer(id):
+    return render_template('/user/farmer.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, farmer=database.getUser(id))
+
+# @app.route("/home/name", methods=["GET"])
+# def search():
+#     name = request.form['q']
+#     cat = database.getCategoryByName(name)
+#     if cat:
+#         if cat['leaf']:
+#             return render_template('/index.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id))
+#         else:
+#             return render_template('/index.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(id))
+#     else:
+#         return render_template('/index.html', logged=user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=None)
+  
 @app.route("/nav/user/settings/orders", methods=["GET"])
 def user_settings_orders():
     be.setCurrentPath(user_settings_orders.__name__)
@@ -455,6 +494,7 @@ def new_order_go():
     be.addOrder(buyer, product, quantity)
     print('order created!')
     return redirect(url_for('home'))
+
 #####
 ###     INIT AND RUN
 #####

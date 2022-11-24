@@ -54,7 +54,7 @@ class Product(db.Model):
     price = db.Column(db.Integer)
     sell_type = db.Column(db.Integer)
     description = db.Column(db.String(DB_STRING_LONG_MAX))
-    self_harvest = db.Column(db.Boolean)
+    self_harvest = db.Column(db.Boolean) 
     begin_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     
@@ -163,11 +163,44 @@ def create_db():
     db.session.add(Category('Fruits', root['id'], False))
     db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
+    
+    db.session.add(Category('Apple', getCategoryByName('Fruit')['id'], False))
+    db.session.add(Category('Orange', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Tomato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Potato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Cucumber', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Carrot', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Onion', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Garlic', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Lettuce', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Cabbage', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Grapes', getCategoryByName('Fruit')['id'], False))
+    db.session.add(Category('Peach', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Pear', getCategoryByName('Fruit')['id'], True))
+    db.session.commit()
+    
+    db.session.add(Category('Red Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Green Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Yellow Apple', getCategoryByName('Apple')['id'], True))
+    db.session.add(Category('Red Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Yellow Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Cherry Tomato', getCategoryByName('Tomato')['id'], True))
+    db.session.add(Category('Red Potato', getCategoryByName('Potato')['id'], True))
+    db.session.add(Category('White Potato', getCategoryByName('Potato')['id'], True))
+    db.session.add(Category('White Onion', getCategoryByName('Onion')['id'], True))
+    db.session.add(Category('Red Onion', getCategoryByName('Onion')['id'], True))
+    db.session.add(Category('White Cabbage', getCategoryByName('Cabbage')['id'], True))
+    db.session.add(Category('Red Cabbage', getCategoryByName('Cabbage')['id'], True))
+    db.session.add(Category('White Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.add(Category('Red Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.commit()
 
     # add template users for show
     db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, []))
     db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, []))
-    db.session.add(User('farmer', 'RGB', '1995-1-1', '7th Street', 'farmer', 2, 905240384, []))
+    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384))
+    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384))
+    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384))
     db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, []))
     db.session.commit()
 
@@ -185,6 +218,25 @@ def create_db():
     db.session.add(Product('Tomato', norm_toms['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None))
     db.session.add(Product('Blue Tomato', norm_toms['id'], 100, user['id'], 500, 0, 'the great blue tomato from 8428713 dimension', None, None, None))
     db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
+    db.session.commit()
+    
+    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer')['id'], 5, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer')['id'], 2, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20'))
+    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None))
+    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Franks Yellow Tomato', getCategoryByName('Yellow Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Jims Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best tomato ever", False, None, None))
+    db.session.add(Product('Jims Red Potato', getCategoryByName('Red Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
+    db.session.add(Product('Jims White Potato', getCategoryByName('White Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
+    db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
+    db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
+    db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
+    db.session.add(Product('Joes Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
+    db.session.add(Product('Joes Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
+    db.session.add(Product('Joes Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
     db.session.commit()
 
 #
@@ -263,6 +315,14 @@ def getUserByEmail(email):
             return x
     return None
 
+def getUsersByRole(role):
+    list = getUsers()
+    result = []
+    for x in list:
+        if x['role'] == role:
+            result.append(x)
+    return result
+
 def getCategory(id):
     list = getCategories()
     for x in list:
@@ -317,6 +377,18 @@ def getCategories():
     categories = Category.query.all()
     category_schema = CategorySchema(many=True)
     return category_schema.dump(categories)
+
+def getSubCategories(id):
+    subCategories = Category.query.filter(Category.higher_category == id ).all()
+    subCategories_schema = CategorySchema(many=True)
+    return subCategories_schema.dump(subCategories)
+
+def getProductsByCategory(id):
+    products = Product.query.filter(Product.category == id).all()
+    if not products:
+        return []
+    products_schema = ProductSchema(many=True)
+    return products_schema.dump(products)
 
 def getOrders():
     orders = Order.query.all()
