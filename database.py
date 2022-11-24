@@ -164,8 +164,8 @@ def create_db():
     db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
     
-    db.session.add(Category('Apple', getCategoryByName('Fruit')['id'], False))
-    db.session.add(Category('Orange', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Apple', getCategoryByName('Fruits')['id'], False))
+    db.session.add(Category('Orange', getCategoryByName('Fruits')['id'], True))
     db.session.add(Category('Tomato', getCategoryByName('Vegetables')['id'], False))
     db.session.add(Category('Potato', getCategoryByName('Vegetables')['id'], False))
     db.session.add(Category('Cucumber', getCategoryByName('Vegetables')['id'], True))
@@ -174,9 +174,9 @@ def create_db():
     db.session.add(Category('Garlic', getCategoryByName('Vegetables')['id'], True))
     db.session.add(Category('Lettuce', getCategoryByName('Vegetables')['id'], True))
     db.session.add(Category('Cabbage', getCategoryByName('Vegetables')['id'], False))
-    db.session.add(Category('Grapes', getCategoryByName('Fruit')['id'], False))
-    db.session.add(Category('Peach', getCategoryByName('Fruit')['id'], True))
-    db.session.add(Category('Pear', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Grapes', getCategoryByName('Fruits')['id'], False))
+    db.session.add(Category('Peach', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Pear', getCategoryByName('Fruits')['id'], True))
     db.session.commit()
     
     db.session.add(Category('Red Apple', getCategoryByName('Apple')['id'], True))
@@ -198,9 +198,9 @@ def create_db():
     # add template users for show
     db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, []))
     db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, []))
-    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384))
-    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384))
-    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384))
+    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384, []))
+    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384, []))
+    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384, []))
     db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, []))
     db.session.commit()
 
