@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Editing category {{ category['name'] }} {% endblock %}</h1>
+    <br>
+    <root class="contents" style="display: inline-flexbox;">
+
+        <div class="register_form box" style="width: 95%;">
+
+        </div>
+    </root>
+
+    <script>
+        function clicked(edit, id) {
+            if (edit == 0) {
+                window.location = "category_remove%id="+id;
+            } else if (edit == 1) {
+                window.location = "category_edit%id="+id;
+            } else {
+                window.location = "category_detail%id="+id;
+            }
+        }
+    </script>
+
+    <br><br>
+{% endblock %}

@@ -146,7 +146,7 @@
         <div class="register_form" style="width: auto;">
             {% if user_orders | length() == 0 %}
                 <p style="text-align: center;">You have no orders yet! Create a new one by ordering some of available products.</p>
-                <input class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Order a product">
+                <input class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Browse products">
             {% else %}
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
@@ -156,30 +156,24 @@
                     <th class="profile_orders_table_row">Status</th>
                 </tr>
                 {% for order in user_orders %}
-                <tr>
+                <tr class="profile_orders_table_row_action" onclick="openOrder({{ order['id']}})">
                     <td class="profile_orders_table_row"><b>{{ order['id'] }}</b></td>
                     <td class="profile_orders_table_row">{{ order['date'] }}</td>
                     <td class="profile_orders_table_row">{{ order['price'] }} {{ getUsedCurrency() }}</td>
-                    <td class="profile_orders_table_row">
-                    {% if order['status'] == 0 %}
-                        Completed
-                    {% elif order['status'] == 1 %}
-                        Processing
-                    {% elif order['status'] == 2 %}
-                        In Complaint
-                    {% elif order['status'] == 3 %}
-                        Returned
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                    </td>
+                    <td class="profile_orders_table_row">{{ orderStatusToString(order['status']) }}</td>
                 </tr>
                 {% endfor %}
             </table>
+
+            <script>
+                function openOrder(order_id) {
+                    window.location = "order/"+order_id;
+                }
+            </script>
             {% endif %}
         </div>
         {% elif page == 2 %}
-            <div class="register_form">
+            <div class="register_form" style="width: auto;">
             {% if user_calendar | length() == 0 %}
                 <p style="text-align: center;">No calendar events found. Did you know, that you can add self collection event here, while you are going through our products?</p>
                 <input class="login_form_button" type="button" id="new_event_btn" name="new_event_btn" value="Browse products">
@@ -192,7 +186,7 @@
                         <th class="profile_orders_table_row">Location</th>
                     </tr>
                     {% for sc in user_calendar %}
-                    <tr>
+                    <tr class="profile_orders_table_row_action" onclick="openEvent({{ loop.index }})">
                         <td class="profile_orders_table_row">{{ loop.index }}</td>
                         <td class="profile_orders_table_row">{{ sc[1] }}</td>
                         <td class="profile_orders_table_row">{{ sc[2] }}</td>
@@ -201,6 +195,11 @@
                     {% endfor %}
                 </table>
             {% endif %}
+            <script>
+                function openEvent(event_index) {
+                    window.location = "calendar/"+ (event_index-1);
+                }
+            </script>
             </div>
         {% else %}
             <div class="register_form">

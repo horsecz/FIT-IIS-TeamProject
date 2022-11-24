@@ -126,6 +126,10 @@
             background-color: #333333; /* Green */
             cursor: pointer;
         }
+        .login_form_button:disabled {
+            cursor: not-allowed;
+            background-color: #666666;
+        }
 
         .register_form {
             border-radius: 10px;
@@ -263,6 +267,14 @@
             box-sizing: border-box;
         }
 
+        .profile_orders_table_row_action:hover {
+            background: #ddd;
+            cursor: pointer;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
     </style>    
 </head>
 <body>
@@ -288,7 +300,7 @@
                     {% else %} 
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                     {% endif %}
-                {% else %}
+                {% elif x[1] == True %}
                     <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar_current" type="button" value="{{ x[2] }}"></a>
                 {% endif %}
             {% endfor %}
@@ -301,6 +313,23 @@
             {% endif %}
             <br>
     </ul>
+    <navpath>
+        <p>
+        Current path: 
+        {% for path_part in translateNavigationPath() %}
+            {% if getCurrentPathArguments() | length() != 0 %}
+                <a style="text-decoration: none;" href="{{ url_for('home') }}"> %TODO%
+            {% else %}
+                <a style="text-decoration: none;" href="{{ url_for(getCurrentNavigationPathURL()) }}">
+            {% endif %}
+            {{ path_part }}
+            </a>
+            {% if loop.index < translateNavigationPath() | length() %}
+                > 
+            {% endif %}
+        {% endfor %}
+        </p>
+    </navpath>
     <br>
     <div class="content">
         {% block content %} {% endblock %}

@@ -1,10 +1,104 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
-    <hr>
-    <p><b>This page is not completed</b></p>
-    <form method="get" action="{{ url_for('home') }}">
-        <button type="submit" id="user_btn" name="user_btn">leave</button>
-    </form>
+    <h1>{% block title %} Category management {% endblock %}</h1>
+    <br>
+    <root class="contents" style="display: inline-flexbox;">
+        <div class="register_form box" style="width: 95%;">
+            <p><b>Pending suggestions</b></p>
+
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row">#</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Name</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Will Belong To</th>
+                    <th class="profile_orders_table_row" style="width: 50%;">Description</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Suggester</th>
+                    <th class="profile_orders_table_row" style="width: 10%;"></th>
+                    <th class="profile_orders_table_row"></th>
+                    <th class="profile_orders_table_row"></th>
+                </tr>
+                {% if ( cat_suggestions | length() ) != 0%}
+                    {% for cat in cat_suggestions %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ loop.index }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ cat['name'] }}</b></td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getCategoryName(cat['higher_category']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['description'] }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getUserName(cat['suggester']) }} ({{ getUserEmail(cat['suggester']) }})</td>
+                        <td class="profile_orders_table_row"></td>
+
+                        <td id="buttonsRow" class="profile_orders_table_row">
+                            {% if checkSuggestionConflicts(cat['id'], cat['higher_category']) == None %}
+                                <button onclick="approve({{ cat['id'] }})" id="p_approve" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Approve</button>
+                            {% else %}
+                                <button disabled="true" onclick="approve({{ cat['id'] }})" id="p_approve" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Approve</button>
+                            {% endif %}
+                        </td>
+                        <td id="buttonsRow2" class="profile_orders_table_row">
+                            <button onclick="deny({{ cat['id'] }})" id="p_deny" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Deny</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No pending suggestions</td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        <div class="register_form box" style="width: 95%;">
+            <p><b>Finished suggestions</b></p>
+
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row">#</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Name</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Will Belong To</th>
+                    <th class="profile_orders_table_row" style="width: 50%;">Description</th>
+                    <th class="profile_orders_table_row" style="width: 15%;">Suggester</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Result</th>
+                </tr>
+                {% if ( closed_suggestions | length() ) != 0%}
+                    {% for cat in closed_suggestions %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ loop.index }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row"><b>{{ cat['name'] }}</b></td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getCategoryName(cat['higher_category']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ cat['description'] }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ getUserName(cat['suggester']) }}</td>
+                        <td onclick="clicked(2, {{ cat['id'] }})" class="profile_orders_table_row">{{ suggestionResultToString(cat['status']) }}</td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"><b></b></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">No suggestion was finished yet</td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </root>
+
+    <script>
+        function approve(id) {
+            window.location = "suggestion_approve%id="+id;
+        }
+
+        function deny(id) {
+            window.location = "suggestion_deny%id="+id;
+        }
+    </script>
+
     <br><br>
 {% endblock %}

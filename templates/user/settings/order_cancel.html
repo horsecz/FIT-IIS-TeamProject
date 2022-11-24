@@ -1,0 +1,25 @@
+{% extends 'user/settings/order.html' %}
+{% block order_content %}
+    <p style="text-align: center; font-weight: bold;">Cancelling this order</p>
+    <br><br>
+    <p>It is important for us and the seller to know why are you cancelling this order. Please choose one of the following options, why do you wanna cancel this order:</p>
+
+    <form method="post" action="{{ url_for('user_settings_order_cancel_go', id=order['id']) }}">
+        <select class="login_form_textbox" id="cancel_select" name="cancel_select">
+            <option value="0">I have ordered this by mistake</option>
+            <option value="1">I'm not interested in this item anymore</option>
+            <option value="2">Other reason (please describe)</option>
+        </select>
+        <textarea style="resize:none; height: 100px;" class="login_form_textbox" id="cancel_desc" name="cancel_desc" placeholder="Description" maxlength="{{ getMaxStringLength() }}"></textarea>
+        <br><br>
+        
+        <button type="submit" style="float:inline-start;" class="login_form_button" id="cancel_button" name="cancel_button" value="0">Cancel order</button>
+        <input onclick="orderDefault()" style="float:inline-end;" type="button" class="login_form_button" id="cancel_cancel" name="cancel_cancel" value="Close">
+        <br><br><br>
+    </form>
+<script>
+    function orderDefault() {
+        window.location = "{{ url_for('user_settings_order', id=order['id']) }}";
+    }
+</script>
+{% endblock %}

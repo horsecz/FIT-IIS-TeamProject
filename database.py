@@ -9,6 +9,7 @@ from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import PickleType
 
 import globals
+import backend
 
 app = globals.app
 db = SQLAlchemy(app)
@@ -126,6 +127,29 @@ class CalendarRowSchema(ma.Schema):
     class Meta:
         fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
 
+class CategorySuggestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(DB_STRING_SHORT_MAX))
+    higher_category = db.Column(db.Integer, db.ForeignKey('category.id'))
+    leaf = db.Column(db.Boolean)
+    description = db.Column(db.String(DB_STRING_LONG_MAX))
+    status = db.Column(db.Integer)
+    suggester = db.Column(db.Integer, db.ForeignKey('user.id'))
+    approver = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+    def __init__(self, name, higher_category, leaf, description, status, suggester, approver):
+        self.name = name
+        self.higher_category = higher_category
+        self.leaf = leaf
+        self.description = description
+        self.status = status
+        self.suggester = suggester
+        self.approver = approver
+
+class CategorySuggestionSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'name', 'higher_category', 'leaf', 'description', 'status', 'suggester', 'approver')
+
 # Create database
 def create_db():
     app.app_context().push()
@@ -136,7 +160,7 @@ def create_db():
     db.session.add(Category('root', None, False))
     root = getCategoryByName('root')
     
-    db.session.add(Category('Fruit', root['id'], False))
+    db.session.add(Category('Fruits', root['id'], False))
     db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
 
@@ -149,9 +173,18 @@ def create_db():
 
     # dummy data
     veggies = getCategoryByName('Vegetables')
+    db.session.add(Category('Tomatoes', veggies['id'], False))
+    toms = getCategoryByName('Tomatoes')
+    db.session.add(Category('Pickles', veggies['id'], True))
+    picks = getCategoryByName('Pickles')
+
+    db.session.add(Category('Normal Tomatoes', toms['id'], True))
+    norm_toms = getCategoryByName('Normal Tomatoes')
+
     user = getUserByEmail('farmer')
-    db.session.add(Product('Tomato', veggies['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None))
-    db.session.add(Product('Pickle', veggies['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
+    db.session.add(Product('Tomato', norm_toms['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None))
+    db.session.add(Product('Blue Tomato', norm_toms['id'], 100, user['id'], 500, 0, 'the great blue tomato from 8428713 dimension', None, None, None))
+    db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
     db.session.commit()
 
 #
@@ -265,6 +298,13 @@ def getProductByName(name, category_id, seller_id):
             return x
     return None
 
+def getCategorySuggestion(id):
+    list = getCategorySuggestions()
+    for x in list:
+        if x['id'] == id:
+            return x
+    return None
+
 #
 # Get everything
 # returns: list of <<x>> (See: XSchema)
@@ -288,6 +328,10 @@ def getProducts():
     products_schema = ProductSchema(many=True)
     return products_schema.dump(products)
 
+def getCategorySuggestions():
+    suggestions = CategorySuggestion.query.all()
+    suggestions_schema = CategorySuggestionSchema(many=True)
+    return suggestions_schema.dump(suggestions)
 
 #
 ##  Adders
@@ -305,12 +349,12 @@ def addUser(email, name, password, role):
     return 0
 
 # returns: 0 OK; 1 too long name; 2 category exists  
-def addCategory(name):
+def addCategory(name, higher_category=None, leaf=False):
     if len(name) > DB_STRING_SHORT_MAX:
         return 1
     if isCategoryName(name):
         return 2
-    db.session.add(Category(name, None, False))
+    db.session.add(Category(name, higher_category, leaf))
     db.session.commit()
     return 0
 
@@ -340,6 +384,17 @@ def addProduct(name, category, seller, price):
 
     db.session.add(Product(name, category, None, seller, price, None, None, None, None, None))
     db.session.commit()
+    return 0   
+
+# returns: 0 OK; 1 too long string; 2 invalid higher category (ID);
+def addCategorySuggestion(category_name, higher_category, leaf, description, suggester_id):
+    if len(category_name) > DB_STRING_SHORT_MAX:
+        return 1
+    if not isCategoryID(higher_category):
+        return 2
+
+    db.session.add(CategorySuggestion(category_name, higher_category, leaf, description, 0, suggester_id, None))
+    db.session.commit()
     return 0    
 
 #
@@ -350,6 +405,18 @@ def addProduct(name, category, seller, price):
 # returns: None when ok; Description (exception) string on error
 def removeData(Class, element_ID):
     removal = db.session.get(Class, element_ID)
+    if (Class == Category):
+        # check for subcategories
+        sub = backend.getSubCategories(element_ID)
+        if (len(sub) != 0):
+            for subcat in sub:
+                removeData(Category, subcat['id'])
+        
+        # if no subcategories, check for products
+        prods = backend.getCategoryProducts(element_ID)
+        if (len(prods) != 0):
+            for product in prods:
+                removeData(Product, product['id'])
     try:
         db.session.delete(removal)
         db.session.commit()
