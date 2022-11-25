@@ -6,20 +6,20 @@
         <form method="post" action="{{ url_for('register_user') }}">
             <p style="text-align: center;">Fill this form to complete registration.</p>
             <br><br>
-            <label for="login" style="font-weight: bold;">E-mail</label>
-            <input type="text" class="login_form_textbox" name="login" id="login" placeholder="yourname@email.com" value="{{ request.form['login'] }}">
+            <label required for="login" style="font-weight: bold;">E-mail</label>
+            <input required type="text" class="login_form_textbox" name="login" id="login" placeholder="yourname@email.com" value="{{ request.form['login'] }}">
             <br>
-            <label for="pass" style="font-weight: bold;">Password</label>
-            <input type="password" class="login_form_textbox" name="pass" id="pass" placeholder="" value="{{ request.form['pass'] }}">
+            <label required for="pass" style="font-weight: bold;">Password</label>
+            <input required type="password" class="login_form_textbox" name="pass" id="pass" placeholder="" value="{{ request.form['pass'] }}">
             <br>
-            <label for="pass" style="font-weight: bold;">Repeat password</label>
-            <input type="password" class="login_form_textbox" name="pass_repeat" id="pass_repeat" placeholder="" value="{{ request.form['pass_repeat'] }}">
+            <label required for="pass" style="font-weight: bold;">Repeat password</label>
+            <input required type="password" class="login_form_textbox" name="pass_repeat" id="pass_repeat" placeholder="" value="{{ request.form['pass_repeat'] }}">
             <br>
             <label for="name" style="font-weight: bold;">Your name</label>
             <input type="text" class="login_form_textbox" name="name" id="name" placeholder="Jake Paul" value="{{ request.form['name'] }}">
             <br>
-            <label for="role" style="font-weight: bold;">User role</label>
-            <select name="role" class="login_form_textbox" id="role" value="{{ request.form['role'] }}">
+            <label required for="role" style="font-weight: bold;">User role</label>
+            <select required name="role" class="login_form_textbox" id="role" value="{{ request.form['role'] }}">
                 <option value=0>Customer</option>
                 <option value=1>Farmer</option>
             </select>
