@@ -197,28 +197,92 @@
             background-color: #333333; /* Green */
             cursor: pointer;
         }
-    </style>
+
+        .profile_navigation_button {
+            background-color: #222;
+            /*background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_navigation_button:hover {
+            background-color: #4C9F50; /* Green */
+            cursor: pointer;
+        }
+
+        .profile_navigation_button:active {
+            background-color: #000000; /* Green */
+        }
+
+        .profile_orders_table_row {
+            padding: 1em;
+        }
+
+        .profile_navigation_button_current {
+            background-color: #4C9F50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: solid;
+            display: block;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .profile_user_data {
+            background: none;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 0px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .profile_user_data:disabled {
+            color:#000000;
+        }
+
+        .profile_user_data_edit {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            margin-bottom: 25px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+    </style>    
 </head>
 <body>
     <ul>
             {% for x in nav_pages %}
                 {% if x[1] == False %}
                     {% if x[0] == 'admin_categories' or x[0] == 'admin_suggestions' %}
-                        {% if user['role'] >= 1 %} 
+                        {% if user['role'] <= 1 %} 
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                         {% endif %}
                     {% elif x[0] == 'admin_users' %} 
-                        {% if user['role'] == 2 %}
+                        {% if user['role'] == 0 %}
                             <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
                         {% endif %}
                     {% elif x[0] == 'user_farmer' or x[0] == 'user_customer' %}
-                        {% if user['role'] >= 0 %}
-                            {% if user['is_farmer'] != 0 %}
+                        {% if user['role'] <= 2 %}
+                            <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
+                        {% else %}
+                            {% if x[0] == 'user_customer' and user['role'] == 3 %}
                                 <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
-                            {% else %}
-                                {% if x[0] == 'user_customer' %}
-                                    <a class="page_select" style="float:left;" href="{{ url_for(x[0]) }}"><input class="button_topbar" type="button" value="{{ x[2] }}"></a>
-                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% else %} 
@@ -230,10 +294,10 @@
             {% endfor %}
 
             {% if logged == True %}
-                <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Odhlásit se"></a>
-                <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="{{ user['name'] }}"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>
             {% else %}
-                <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Přihlásit se"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Log in"></a>
             {% endif %}
             <br>
     </ul>

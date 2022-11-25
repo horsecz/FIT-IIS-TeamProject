@@ -5,6 +5,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask import request
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import PickleType
 
 import globals
 
@@ -14,7 +16,6 @@ ma = Marshmallow(app)
 
 DB_STRING_SHORT_MAX = 150       # maximum characters for short strings  (name, e-mail, password)
 DB_STRING_LONG_MAX = 500        # maximum characters for long strings   (address, description)
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(DB_STRING_SHORT_MAX))
@@ -24,9 +25,9 @@ class User(db.Model):
     password = db.Column(db.String(DB_STRING_SHORT_MAX))
     role = db.Column(db.Integer)
     phone_number = db.Column(db.Integer)
-    is_farmer = db.Column(db.Integer)
-    
-    def __init__(self, email, name, birth_date, address, password, role, phone_number, is_farmer):
+    calendar = db.Column(MutableList.as_mutable(PickleType), default=[])
+
+    def __init__(self, email, name, birth_date, address, password, role, phone_number, calendar):
         self.email = email
         self.name = name
         self.birth_date = birth_date
@@ -34,13 +35,13 @@ class User(db.Model):
         self.password = password
         self.role = role
         self.phone_number = phone_number
-        self.is_farmer = is_farmer
+        self.calendar = calendar
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'is_farmer')
+        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'calendar')
 
-unregistered_user = User(None, None, None, None, None, -1, None, None)
+unregistered_user = User(None, None, None, None, None, 4, None, None)
         
 
 class Product(db.Model):
@@ -108,6 +109,23 @@ class OrderSchema(ma.Schema):
     class Meta:
         fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
 
+class CalendarRow(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    quantity = db.Column(db.Integer)
+    
+    def __init__(self, buyer, product, quantity, price, date, status):
+        self.buyer = buyer
+        self.product = product
+        self.quantity = quantity
+        self.price = price
+        self.date = date
+        self.status = status
+
+class CalendarRowSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
+
 # Create database
 def create_db():
     app.app_context().push()
@@ -116,13 +134,24 @@ def create_db():
 
     # create root category
     db.session.add(Category('root', None, False))
+    root = getCategoryByName('root')
+    
+    db.session.add(Category('Fruit', root['id'], False))
+    db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
 
-    # add dummy data (dev purposes)
-    db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 2, 905240384, 0))
-    db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, 0))
-    db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 0, 905240384, 0))
-    db.session.add(Category('root', None, False))
+    # add template users for show
+    db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, []))
+    db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, []))
+    db.session.add(User('farmer', 'RGB', '1995-1-1', '7th Street', 'farmer', 2, 905240384, []))
+    db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, []))
+    db.session.commit()
+
+    # dummy data
+    veggies = getCategoryByName('Vegetables')
+    user = getUserByEmail('farmer')
+    db.session.add(Product('Tomato', veggies['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None))
+    db.session.add(Product('Pickle', veggies['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
     db.session.commit()
 
 #
@@ -173,10 +202,10 @@ def isProduct(id):
             return True
     return False
 
-def isSellingProduct(name, category_id, seller_id):
+def isSellingProduct(product_id, seller_id):
     list = getProducts()
     for x in list:
-        if x['name'] == name and x['category'] == category_id and x['seller'] == seller_id:
+        if x['id'] == product_id and x['seller'] == seller_id:
             return True
     return False
 
@@ -266,12 +295,12 @@ def getProducts():
 
 # returns: 0 OK; 1 too long string; 2 user exists
 # TODO: co je povinny udaj a co ne ? [pripsat sem jako parametr]
-def addUser(email, name, password, role, isFarmer):
+def addUser(email, name, password, role):
     if len(name) > DB_STRING_SHORT_MAX or len(password) > DB_STRING_SHORT_MAX:
         return 1
     if isUserEmail(email):
         return 2
-    db.session.add(User(email, name, None, None, password, role, None, isFarmer))
+    db.session.add(User(email, name, None, None, password, role, None, []))
     db.session.commit()
     return 0
 
@@ -286,7 +315,7 @@ def addCategory(name):
     return 0
 
 # returns: 0 OK; 1 buyer id invalid; 2 product id invalid; 3 quantity invalid; 4 price invalid
-def addOrder(buyer_id, product_id, quantity, price):
+def addOrder(buyer_id, product_id, quantity, price, date=None, status=None):
     if not isUserID(buyer_id):
         return 1
     if not isProduct(product_id):
@@ -296,7 +325,7 @@ def addOrder(buyer_id, product_id, quantity, price):
     if price < 0:
         return 4
 
-    db.session.add(Order(buyer_id, product_id, quantity, price, None, None))
+    db.session.add(Order(buyer_id, product_id, quantity, price, date, status))
     db.session.commit()
     return 0
 
