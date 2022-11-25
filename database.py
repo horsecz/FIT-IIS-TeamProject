@@ -446,7 +446,7 @@ def getUsers():
     users_schema = UserSchema(many=True)
     return users_schema.dump(users)
 
-def getCategories(no_root):
+def getCategories(no_root=True):
     if not no_root:
         categories = Category.query.all()
     else:

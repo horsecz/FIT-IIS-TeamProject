@@ -83,7 +83,7 @@ def user_customer():
 def user_farmer():
     be.setCurrentPath(user_farmer.__name__)
     be.navigationSetPageActive('user_farmer')
-    return render_template('/user/farmer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
     
 
 @app.route("/nav/user/settings", methods=["GET"])
