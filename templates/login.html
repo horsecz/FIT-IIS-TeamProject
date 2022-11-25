@@ -6,10 +6,10 @@
         <form method="post" action="{{ url_for('login_user') }}">
             <p style="text-align: center;">In order to log in, you need to enter your e-mail and password.</p>
             <br><br>
-            <label for="login"><b>E-mail</b></label>
-            <input class="login_form_textbox" type="text" name="login" id="login" placeholder="Your e-mail" value="{{ request.form['login'] }}">
+            <label for="login required"><b>E-mail</b></label>
+            <input required class="login_form_textbox" type="text" name="login" id="login" placeholder="Your e-mail" value="{{ request.form['login'] }}">
             <label for="pass"><b>Password</b></label>
-            <input class="login_form_textbox" type="password" name="pass" id="pass" placeholder="Your password" value="{{ request.form['pass'] }}">
+            <input required class="login_form_textbox" type="password" name="pass" id="pass" placeholder="Your password" value="{{ request.form['pass'] }}">
             {% if error == True %}
                 <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Invalid e-mail or password!</p>
             {% endif %}

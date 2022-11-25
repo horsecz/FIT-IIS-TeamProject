@@ -51,7 +51,7 @@
                 <br><br>
             
                 <label for="calendar_more">Do you wanna see more events or products from this seller?</label>
-                <input onclick="window.location=#" type="button" class="login_form_button" name="calendar_more" id="calendar_more" value="Show products">
+                <input onclick="showFarmer()" type="button" class="login_form_button" name="calendar_more" id="calendar_more" value="Show products">
                 <br><br>
             {% else %}
                 {% block calendar_content %} {% endblock %}
@@ -62,6 +62,9 @@
     <script>
         function eventRemove(index) {
             window.location = "remove_q%id="+index;
+        }
+        function showFarmer() {
+            window.location.href = "{{ url_for('open_farmer', id=product['seller']) }}";
         }
     </script>
     <br><br>

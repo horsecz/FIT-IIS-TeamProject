@@ -24,16 +24,26 @@
                 <form method="post" action="{{ url_for('user_settings_edit_save', t=0) }}">
             {% endif %}
             <label for="birthday"><b>Birthday</b></label>
-            <input class="profile_user_data" type="text" name="birthday" id="birthday" value="{{ user['birth_date'] }}">
+            <input class="profile_user_data" type="text" name="birthday" id="birthday" value="{{ getUserBirthdate(user) }}">
             <label for="address"><b>Address</b></label>
-            <input class="profile_user_data" type="text" name="address" id="address" value="{{ user['address'] }}">
+            <input class="profile_user_data" type="text" name="address" id="address" value="{{ getUserAddress(user) }}">
             <label for="phone"><b>Phone number</b></label>
-            <input class="profile_user_data" type="text" name="phone" id="phone" value="{{ user['phone_number'] }}">
+            <input class="profile_user_data" type="text" name="phone" id="phone" value="{{ getUserPhoneNumber(user) }}">
+            <label for="name"><b>Your Name</b></label>
+            <input class="profile_user_data" type="text" name="name" id="name" value="{{ user['name'] }}">
             {% if saved == true and editType == 0 %}
                 {% if error == 0 %}
                     <p style="text-align:center; font-weight: bold; color:green;">Data saved successfully.</p>
-                {% elif error == 1 %}
+                {% elif error == -1 %}
                     <p style="text-align:center; font-weight: bold; color:grey;">No changes were made.</p>
+                {% elif error == 10  %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Invalid name format.</p>
+                {% elif error == 11  %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Invalid address format.</p>
+                {% elif error == 12  %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Invalid date format.</p>
+                {% elif error == 13  %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Invalid phone number format.</p>
                 {% endif %}
             {% endif %}
             {% if edit == true and editType == 0 %}
@@ -52,10 +62,12 @@
                 document.getElementById('birthday').disabled = true;
                 document.getElementById('address').disabled = true;
                 document.getElementById('phone').disabled = true;
+                document.getElementById('name').disabled = true;
             } else {
                 document.getElementById('birthday').className = "profile_user_data_edit";
                 document.getElementById('address').className = "profile_user_data_edit";
                 document.getElementById('phone').className = "profile_user_data_edit";
+                document.getElementById('name').className = "profile_user_data_edit";
             }
         </script>
 
@@ -82,16 +94,22 @@
                 <input class="profile_user_data" type="text" name="password" id="password" value="*****">
             {% endif %}
             {% if edit == true and editType == 1 and confirmPass == false %}
-                <label for="password"><b>Repeat password</b></label>
-                <input class="profile_user_data_edit" type="text" name="passconfirm" id="passconfirm" value="" placeholder="Repeat new password">
+                <label required for="password"><b>Repeat password</b></label>
+                <input required class="profile_user_data_edit" type="text" name="passconfirm" id="passconfirm" value="" placeholder="Repeat new password">
             {% endif %}
             {% if saved == true and editType == 1 %}
                 {% if error == 0 %}
                     <p style="text-align:center; font-weight: bold; color:green;">Data saved successfully.</p>
-                {% elif error == 1 %}
+                {% elif error == -1 %}
                     <p style="text-align:center; font-weight: bold; color:grey;">No changes were made.</p>
-                {% elif error == 2 %}
+                    {% elif error == -2 %}
                     <p style="text-align:center; font-weight: bold; color:darkred;">Passwords does not match!</p>
+                    {% elif error == 14 %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">Wrong format of e-mail address!</p>
+                    {% elif error == 150 %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">New password is too short!</p>
+                    {% elif error == 151 %}
+                    <p style="text-align:center; font-weight: bold; color:darkred;">New password is too long!</p>
                 {% endif %}
             {% endif %}
             {% if edit == true and editType == 1 %}
@@ -146,7 +164,7 @@
         <div class="register_form" style="width: auto;">
             {% if user_orders | length() == 0 %}
                 <p style="text-align: center;">You have no orders yet! Create a new one by ordering some of available products.</p>
-                <input class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Browse products">
+                <input onclick="browseProducts()" class="login_form_button" type="button" id="new_order_btn" name="new_order_btn" value="Browse products">
             {% else %}
             <table style="margin: 5px; padding: 5px; display: block;">
                 <tr>
@@ -176,7 +194,7 @@
             <div class="register_form" style="width: auto;">
             {% if user_calendar | length() == 0 %}
                 <p style="text-align: center;">No calendar events found. Did you know, that you can add self collection event here, while you are going through our products?</p>
-                <input class="login_form_button" type="button" id="new_event_btn" name="new_event_btn" value="Browse products">
+                <input onclick="browseProducts()" class="login_form_button" type="button" id="new_event_btn" name="new_event_btn" value="Browse products">
             {% else %}
                 <table style="margin: 5px; padding: 5px;">
                     <tr>
@@ -219,6 +237,12 @@
                 </form>
             </div>
         {% endif %}
+
+        <script>
+            function browseProducts() {
+                window.location.href = "{{ url_for('home') }}";
+            }
+        </script>
     </root>
     <br><br>
 {% endblock %}

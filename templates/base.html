@@ -392,6 +392,19 @@
         html {
             scroll-behavior: smooth;
         }
+
+        
+
+        input[required], select[required] {
+            border: 1px solid #bbb;
+        }
+
+        label[required]::after{
+            content:" *";
+            color: red;
+        }
+
+
     </style>    
 
 </head>
@@ -447,6 +460,7 @@
             {% endif %}
         {% endfor %}
         </p>
+        <a href="{{ url_for('testFunction') }}">TEST</a>
     </navpath>
     <br>
     <div class="content">

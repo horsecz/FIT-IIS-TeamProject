@@ -53,7 +53,7 @@
             <br><br>
     
             <label for="order_more">Do you wanna order more products from this seller?</label>
-            <input onclick="window.location=#" type="button" class="login_form_button" name="order_more" id="order_more" value="Show products">
+            <input onclick="showFarmer()" type="button" class="login_form_button" name="order_more" id="order_more" value="Show products">
             <br><br>
             
             <label for="order_repeat">What about that you will order this item(s) once again?</label>
@@ -68,7 +68,10 @@
             window.location = "cancel%id="+order_id;
         }
         function orderRepeat(order_id) {
-            window.location = "{{ url_for('new_order', id=order['id'], isRepeat=1) }}";
+            window.location = "{{ url_for('new_order', id=order['id'], isRepeat=1, quantity=0) }}";
+        }
+        function showFarmer() {
+            window.location.href = "{{ url_for('open_farmer', id=product['seller']) }}";
         }
     </script>
     </root>

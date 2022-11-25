@@ -2,11 +2,11 @@
 #   module:     database.py   
 #   Database module
 ###
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from flask import request
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import PickleType
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
 import globals
 import backend
@@ -14,9 +14,60 @@ import backend
 app = globals.app
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+db_init_done = True
 
 DB_STRING_SHORT_MAX = 150       # maximum characters for short strings  (name, e-mail, password)
 DB_STRING_LONG_MAX = 500        # maximum characters for long strings   (address, description)
+DB_INT_MAX = 2147483647         # C integer max, same for our database
+DB_INT_MIN = -2147483648        # C integer min, same for our db
+
+# Init
+def init_db():
+    global db
+    global ma
+    global db_init_done
+    if db_init_done == True:
+        return
+    else:
+        db_init_done = True
+    db = SQLAlchemy(app)
+    ma = Marshmallow(app)
+
+init_db()
+
+class FlaskUser():
+    id = 0
+    email = ""
+    logged = False
+
+    def __init__(self, id, email):
+        self.id = id
+        self.email = email
+        self.logged = False
+
+    def is_authenticated(self):
+        return self.logged
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        if (self.email == None):
+            return True
+        else:
+            return False
+
+    def get_id(self):
+        return str(self.id) 
+
+    def new_user(self, user_id, user_email):
+        self.id = user_id
+        self.email = user_email
+
+    def set_logged(self, isLogged):
+        self.logged = isLogged
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(DB_STRING_SHORT_MAX))
