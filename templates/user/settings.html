@@ -156,9 +156,14 @@
             <label for="sells_stat"><b>Accepted orders</b></label>
             <input disabled=true class="profile_user_data" type="text" name="sells_stat" id="sells_stat" value="{{ getLoggedUserSells() | length() }}">
             <label for="account_remove"><b>Remove your account</b></label>
-            <a style="text-decoration: none;" href="{{ url_for('user_settings_accountRemoval') }}">
-            <button class="login_form_button" type="text" name="account_remove" id="account_remove" value=0>Remove account</button>
-            </a>
+
+            {% if user['role'] != 0 %}
+                <a style="text-decoration: none;" href="{{ url_for('user_settings_accountRemoval') }}">
+                <button class="login_form_button" type="text" name="account_remove" id="account_remove" value=0>Remove account</button>
+                </a>
+            {% else %}
+                <button disabled class="login_form_button" type="text" name="account_remove" id="account_remove" value=0>Remove account</button>
+            {% endif %}
         </div>
         {% elif page == 1 %}
         <div class="register_form" style="width: auto;">
