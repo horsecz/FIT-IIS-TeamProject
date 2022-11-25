@@ -1,10 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
+    <h1>{% block title %} {{farmer.name}} {% endblock %}</h1>
+    <div style="text-align: center;">
+        <p>Farmer Address: {{farmer.address}}</p>
+        <p>Farmer Phone: {{farmer.phone_number}}</p>
+        <p>Farmer Email: {{farmer.email}}</p>
+    </div>
     <hr>
-    <p><b>This page is not completed</b></p>
-    <form method="get" action="{{ url_for('home') }}">
-        <button type="submit" id="user_btn" name="user_btn">leave</button>
-    </form>
-    <br><br>
+    <div class="boxes">
+        {% if products == [] %}
+            <h1>This farmer has no products yet</h1>
+        {% else %}
+            {% for y in products %}
+                    <a class="product_list farmer" href="{{ url_for('product', id=y.id) }}">
+                        <div>
+                            <h3>{{ y['name'] }}</h3>
+                            {% if y['sell_type'] == 0 %}    
+                                <p> {{ y['price'] }}€/kg</p>
+                            {% else %}
+                                <p> {{ y['price'] }}€/piece</p>
+                            {% endif %}
+                            {% if y['self_harvest'] %}
+                                <p>Self harvest</p>
+                            {% else %}
+                                <p>Harvested by us</p>
+                            {% endif %}
+                        </div>
+                    </a>
+            {% endfor %}
+        {% endif %}
+    </div>
 {% endblock %}

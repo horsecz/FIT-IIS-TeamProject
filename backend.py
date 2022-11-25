@@ -399,12 +399,12 @@ def navigationLoadPages():
 def navigationSetPageActive(page_name):
     for x in globals.nav_pages:
         if x[1] == None:
-            if x[0] == page_name:
-                navigationPathReset(x[2], x[0], [])
+            #if x[0] == page_name:
+                #navigationPathReset(x[2], x[0], [])
             continue
         if x[0] == page_name:
             x[1] = True
-            navigationPathReset(x[2], x[0], [])
+            #navigationPathReset(x[2], x[0], [])
         else:
             x[1] = False
 

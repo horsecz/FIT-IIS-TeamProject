@@ -221,8 +221,8 @@ def create_db():
     db.session.commit()
     
     db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
-    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer')['id'], 5, 1, "Best apple ever", False, None, None))
-    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer')['id'], 2, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer2')['id'], 5, 1, "Best apple ever", False, None, None))
+    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer3')['id'], 2, 1, "Best apple ever", False, None, None))
     db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20'))
     db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None))
     db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
@@ -234,9 +234,9 @@ def create_db():
     db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
     db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
     db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
-    db.session.add(Product('Joes Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
-    db.session.add(Product('Joes Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
-    db.session.add(Product('Joes Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
+    db.session.add(Product('Joes Red Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
+    db.session.add(Product('Joes White Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
+    db.session.add(Product('Joes Red Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
     db.session.commit()
 
 #
@@ -324,16 +324,16 @@ def getUsersByRole(role):
     return result
 
 def getCategory(id):
-    list = getCategories()
+    list = getCategories(False)
     for x in list:
         if x['id'] == id:
             return x
     return None
 
 def getCategoryByName(name):
-    list = getCategories()
+    list = getCategories(False)
     for x in list:
-        if x['name'] == name:
+        if x['name'].lower() == name.lower():
             return x
     return None
 
@@ -358,12 +358,34 @@ def getProductByName(name, category_id, seller_id):
             return x
     return None
 
+def getProductByNameOnly(name):
+    list = getProducts()
+    for x in list:
+        if x['name'] == name:
+            return x
+    return None
+
+def getProductsBySeller(seller_id):
+    list = getProducts()
+    result = []
+    for x in list:
+        if x['seller'] == seller_id:
+            result.append(x)
+    return result
+
 def getCategorySuggestion(id):
     list = getCategorySuggestions()
     for x in list:
         if x['id'] == id:
             return x
     return None
+
+def getCategoryNames():
+    list = getCategories(True)
+    result = []
+    for x in list:
+        result.append(x['name'])
+    return result
 
 #
 # Get everything
@@ -373,8 +395,11 @@ def getUsers():
     users_schema = UserSchema(many=True)
     return users_schema.dump(users)
 
-def getCategories():
-    categories = Category.query.all()
+def getCategories(no_root):
+    if not no_root:
+        categories = Category.query.all()
+    else:
+        categories = Category.query.filter(Category.id != '1').all()
     category_schema = CategorySchema(many=True)
     return category_schema.dump(categories)
 
