@@ -407,7 +407,15 @@
         .sub-nav navpath p{
             margin: 0;
         }
+        
+        input[required], select[required] {
+            border: 1px solid #bbb;
+        }
 
+        label[required]::after{
+            content:" *";
+            color: red;
+        }
     </style>    
 
 </head>

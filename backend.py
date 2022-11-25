@@ -35,6 +35,30 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(getCurrentNavigationPathURL=getCurrentNavigationPathURL)
     app.jinja_env.globals.update(translateNavigationPath=translateNavigationPath)
     app.jinja_env.globals.update(getCurrentPathArguments=getCurrentPathArguments)
+    app.jinja_env.globals.update(getUserBirthdate=getUserBirthdate)
+    app.jinja_env.globals.update(getUserAddress=getUserAddress)
+    app.jinja_env.globals.update(getUserPhoneNumber=getUserPhoneNumber)
+
+def getUserPhoneNumber(user_element):
+    data = user_element['phone_number']
+    if data == None:
+        return ""
+    else:
+        return data
+
+def getUserAddress(user_element):
+    data = user_element['address']
+    if data == None:
+        return ""
+    else:
+        return data
+
+def getUserBirthdate(user_element):
+    data = user_element['birth_date']
+    if data == None:
+        return ""
+    else:
+        return data
 
 def translateNavigationPath():
     result = []
@@ -86,7 +110,7 @@ def translateNavigationPath():
         result.append('Category management')
         result.append('Category ID '+str(globals.path[1][0][1]))
     else:
-        print('Invalid path URL')
+        result = []
 
     return result
 
@@ -206,6 +230,73 @@ def getSelfCollectionLocation(event):
 #   Backend functions
 ###
 
+#
+#   String check functions
+#   validates string, always returns 0 if OK
+
+# 10 invalid format
+def isName(string):
+    if not (re.search("^[A-z ]+$", string)):
+        return 10
+    return 0
+
+# 11 invalid format
+def isAddress(string):
+    if not (re.search("^[A-z0-9 .]+$", string)):
+        return 11
+    return 0
+
+# 12 invalid format
+def isDate(string):
+    if not (re.search("^[0-9 \-]+$", string)):
+        return 12
+    return 0
+
+# 13 invalid format
+def isPhoneNumber(string):
+    if not (re.search("^[0-9 \+]+$", string)):
+        return 13
+    try:
+        x = int(string)
+    except:
+        return 13
+    if (x > database.DB_INT_MAX or x < database.DB_INT_MIN):
+        return 13
+    return 0
+
+# 14 invalid format
+def isEmail(string):
+    if not (re.search("[A-z0-9.]+@[A-z0-9]+([.][A-z0-9])+", string)):
+        return 14
+    return 0
+
+# 150 too short, 151 too long
+def isPassword(string):
+    if len(string) < 5:
+        return 150
+    if len(string) > database.DB_STRING_SHORT_MAX:
+        return 151
+    return 0
+
+# 160 empty string; 161 NaN; 162 zero-negative number; 163 too great number; 
+def isQuantity(string):
+    if (len(string) < 1):
+        return 160
+    try:
+        x = int(string)
+    except:
+        return 161
+    if (x <= 0):
+        return 162
+    if (x > database.DB_INT_MAX):
+        return 163
+
+    return 0
+
+#
+#   Current path functions
+#
+
 def getCurrentPathArguments():
     return globals.path[1]
 
@@ -219,6 +310,10 @@ def addPathArgument(key, value):
     new_arg = [key, value]
     curr_args.append(new_arg)
     globals.path[1] = curr_args
+
+#
+#   Categories
+#
 
 def removeCategory(category_element):
     database.removeData(database.Category, category_element['id'])
@@ -248,7 +343,6 @@ def getSubCategories(category_id):
         if subcat['higher_category'] == category_element['id']:
             result.append(subcat)
 
-    print(result)
     return result
 
 # returns list of all categories under 'Vegetables' category
@@ -271,6 +365,16 @@ def getFruits():
             fruits.append(cat)
 
     return fruits
+
+#
+#   Users
+#
+
+def isUserLogged(user_id):
+    for logged_id in globals.logged_users:
+        if logged_id['id'] == user_id:
+            return True
+    return False
 
 # returns user row element in UserSchema format
 # primary searches by USER ID, if specified, EMAIL is used instead
@@ -307,6 +411,82 @@ def removeUser(user_id=None):
         r = database.removeData(database.User, removal_id)
         return r
 
+# returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
+def newUser(login, password, name, role):
+    if (database.getUserByEmail(login) != None):
+        return 1
+    if (isPassword(password)):
+        return 2
+    if (isName(name) != 0):
+        return 3
+    if isEmail(login) != 0:
+        return 4
+    if (len(name) < 1):
+        name = "User"
+    database.addUser(login, name, password, role)
+    return 0
+
+def validateUser(login, password):
+    user = database.getUserByEmail(login)
+    if (user != None and user['password'] == password):
+        return True
+    return False
+
+def getLoggedUser():
+    if (globals.logged_user == None or globals.user_logged_in == False):
+        return database.unregistered_user
+    user_id = globals.logged_user['id']
+    new_user = database.getUser(user_id)
+    globals.logged_user = new_user
+    return globals.logged_user
+
+def getFlaskUser(user_id):
+    if (len(globals.logged_users) == 0):
+        loadUsers()
+    for x in globals.logged_users:
+        if (x.id == user_id):
+            return x
+    return None
+
+def setLoggedUser(user):
+    globals.logged_user = user
+    globals.user_logged_in = True
+
+    selectedUser = getFlaskUser(user['id'])
+    selectedUser.logged = True
+
+def logoutUser(user=None):
+    globals.user_logged_in = False
+    globals.logged_user = database.unregistered_user
+    if user != None:
+        selectedUser = getFlaskUser(user['id'])
+        selectedUser.logged = False
+
+def getUserOrders(user):
+    id = user['id']
+    order_list = []
+    for order_row in database.getOrders():
+        if (order_row['buyer'] == id):
+            order_list.append(order_row)
+    return order_list
+
+def getUserCalendar(user):
+    calendar_id_list = user['calendar']
+    return calendar_id_list
+
+def isUserModerator(user):
+    if (user['role'] == 1):
+        return True
+    return False
+
+def isUserAdmin(user):
+    if (user['role'] == 0):
+        return True
+    return False
+
+#
+#   Orders
+#
 
 # returns 0 OK; 1 exceeded maximum product quantity
 def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
@@ -330,6 +510,10 @@ def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
     database.addOrder(user_id, product_id, quantity, price, date, status)
     return 0
 
+#
+#   Calendar (events, self collections)
+#
+
 def removeCalendarEvent(user, event):
     calendar = user['calendar']
     calendar.remove(event)
@@ -350,27 +534,9 @@ def addCalendarEvent(user, product_id):
 def getCalendarEvent(calendar, index):
     return calendar[index]
 
-def getUserCalendar(user):
-    calendar_id_list = user['calendar']
-    return calendar_id_list
-
-def getUserOrders(user):
-    id = user['id']
-    order_list = []
-    for order_row in database.getOrders():
-        if (order_row['buyer'] == id):
-            order_list.append(order_row)
-    return order_list
-
-def isUserModerator(user):
-    if (user['role'] == 1):
-        return True
-    return False
-
-def isUserAdmin(user):
-    if (user['role'] == 0):
-        return True
-    return False
+#
+#   Navigation bar
+#
 
 def navigationAddHiddenPage(url, text):
     navigationAddPage(url, text, True)
@@ -399,54 +565,31 @@ def navigationLoadPages():
 def navigationSetPageActive(page_name):
     for x in globals.nav_pages:
         if x[1] == None:
-            #if x[0] == page_name:
-                #navigationPathReset(x[2], x[0], [])
             continue
         if x[0] == page_name:
             x[1] = True
-            #navigationPathReset(x[2], x[0], [])
         else:
             x[1] = False
 
-# returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
-def newUser(login, password, name, role):
-    if (database.getUserByEmail(login) != None):
-        return 1
-    if (len(password) < 5 or len(password) > database.DB_STRING_SHORT_MAX):
-        return 2
-    if (len(name) > database.DB_STRING_SHORT_MAX):
-        return 3
-    if not (re.search("[A-z0-9.]+@[A-z0-9]+([.][A-z0-9])+", login)):
-        return 4
-    if (len(name) < 1):
-        name = "User"
-    database.addUser(login, name, password, role)
-    return 0
+def navigationGetPageActive():
+    for x in globals.nav_pages:
+        if (x[1] == True):
+            return x[0]
+    return None
 
-def validateUser(login, password):
-    user = database.getUserByEmail(login)
-    if (user != None and user['password'] == password):
-        return True
-    return False
-
-def getLoggedUser():
-    if (globals.logged_user == None or globals.user_logged_in == False):
-        return database.unregistered_user
-    user_id = globals.logged_user['id']
-    new_user = database.getUser(user_id)
-    globals.logged_user = new_user
-    return globals.logged_user
-
-def setLoggedUser(user):
-    globals.logged_user = user
-    globals.user_logged_in = True
-
-def logoutUser():
-    globals.user_logged_in = False
-    globals.logged_user = database.unregistered_user
+#
+#   Other
+#
 
 def printInternalError(additional_text):
     return "Internal error: Unable to remove this account. Please contact website administrator.<br><br>Error:<br>"+additional_text
+
+def loadUsers():
+    db_users = database.getUsers()
+    globals.logged_users.clear()
+    for u in db_users:
+        fu = database.FlaskUser(u['id'], u['email'])
+        globals.logged_users.append(fu)
 
 def init():
     database.create_db()

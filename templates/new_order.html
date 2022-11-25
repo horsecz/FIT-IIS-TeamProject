@@ -34,11 +34,32 @@
             {% if order != None %}
                 <input class="login_form_textbox" type="text" name="quantity" id="quantity" value="{{ oldQuantity }}" >
             {% else %}
-                <input class="login_form_textbox" type="text" name="quantity" id="quantity" value="" >
+                <input disabled=true class="profile_user_data" type="text" name="quantity" id="quantity" value="{{ quantity }}" >
             {% endif %}
 
-            {% if error == True %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Error!</p>
+            <label for="price"><b>
+                {% if order != None %}
+                    Price per quantity
+                {% else %}
+                    Total price
+                {% endif %}
+            </b></label>
+
+            {% if order != None %}
+                <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ product['price'] }} {{ getUsedCurrency() }}" >
+            {% else %}
+                <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ quantity * prodct['price'] }} {{ getUsedCurrency() }}" >
+            {% endif %}
+
+            {% if order != None %}
+                <label for="av_quantity"><b>Available quantity</b></label>
+                <input disabled=true class="profile_user_data" type="text" name="av_quantity" id="av_quantity" value="{{ product['quantity'] }}" >
+            {% endif %}
+
+            {% if errorCode >= 160 and errorCode <= 163 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Invalid quantity!</p>
+            {% elif errorCode == 164 %}
+                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Quantity exceeds available amount of product!</p>
             {% endif %}
             <centerize style="display: inline-flexbox;">
                 <button style="float:inline-start;" class="login_form_button" type="submit" id="user_btn" name="user_btn">Create new order</button>

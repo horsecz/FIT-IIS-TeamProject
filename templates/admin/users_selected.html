@@ -13,6 +13,12 @@
             {% else %}
                 <input class="login_form_textbox" type="text" name="email" id="email" value="{{ selectedUser['email'] }}">
             {% endif %}
+            <label for="password"><b>Password</b></label>
+            {% if user['id'] == selectedUser['id'] %}
+                <input disabled=true class="login_form_textbox" type="text" name="password" id="password" value="{{ selectedUser['password'] }}">
+            {% else %}
+                <input class="login_form_textbox" type="text" name="password" id="password" value="{{ selectedUser['password'] }}">
+            {% endif %}
             <label for="role"><b>User role</b></label>
             {% if (selectedUser['role'] >= 2) %}
                 <select name="role" class="login_form_textbox" id="role">
@@ -64,8 +70,22 @@
             No changes done.
         {% elif error == 0 %}
             Changes were successful.
+        {% elif error == 10 %}
+            Invalid name.
+        {% elif error == 11 %}
+            Invalid address.
+        {% elif error == 12 %}
+            Invalid date.
+        {% elif error == 13 %}
+            Invalid phone number.
+        {% elif error == 14 %}
+            Invalid e-mail address. 
+        {% elif error == 150 %}
+            Too short password.
+        {% elif error == 151 %}
+            Too long password.
         {% else %}
-            Error.
+            Unspecified error.
         {% endif %}
     </div>
     </root>
