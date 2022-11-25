@@ -38,6 +38,11 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(getUserBirthdate=getUserBirthdate)
     app.jinja_env.globals.update(getUserAddress=getUserAddress)
     app.jinja_env.globals.update(getUserPhoneNumber=getUserPhoneNumber)
+    app.jinja_env.globals.update(getProductReviews=getProductReviews)
+
+def getProductReviews(product_id):
+    return database.getReviewsOfProduct(product_id)
+
 
 def getUserPhoneNumber(user_element):
     data = user_element['phone_number']
@@ -167,13 +172,15 @@ def productSellTypeToString(sell_type):
     elif sell_type == 2:
         return "in 1 g"
     else:
-        return "Unknown"
+        return "Unknown sell type "+str(sell_type)
 
 def orderStatusToString(order_status):
     if order_status == 0:
         return "Completed"
     elif order_status == 1:
         return "Processing"
+    elif order_status == 2:
+        return "Reviewed"
     elif order_status == -1:
         return "Cancelled"
     else:

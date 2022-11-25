@@ -5,6 +5,24 @@
         <p>{{ product.description }}</p>
         <p>Seller: <a href="{{ url_for('open_farmer', id=seller['id']) }}">{{ seller['name'] }}</a></p>
 
+        <br><br>
+
+        <p>Reviews: </p>
+        {% if getProductReviews(product['id']) | length() == 0 %}
+            <p>Nobody reviewed this product yet. Be first and order this product!</p>
+        {% endif %}
+        
+        {% for x in getProductReviews(product['id']) %}
+            <p style="font-weight: bold;">Review from: {{ getUserName(x['reviewer_id']) }}</p>
+            <p>Satisfaction:
+                {% for i in range(0, x['evaluation']) %}
+                    *
+                {% endfor %}
+            </p>
+            <p>{{ x['text'] }}</p>
+            <br>
+        {% endfor %}
+
         <br></br>
         {% if product['sell_type'] == 0 %}    
             <p> Price: {{ product['price'] }}€/kg</p>
@@ -20,22 +38,29 @@
             <p>Harvest starts: {{ product['begin_date']}}</p>
             <p>Harvest ends: {{ product['end_date']}}</p>
             <br></br>
-            <a href="{{ url_for('add_to_calendar', id=product['id']) }}">
+            {% if logged == True %}
+            <a href="{{ url_for('new_event', id=product['id']) }}">
                 <button class="btn btn-primary">Add to Calendar</button>
             </a>
+            {% else %}
+                <p style="color: darkred; font-weight: bold;">Registered users can add this event to their calendar.</p>
+            {% endif %}
         {% else %}
             <br></br>
-            <form action="{{ url_for('create_order', id=product['id']) }}" method="POST">
+            {% if logged == True %}
+            <form action="{{ url_for('order_product', id=product['id']) }}" method="POST">
                 <label>Quantity:</label><br>
                 <input type="number" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" value="1" placeholder="Quantity">
                 <br></br>
-                <input type="submit" value="Order">
+                <input type="submit" class="login_form_button" style="display: inline;" value="Order">
             </form>
+            {% else %}
+                <p style="color: darkred; font-weight: bold;">Only registered user can buy this product.</p>
+            {% endif %}
         {% endif %}
 
         {% if added %}
                 <p>Added to calendar</p>
         {% endif %}
-        
     </div>
 {% endblock %}

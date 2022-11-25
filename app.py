@@ -129,17 +129,18 @@ def get_user():
 ### For development purposes only
 ###
 
+testFuncHappened = False
+
 @app.route('/testFunction', methods=['GET'])
 def testFunction():
-    be.setCurrentPath(testFunction.__name__)
+    global testFuncHappened
+    #if testFuncHappened:
+    #    return redirect(url_for('home'))
     user = be.getLoggedUser()
-    be.addCalendarEvent(user, 2)
-
     prod = database.getProduct(1)
-    be.addOrder(user['id'], 1, 5)
-
-    database.addCategorySuggestion('Storno', 3, True, 'Je to skvela kategorie, moc ji tu potrebujeme', user['id'])
-    sug = database.getCategorySuggestions()
+    be.addOrder(user['id'], 1, 5, status=0) # completed order
+    be.addOrder(user['id'], 1, 5, status=0) # completed order
+    testFuncHappened = True
     return redirect(url_for('home'))
 
 ###
@@ -156,6 +157,7 @@ def login_user():
         newUser = database.FlaskUser(user['id'], user['email'])
         flogin.login_user(newUser)
         globals.logged_users.append(newUser)
+        testFunction()
         return redirect(url_for('home'))
     else:
         return render_template('/login.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=True)
@@ -285,10 +287,6 @@ def category(id):
     
 @app.route("/product/<int:id>", methods=["GET"])
 def product(id):
-    return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
-
-@app.route("/product/<int:id>", methods=["POST"])
-def add_to_calendar(id):
     return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/product/<int:id>", methods=["POST"])
@@ -454,12 +452,30 @@ def user_settings_order_cancel(id):
     seller = database.getUser(prod['seller'])
     return render_template('/user/settings/order_cancel.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller)
 
+@app.route("/nav/user/settings/order/review%id=<int:id>", methods=["GET"])
+def user_settings_order_review(id):
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    return render_template('/user/settings/order_review.html', isReview=True, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller)
+
+
 @app.route("/nav/user/settings/order/cancel/go%id=<int:id>", methods=["POST"])
 def user_settings_order_cancel_go(id):
     order = database.getOrder(id)
     prod = database.getProduct(order['product'])
     seller = database.getUser(prod['seller'])
     database.modifyData(database.Order, id, 'status', -1)
+    return redirect(url_for('user_settings_orders'))
+
+@app.route("/nav/user/settings/order/review/go%id=<int:id>", methods=["POST"])
+def user_settings_order_review_go(id):
+    order = database.getOrder(id)
+    prod = database.getProduct(order['product'])
+    seller = database.getUser(prod['seller'])
+    user = be.getLoggedUser()
+    database.addProductReview(order['id'], user['id'], request.form['review_desc'], int(request.form['review_select']))
+    database.modifyData(database.Order, id, 'status', 2)
     return redirect(url_for('user_settings_orders'))
 
 @app.route("/nav/user/settings/order/repeat%id=<int:id>%page=<int:page>", methods=["GET"])
@@ -495,13 +511,25 @@ def new_order(id, isRepeat, quantity):
         return render_template('/new_order.html', errorCode=0, repeatedOrder=True, sellerProducts=sProds, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, oldQuantity=quantity)
     else:
         prod = database.getProduct(id)
+        print(prod)
         seller = database.getUser(prod['seller'])
         sProds = []
         for prods in database.getProducts():
             if prods['seller'] == seller['id']:
                 sProds.append(prods)
-        return render_template('/new_order.html', errorCode=0, newQuantity=quantity, sellerProducts=sProds, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller)
-    
+        return render_template('/new_order.html', isRepeat=False,errorCode=0, newQuantity=quantity, sellerProducts=sProds, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller)
+
+@app.route("/product/order_product%id=<int:id>", methods=["POST"])
+def order_product(id):
+    quantity = request.form['quantity']
+    return redirect(url_for('new_order', id=id, isRepeat=0, quantity=quantity))
+ 
+@app.route("/nav/new_event%id=<int:id>", methods=["GET"])
+def new_event(id):
+    user = be.getLoggedUser()
+    be.addCalendarEvent(user, id)
+    return redirect(url_for('home'))
+
 @app.route("/nav/user/settings/calendar/remove_q%id=<int:id>", methods=["GET"])
 def user_settings_calendar_remove_q(id):
     cal = be.getUserCalendar(be.getLoggedUser())

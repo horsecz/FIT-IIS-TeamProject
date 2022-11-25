@@ -201,6 +201,24 @@ class CategorySuggestionSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'higher_category', 'leaf', 'description', 'status', 'suggester', 'approver')
 
+class ProductReview(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    reviewer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    text = db.Column(db.String(DB_STRING_LONG_MAX))
+    evaluation = db.Column(db.Integer)
+
+    def __init__(self, order_id, reviewer_id, text, evaluation):
+        self.order_id = order_id
+        self.reviewer_id = reviewer_id
+        self.text = text
+        self.evaluation = evaluation
+
+class ProductReviewSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'order_id', 'reviewer_id', 'text', 'evaluation')
+    
+
 # Create database
 def create_db():
     app.app_context().push()
@@ -438,6 +456,31 @@ def getCategoryNames():
         result.append(x['name'])
     return result
 
+def getProductReview(id):
+    list = getProductReviews()
+    for x in list:
+        if x['id'] == id:
+            return x
+    return None
+
+def getReviewsOfOrder(order_id):
+    list = getProductReviews()
+    result = []
+    for x in list:
+        if x['order_id'] == order_id:
+            result.append(x)
+    return result
+
+def getReviewsOfProduct(product_id):
+    list = getProductReviews()
+    result = []
+    for x in list:
+        order = getOrder(x['order_id'])
+        review_product = order['product']
+        if review_product == product_id:
+            result.append(x)
+    return result
+
 #
 # Get everything
 # returns: list of <<x>> (See: XSchema)
@@ -480,6 +523,11 @@ def getCategorySuggestions():
     suggestions = CategorySuggestion.query.all()
     suggestions_schema = CategorySuggestionSchema(many=True)
     return suggestions_schema.dump(suggestions)
+
+def getProductReviews():
+    reviews = ProductReview.query.all()
+    reviews_schema = ProductReviewSchema(many=True)
+    return reviews_schema.dump(reviews)
 
 #
 ##  Adders
@@ -543,7 +591,20 @@ def addCategorySuggestion(category_name, higher_category, leaf, description, sug
 
     db.session.add(CategorySuggestion(category_name, higher_category, leaf, description, 0, suggester_id, None))
     db.session.commit()
-    return 0    
+    return 0
+
+# returns: 0 OK; 1 too long string; 2 invalid reviewer; 3 invalid product; 
+def addProductReview(product_id, reviewer_id, text="", evaluation=5):
+    if len(text) > DB_STRING_LONG_MAX:
+        return 1
+    if not isUserID(reviewer_id):
+        return 2
+    if not isProduct(product_id):
+        return 3
+
+    db.session.add(ProductReview(product_id, reviewer_id, text, evaluation))
+    db.session.commit()
+    return 0
 
 #
 ##  Removers

@@ -44,11 +44,18 @@
             <br>
             <br>
 
-            <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
             {% if order['status'] == 1 %}
-            <input onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
-            {% else %}
-            <input disabled=true onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
+                <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
+                <input onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
+            {% elif order['status'] == 0 %}
+                <label for="cancel">Your order is completed! Give us some feedback and write a review for received product.</label>
+                <input onclick="orderReview({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Review product">    
+            {% elif order['status'] == -1 %}
+                <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
+                <input disabled onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">
+            {% elif order['status'] == 2 %}
+                <label for="cancel">Your order is completed. Thank you for your review!</label>
+                <input disabled onclick="orderReview({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Review product">    
             {% endif %}
             <br><br>
     
@@ -60,12 +67,19 @@
             <input onclick="orderRepeat({{ order['id'] }})" onclick="window.location=#" type="button" class="login_form_button" name="order_repeat" id="order_repeat" value="Repeat order">
             <br><br>
     {% else %}
-            {% block order_content %} {% endblock %}
+            {% if isReview == True %}
+                {% block order_review %} {% endblock %}
+            {% else %}
+                {% block order_content %} {% endblock %}
+            {% endif %}
     {% endif %}
     </div>
     <script>
         function orderCancel(order_id) {
             window.location = "cancel%id="+order_id;
+        }
+        function orderReview(order_id) {
+            window.location = "review%id="+order_id;
         }
         function orderRepeat(order_id) {
             window.location = "{{ url_for('new_order', id=order['id'], isRepeat=1, quantity=0) }}";
