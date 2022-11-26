@@ -7,6 +7,7 @@ import globals
 import database
 import re
 import datetime
+import random
 
 db = database
 nav_current_page = globals.nav_current_page
@@ -42,6 +43,43 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(userWrittenReview=userWrittenReview)
     app.jinja_env.globals.update(userBoughtProduct=userBoughtProduct)
     app.jinja_env.globals.update(isMyProduct=isMyProduct)
+    app.jinja_env.globals.update(isProductActive=isProductActive)
+    app.jinja_env.globals.update(getProductQuantityString=getProductQuantityString)
+    app.jinja_env.globals.update(zip=zip)
+    app.jinja_env.globals.update(getProductSellType=getProductSellType)
+    app.jinja_env.globals.update(today=today)
+    app.jinja_env.globals.update(getRandomProducts=getRandomProducts)
+
+def getRandomProducts():
+    ps = database.getProducts()
+    cnt = random.choice([3, 4, 5])
+    l = []
+    if (cnt > len(ps)):
+        cnt = len(ps)
+    for i in range(0, cnt):
+        prod = random.choice(ps)
+        l.append(prod)
+    return l
+
+
+
+def isProductActive(product_id):
+    p = database.getProduct(product_id, True)
+    return p['active']
+
+def today():
+    return datetime.datetime.now().strftime("%Y-%m-%d")
+
+def getProductSellType(product_id):
+    p = database.getProduct(product_id)
+    if p['sell_type'] == 0:
+        return "pieces"
+    elif p['sell_type'] == 1:
+        return "kg"
+    elif p['sell_type'] == 2:
+        return "g"
+    else:
+        return "Unknown sell type "+str(p['sell_type'])
 
 def isMyProduct(user_id, product_id):
     return database.isSellingProduct(product_id, user_id)
@@ -64,8 +102,8 @@ def userWrittenReview(user_id, product_id):
             return True
     return False
 
-def getCartProductPrice(product_id, quantity):
-    p = database.getProduct(product_id)
+def getCartProductPrice(product_id, quantity, inactive=False):
+    p = database.getProduct(product_id, inactive)
     return (p['price'] * int(quantity))
 
 def getProductSellerName(product_id):
@@ -73,8 +111,8 @@ def getProductSellerName(product_id):
     s = database.getUser(p['seller'])
     return s['name']
 
-def getProductName(product_id):
-    p = database.getProduct(product_id)
+def getProductName(product_id, inactive=False):
+    p = database.getProduct(product_id, inactive)
     return p['name']
 
 def getProductReviews(product_id):
@@ -177,6 +215,18 @@ def getCategoryProducts(category_id):
 def getMaxStringLength():
     return database.DB_STRING_LONG_MAX
 
+def getProductQuantityString(product_id):
+    p = database.getProduct(product_id)
+    type = p['sell_type']
+    if (type == 0):
+        return "pieces"
+    elif (type == 1):
+        return "kg"
+    elif (type == 2):
+        return "g"
+    else:
+        return "?"
+
 def productSellTypeToString(sell_type):
     if sell_type == 0:
         return "in pieces"
@@ -210,13 +260,11 @@ def getLoggedUserSells():
         return list
 
     for product in database.getProducts():
-        if database.isSellingProduct(product['id'], user['id']):
+        if database.isSellingProduct(product['id'], user['id'], inactive=True):
             product_list.append(product)
 
     if len(product_list) == 0:
         return list
-
-    print(product_list)
     
     orderAdd = False
     for order in database.getOrders():
@@ -259,6 +307,27 @@ def getSelfCollectionLocation(event):
 ###
 #   Backend functions
 ###
+
+#
+#   Product
+#
+
+def removeProduct(removal_id):
+    r = database.modifyData(database.Product, removal_id, 'active', False)
+    if (r != None):
+        return r
+    r = database.modifyData(database.Product, removal_id, 'category', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.Product, removal_id, 'quantity', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.Product, removal_id, 'description', None)
+    if (r != None):
+        return r
+    return r
+
+
 
 #
 #   String check functions
@@ -320,6 +389,21 @@ def isQuantity(string):
         return 162
     if (x > database.DB_INT_MAX):
         return 163
+
+    return 0
+
+# 170 empty string; 171 NaN; 172 zero-negative number; 173 too great number;
+def isPrice(string):
+    if (len(string) < 1):
+        return 170
+    try:
+        x = int(string)
+    except:
+        return 171
+    if (x < 0):
+        return 172
+    if (x > database.DB_INT_MAX):
+        return 173
 
     return 0
 
@@ -456,12 +540,21 @@ def removeUser(user_id=None):
     if (r != None):
         return r
     r = database.modifyData(database.User, removal_id, 'cart', None)
+
+    selling_products = database.getProductsBySeller(removal_id, True)
+    for prod in selling_products:
+        r = removeProduct(prod['id'])
+        if (r != None):
+            return r
     return r
     
     
 
 def editProductData(product_id, product_data, value):
     database.modifyData(database.Product, product_id, product_data, value)
+    
+def editCategoryData(category_id, category_data, value):
+    database.modifyData(database.Order, category_id, category_data, value)
 
 # returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
 def newUser(login, password, name, role):

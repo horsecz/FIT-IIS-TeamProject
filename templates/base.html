@@ -153,6 +153,17 @@
             flex-wrap: wrap;
             height: 100%;
             text-align: center;
+            border-radius: 10px;
+            padding: 35px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        p {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        h1, h2, h3, h4 {
+            font-family:  'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
         
         .home_search {
@@ -197,6 +208,7 @@
         .farmer {
             width: 20%;
             margin: 10px;
+            padding: 20px;
         }
 
         .product_list:hover {
@@ -236,26 +248,28 @@
             color: black;
             border-radius: 10px;
             background-color: #fafafa;
-            width: 50%;
-            height: 80%;
-            margin: 0 auto;
+            width: 90%;
+            height: 90%;
+            margin: 1px auto;
             margin-top: 30px;
+            margin-bottom: 30px;
             border: 1px solid #999;
             text-align: center;
         }
 
         .farmers th{
-            text-size: 1.5em;
+            font-size: 1.5em;
+            padding: 10px;
+            border-bottom: 1px solid #999;
         }
 
-        .farmers td:first-child:hover {
-            background-color: #4CAF50;
+        .farmers_name:hover {
+            background-color: #6dc471;
             cursor: pointer;
         }
 
         .farmers td {
-            padding: 10px;
-            border-top: 1px solid #999;
+            padding: 20px;
         }
         
         .product_page input[type=submit]:hover {
@@ -467,7 +481,7 @@
             <br>
     </ul>
     <form class="search_bar" action="{{ url_for('search') }}" method="post">
-        <input type="text" id="search" name="search" placeholder="Search..." autocomplete="off" list="suggestions">
+        <input style="display: inline-flexbox; float: inline-end; width: 25%; margin-right: 25px;" class="login_form_textbox" type="text" id="search" name="search" placeholder="Search through our categories and products" autocomplete="off" list="suggestions">
         <datalist id="suggestions">
             {% for suggestion in suggestions %}
                 <option value="{{ suggestion }}">{{ suggestion }}</option>
@@ -476,7 +490,7 @@
                 <option value="{{ product['name'] }}">{{ product['name'] }}</option>
             {% endfor %}
         </datalist>
-        <input type="submit" value="Search">
+        <input class="login_form_button" style="background:#333; display: inline-flexbox; float:inline-end; margin: 10px; height: fit-content;" type="submit" value="Search">
     </form>
     <br>
     <div class="content">

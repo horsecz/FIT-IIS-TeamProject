@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} My Products{% endblock %}</h1>
-    <hr>
+    <h1>{% block title %} My Products {% endblock %}</h1>
+    <p style="text-align: center;">Products you sell or harvest.</p>
+    <br>
     <div class="boxes">
         {% if products == [] %}
-            <h1>This farmer has no products yet</h1>
+            <h1>You don't have any products yet!</h1>
         {% else %}
             {% for y in products %}
-                    <a class="product_list farmer" href="{{ url_for('product', id=y.id) }}">
-                        <div>
+                        <div class="product_list farmer" style="cursor:default;">
+                            <a href="{{ url_for('product', id=y.id) }}" style="text-decoration: none;">
                             <h3>{{ y['name'] }}</h3>
                             {% if y['sell_type'] == 0 %}    
-                                <p> {{ y['price'] }}€/kg</p>
+                                <p> {{ y['price'] }} {{ getUsedCurrency() }} per piece</p>
+                            {% elif y['sell_type'] == 1 %}
+                                <p> {{ y['price'] }} {{ getUsedCurrency() }} per kg</p>
                             {% else %}
-                                <p> {{ y['price'] }}€/piece</p>
+                                <p> {{ y['price'] }} {{ getUsedCurrency() }} per g</p>
                             {% endif %}
                             {% if y['self_harvest'] %}
                                 <p>Self harvest</p>
                             {% else %}
                                 <p>Harvested by us</p>
                             {% endif %}
+                            </a>
                             <form action="{{ url_for('product_edit', id=y.id) }}" method="get">
                                 <button type="submit" class="login_form_button">Edit</button>
                             </form>
@@ -27,7 +31,6 @@
                                 <button type="submit" class="login_form_button">Remove</button>
                             </form>
                         </div>  
-                    </a>
             {% endfor %}
         {% endif %}
     </div>
@@ -37,7 +40,8 @@
     {% if error == 1 %}
         <p style="color: red; text-align: center;">Save Failed: Product already exists</p>
     {% endif %}
-    <a href="{{ url_for('create_product') }}" class="login_form_button">Create new product</a>
+
+    <a style="width: 10%; font-size: large;" href="{{ url_for('create_product') }}" class="login_form_button">Create new product</a>
     {% if error == -1 %}
         <p style="color: green; text-align: center;">Product created</p>
     {% elif error == 2 %}
@@ -48,12 +52,87 @@
         <p style="color: red; text-align: center;">Category is not final category with products</p>
     {% endif %}
     <br></br>
-    <h1> My Orders </h1>
-    <hr>
-    {% for x in orders %}
-        <p>Order ID: {{ x['buyer'] }}</p>
-        {% for (order,quantity) in zip(x['product_list'], x['quantity_list']) %}
-            <p> {{ order }}: {{ quantity }} </p>
-        {% endfor %}
-    {% endfor %}
+    <br>
+    <br>
+    {% if products != [] %}
+    <h1> Pending Orders </h1>
+    <p style="text-align: center;">Unfinished orders that are being processed.</p><br>
+    <div class="farmers">
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Buyer</th>
+                <th>Price</th>
+                <th>Order Date</th>
+                <th>Order Status</th>
+                <th colspan=2>Actions</th>
+                <th>Order ID</th>
+            </tr>
+            {% for x in orders %}
+                {% for (product,quantity) in zip(x['product_list'], x['quantity_list']) %}
+                    {% if isMyProduct(user['id'], product) %}
+                        {% if x['status'] == 1 %}
+                            <tr>
+                                <td onclick="location.href='{{ url_for('product', id=product) }}'">{{getProductName(product)}}</td>
+                                <td>{{ quantity }} {{ getProductSellType(product) }} </td>
+                                <td>{{ getUserName(x['buyer']) }}</td>
+                                <td>{{ getCartProductPrice(product, quantity)}} ISC </td>
+                                <td>{{ x['date']}} </td>
+                                <td>{{ orderStatusToString(x['status']) }} </td>
+                                <td>    
+                                    <button type="submit" onclick="clicked(0, {{ x['id'] }})" class="login_form_button">Send</button>
+                                </td>
+                                <td>
+                                    <button type="submit" onclick="clicked(1, {{ x['id'] }})" class="login_form_button">Cancel</button>
+                                </td>
+                                <td>{{ x['id'] }}
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+    <br>
+    <h1> Finished Orders </h1>
+    <p style="text-align: center;"> Finished orders, either cancelled or completed.</p><br>
+    <div class="farmers">
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Buyer</th>
+                <th>Price</th>
+                <th>Order Date</th>
+                <th>Order Status</th>
+            </tr>
+            {% for x in orders %}
+                {% for (product,quantity) in zip(x['product_list'], x['quantity_list']) %}
+                    {% if isMyProduct(user['id'], product) %}
+                        {% if x['status'] != 1 %}
+                            <tr>
+                                <td onclick="location.href='{{ url_for('product', id=product) }}'">{{getProductName(product)}}</td>
+                                <td>{{ quantity }} {{ getProductSellType(product) }} </td>
+                                <td>{{ getUserName(x['buyer']) }}</td>
+                                <td>{{ getCartProductPrice(product, quantity) }} ISC </td>
+                                <td>{{ x['date'] }} </td>
+                                <td>{{ orderStatusToString(x['status']) }} </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+    <script>
+        function clicked(edit, id){
+            if (edit == 0) {
+                window.location = "order_confirm%id="+id;
+            } else if (edit == 1) {
+                window.location = "order_cancel%id="+id;
+            }
+        }
+    </script>
 {% endblock %}

@@ -1,16 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{% block title %} List of all Farmers{% endblock %}</h1>
-    <hr>
+    <p style="text-align: center;">See what they offer or contact them!</p>
+    <br>
     <div class="farmers">
         <table>
             <tr>
+                <th>#</th>
                 <th>Name</th>
+                <th>E-mail</th>
+                <th>Phone number</th>
                 <th>Address</th>
             </tr>
             {% for x in farmers%}
                 <tr>
-                    <td onclick="location.href='{{ url_for('open_farmer', id=x['id']) }}'">{{x.name}}</td>
+                    <td>{{loop.index}}</td>
+                    <td class="farmers_name" onclick="location.href='{{ url_for('open_farmer', id=x['id']) }}'">{{x.name}}</td>
+                    <td>{{x.email}}</td>
+                    <td>{{x.phone_number}}</td>
                     <td>{{x.address}}</td>
                 </tr>
             {% endfor %}

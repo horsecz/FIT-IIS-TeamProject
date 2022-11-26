@@ -113,8 +113,9 @@ class Product(db.Model):
     self_harvest = db.Column(db.Boolean) 
     begin_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
+    active = db.Column(db.Boolean)
     
-    def __init__(self, name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date):
+    def __init__(self, name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date, active):
         self.name = name
         self.category = category
         self.quantity = quantity
@@ -125,10 +126,11 @@ class Product(db.Model):
         self.self_harvest = self_harvest
         self.begin_date = begin_date
         self.end_date = end_date
+        self.active = active
         
 class ProductSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'category', 'quantity', 'seller', 'price', 'sell_type', 'description', 'self_harvest', 'begin_date', 'end_date')
+        fields = ('id', 'name', 'category', 'quantity', 'seller', 'price', 'sell_type', 'description', 'self_harvest', 'begin_date', 'end_date', 'active')
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -290,28 +292,28 @@ def create_db():
     norm_toms = getCategoryByName('Normal Tomatoes')
 
     user = getUserByEmail('farmer')
-    db.session.add(Product('Tomato', norm_toms['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None))
-    db.session.add(Product('Blue Tomato', norm_toms['id'], 100, user['id'], 500, 0, 'the great blue tomato from 8428713 dimension', None, None, None))
-    db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
+    db.session.add(Product('Tomato', norm_toms['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None, True))
+    db.session.add(Product('Blue Tomato', norm_toms['id'], 100, user['id'], 500, 0, 'the great blue tomato from 8428713 dimension', None, None, None, True))
+    db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1', True))
     db.session.commit()
     
-    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 1, "Best apple ever", False, None, None))
-    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer2')['id'], 5, 1, "Best apple ever", False, None, None))
-    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer3')['id'], 2, 1, "Best apple ever", False, None, None))
-    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20'))
-    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None))
-    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
-    db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
-    db.session.add(Product('Franks Yellow Tomato', getCategoryByName('Yellow Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None))
-    db.session.add(Product('Jims Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best tomato ever", False, None, None))
-    db.session.add(Product('Jims Red Potato', getCategoryByName('Red Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
-    db.session.add(Product('Jims White Potato', getCategoryByName('White Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None))
-    db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
-    db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None))
-    db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
-    db.session.add(Product('Joes Red Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None))
-    db.session.add(Product('Joes White Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
-    db.session.add(Product('Joes Red Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
+    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer2')['id'], 5, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer3')['id'], 2, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20', True))
+    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None, True))
+    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None, True))
+    db.session.add(Product('Franks Yellow Tomato', getCategoryByName('Yellow Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None, True))
+    db.session.add(Product('Jims Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best tomato ever", False, None, None, True))
+    db.session.add(Product('Jims Red Potato', getCategoryByName('Red Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None, True))
+    db.session.add(Product('Jims White Potato', getCategoryByName('White Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None, True))
+    db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None, True))
+    db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None, True))
+    db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None, True))
+    db.session.add(Product('Joes Red Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None, True))
+    db.session.add(Product('Joes White Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None, True))
+    db.session.add(Product('Joes Red Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None, True))
     db.session.commit()
 
     id1 = getUserByEmail('farmer2')
@@ -376,11 +378,23 @@ def isProduct(id):
             return True
     return False
 
-def isSellingProduct(product_id, seller_id):
+def isProductActive(id):
+    list = getProduct()
+    for x in list:
+        if x['id'] == id and x['active'] == True:
+            return True
+        else:
+            return False
+    return None
+
+def isSellingProduct(product_id, seller_id, inactive=False):
     list = getProducts()
     for x in list:
         if x['id'] == product_id and x['seller'] == seller_id:
-            return True
+            if x['active']:
+                return True
+            elif x['active'] == False and inactive == True:
+                return True
     return False
 
 #
@@ -435,33 +449,45 @@ def getOrder(id):
             return x
     return None
 
-def getProduct(id):
+def getProduct(id, inactive=False):
     list = getProducts()
     for x in list:
         if x['id'] == id:
-            return x
+            if x['active'] == False and inactive == True:
+                return x
+            elif x['active'] == True:
+                return x
     return None
 
-def getProductByName(name, category_id, seller_id):
+def getProductByName(name, category_id, seller_id, inactive=False):
     list = getProducts()
     for x in list:
         if x['name'] == name and x['category'] == category_id and x['seller'] == seller_id:
-            return x
+            if x['active']:
+                return x
+            elif x['active'] == False and inactive == True:
+                return x
     return None
 
-def getProductByNameOnly(name):
+def getProductByNameOnly(name, inactive=False):
     list = getProducts()
     for x in list:
         if x['name'] == name:
-            return x
+            if x['active']:
+                return x
+            elif x['active'] == False and inactive == True:
+                return x
     return None
 
-def getProductsBySeller(seller_id):
+def getProductsBySeller(seller_id, inactive=False):
     list = getProducts()
     result = []
     for x in list:
         if x['seller'] == seller_id:
-            result.append(x)
+            if x['active']:
+                result.append(x)
+            elif x['active'] == False and inactive == True:
+                result.append(x)
     return result
 
 def getCategorySuggestion(id):
@@ -486,11 +512,14 @@ def getLeafCategories():
             result.append(x['name'])
     return result
 
-def getProductReview(id):
+def getProductReview(id, inactive=False):
     list = getProductReviews()
     for x in list:
         if x['id'] == id:
-            return x
+            if x['active']:
+                return x
+            elif x['active'] and inactive == True:
+                return x
     return None
 
 def getReviewsOfOrder(order_id):
@@ -512,8 +541,11 @@ def getReviewsOfProduct(product_id):
 #
 # Get everything
 # returns: list of <<x>> (See: XSchema)
-def getUsers():
-    users = User.query.all()
+def getUsers(inactive=False):
+    if (inactive == True):
+        users = User.query.all()
+    else:
+        users = User.query.filter(User.account_status == True).all()
     users_schema = UserSchema(many=True)
     return users_schema.dump(users)
 
@@ -530,8 +562,11 @@ def getSubCategories(id):
     subCategories_schema = CategorySchema(many=True)
     return subCategories_schema.dump(subCategories)
 
-def getProductsByCategory(id):
-    products = Product.query.filter(Product.category == id).all()
+def getProductsByCategory(id, inactive=False):
+    if inactive == True:
+        products = Product.query.filter(Product.category == id).all()
+    else:
+        products = Product.query.filter(Product.category == id and Product.active == True).all()
     if not products:
         return []
     products_schema = ProductSchema(many=True)
@@ -591,7 +626,7 @@ def addOrder(buyer_id, product_id_list, quantity_list, total_price, date=None, s
     return 0
 
 # returns: 0 OK; 1 too long string; 2 product (same name + category + seller) exists; 3 invalid price
-def addProduct(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date):
+def addProduct(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date, active=True):
     if len(name) > DB_STRING_SHORT_MAX:
         return 1
     # if isSellingProduct(name, category, seller):
@@ -599,7 +634,7 @@ def addProduct(name, category, quantity, seller, price, sell_type, description, 
     # if price < 0:
     #     return 3
 
-    db.session.add(Product(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date))
+    db.session.add(Product(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date, active))
     db.session.commit()
     return 0   
 

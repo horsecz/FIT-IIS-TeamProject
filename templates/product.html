@@ -3,14 +3,17 @@
     <div class="product_page">
         <h1>{{ product.name }}</h1>
         <p>{{ product.description }}</p>
-        <p>Seller: <a href="{{ url_for('open_farmer', id=seller['id']) }}">{{ seller['name'] }}</a></p>
+        <p><b>Seller:</b> <a href="{{ url_for('open_farmer', id=seller['id']) }}">{{ seller['name'] }}</a></p>
         <br></br>
         {% if product['sell_type'] == 0 %}    
-            <p> Price: {{ product['price'] }}€/kg</p>
-            <p>In Stock: {{ product.quantity }} kg</p>
+            <p> <b>Price:</b> {{ product['price'] }} {{ getUsedCurrency() }} for piece</p>
+            <p><b>In Stock:</b> {{ product.quantity }} pieces</p>
+        {% elif product['sell_type'] == 1 %}
+            <p> <b>Price:</b> {{ product['price'] }} {{ getUsedCurrency() }} per kg</p>
+            <p><b>In Stock:</b> {{ product.quantity }} kg</p>
         {% else %}
-            <p> Price: {{ product['price'] }}€/piece</p>
-            <p>In Stock: {{ product.quantity }}</p>
+            <p> <b>Price:</b> {{ product['price'] }} {{ getUsedCurrency() }} per g</p>
+            <p><b>In Stock:</b> {{ product.quantity }} g</p>
         {% endif %}
         
         {% if product['self_harvest'] %}

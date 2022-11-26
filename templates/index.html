@@ -2,20 +2,58 @@
 {% block content %}
     {% if product == 'not found' or category == 'not found' %}
         <h1>Product or Category not found</h1>
+        <br><br>
+        <p style="display: inline-flexbox; text-align: center;">What about you try something else? Or just see one of these products:</p>
+                    {% for y in getRandomProducts() %}
+                            <a href="{{ url_for('product', id=y.id) }}" style="text-decoration:none;">
+                                <div class="product_list" style="width: 25%;">
+                                    <h3>{{ y['name'] }}</h3>
+                                    {% if y['sell_type'] == 0 %}    
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per piece</p>
+                                    {% elif y['sell_type'] == 1 %}
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per kg</p>
+                                    {% else %}
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per g</p>
+                                    {% endif %}
+                                    {% if y['self_harvest'] %}
+                                        <p>Self harvest</p>
+                                    {% else %}
+                                        <p>Harvested by us</p>
+                                    {% endif %}
+                                </div>
+                            </a>
+                    {% endfor %}
+                    {% if getRandomProducts() | length() == 0 %}
+                        <p style="display: inline-flexbox; text-align: center; color:darkred; font-weight: bold;">We're sorry, but currently we do not sell any product.</p>
+                    {% endif %}
     {% else %}
+        {% if category['leaf'] %}
+        <h1>Products in category {{ category['name'] }}</h1>
+        <p style="text-align: center;">Only best offers for our customers.</p>
+        {% else %}
+            {% if category == None  %}
+            <h1>See our products</h1>
+            <p style="text-align: center;">We offer fruits and vegetables from farmers with finest quality.</p>
+            {% else %}
+            <h1>Category {{ category['name'] }}</h1>
+            <p style="text-align: center;">See what's in this category.</p>
+            {% endif %}
+        {% endif %}
         <div class="boxes">
             {% if category['leaf']  %}
                 {% if products_count == 0 %}
-                    <h1>There are no products in this category</h1>
+                    <h1>There are no products in this category.</h1>
                 {% else %}
                     {% for y in products %}
-                            <a class="product_list" href="{{ url_for('product', id=y.id) }}">
+                            <a class="product_list" href="{{ url_for('product', id=y.id) }}" style="text-decoration: none;">
                                 <div>
                                     <h3>{{ y['name'] }}</h3>
                                     {% if y['sell_type'] == 0 %}    
-                                        <p> {{ y['price'] }}€/kg</p>
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per piece</p>
+                                    {% elif y['sell_type'] == 1 %}
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per kg</p>
                                     {% else %}
-                                        <p> {{ y['price'] }}€/piece</p>
+                                        <p> {{ y['price'] }} {{ getUsedCurrency() }} per g</p>
                                     {% endif %}
                                     {% if y['self_harvest'] %}
                                         <p>Self harvest</p>
@@ -28,12 +66,12 @@
                 {% endif %}
             {% else %}
                 {% if categories == [] %}
-                    <h1>There are no subcategories in this category</h1>
+                    <h1>There are no subcategories nor products in this category.</h1>
                 {% else %}            
                     {% for x in categories %}
                         {% if x['name'] == 'root' %}
                         {% else %}
-                            <a class="home_search" href="{{ url_for('category', id=x['id']) }}">
+                            <a class="home_search" href="{{ url_for('category', id=x['id']) }}" style="text-decoration: none;">
                                 <div >
                                         <h1>{{ x['name'] }}</h1>
                                 </div>

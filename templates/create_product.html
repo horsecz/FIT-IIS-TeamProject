@@ -1,47 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>New Product</h1>
+    <p style="text-align: center;">Add new product to your offers so customers can buy it!</p>
+    <br>
     <form class="sugg_form" action="{{ url_for('create_new_product') }}" method="post">
-        <label>Name</label>
-        <input type="text" name="name" required>
-        <br></br>
-        <label>Category</label>
-        <input type="text" name="category" autocomplete="off" list="suggestions" required>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Name *"><br>
+        <input class="login_form_textbox" style="width: 20%;" placeholder="New product name" type="text" name="name" required>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Category *"><br>
+        <input class="login_form_textbox" style="width: 20%;" placeholder="Category of this product" type="text" name="category" autocomplete="off" list="suggestions" required>
         <datalist id="suggestions">
             {% for suggestion in suggestions %}
                 <option value="{{ suggestion }}">{{ suggestion }}</option>
             {% endfor %}
         </datalist>
-        <br></br>
-        <label>Price</label>
-        <input type="number" min="1" name="price" required>
-        <br></br>
-        <label>Sell type</label required>
-        <select name="sell_type">
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Price (per 1 quantity unit) *"><br>
+        <input class="login_form_textbox" style="width: 20%;" placeholder="10" type="number" min="1" name="price" required><br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Sell type *"><br>
+        <select class="login_form_textbox" style="width: 20%;" name="sell_type">
                 <option value="0" selected>Per unit</option>
                 <option value="1">Per kilogram</option>
                 <option value="2">Per gram</option>
         </select>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Quantity *"><br>
+        <input class="login_form_textbox" style="width: 20%;" placeholder="1" type="number" min="1" name="quantity" required>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Description"><br>
+        <textarea class="login_form_textbox" style="width: 20%; resize: none; height: 100px;" placeholder="Describe product to your customers." name="description"></textarea>
         <br></br>
-        <label>Quantity</label>
-        <input type="number" min="1" name="quantity" required>
-        <br></br>
-        <label>Description</label>
-        <textarea name="description"></textarea>
-        <br></br>
-        <label>Self Harvest</label>
-        <select name="self_harvest" required> 
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Self harvest *"><br>
+        <select class="login_form_textbox" style="width: 20%;" name="self_harvest" required> 
             <option value="True">Yes</option>
             <option value="False">No</option>
         </select>
         <br></br>
-        <label>Self harvest begin date</label>
-        <input type="date" name="begin_date">
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Self harvest begin date"><br>
+        <input class="login_form_textbox" style="width: 20%;" type="date" name="begin_date" value={{ today() }}>
         <br></br>
-        <label>Self harvest end date</label>
-        <input type="date" name="end_date">
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Self harvest end date"><br>
+        <input class="login_form_textbox" style="width: 20%;" type="date" name="end_date" value={{ today() }}>
         <br></br>
         <input type="submit" value="Create" class="login_form_button">
+        <br>
+        <br>
     </form>
 
 {% endblock %}
