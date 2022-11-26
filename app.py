@@ -337,7 +337,7 @@ def product_edit(id):
 @app.route("/nav/user/farmer/<int:id>", methods=["POST"])
 def product_remove(id):
     product = database.getProduct(id)
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames())
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), orders=database.getOrders())
 
 @app.route("/nav/user/farmer/<int:id>", methods=["POST"])
 def save_product_edit(id):
@@ -356,7 +356,7 @@ def save_product_edit(id):
     name_db = database.getProductByNameOnly(name)
     
     if name_db is not None and name_db['id'] != id:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1)
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1, orders=database.getOrders())
     
     be.editProductData(id, 'name', name)
     be.editProductData(id, 'price', price)
@@ -374,11 +374,11 @@ def save_product_edit(id):
         be.editProductData(id, 'begin_date', None)
         be.editProductData(id, 'end_date', None)
     
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), category=database.getCategory(product['category']), product=product, error=0)
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), category=database.getCategory(product['category']), product=product, error=0, orders=database.getOrders())
 
 @app.route("/nav/user/new_product", methods=["GET"])
 def create_product():
-    return render_template('create_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('create_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getLeafCategories())
 
 @app.route("/nav/user/new_product", methods=["POST"])
 def create_new_product():
@@ -397,13 +397,13 @@ def create_new_product():
     category_db = database.getCategoryByName(category)
     
     if name_db is not None:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=2)
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=2, orders=database.getOrders())
     
     if category_db is None:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=3)
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=3, orders=database.getOrders())
     
     if category_db['leaf'] == False:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=4)
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=4, orders=database.getOrders())
     
     if self_harvest == "True":
         self_harvest = True
@@ -413,7 +413,7 @@ def create_new_product():
         end_date = None
         
     database.addProduct(name, category_db['id'], quantity, user['id'], price, sell_type, description, self_harvest, begin_date, end_date)
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=-1)
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=-1, orders=database.getOrders())
         
 
   

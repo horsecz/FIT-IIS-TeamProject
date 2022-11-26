@@ -47,4 +47,13 @@
     {% elif error == 4 %}
         <p style="color: red; text-align: center;">Category is not final category with products</p>
     {% endif %}
+    <br></br>
+    <h1> My Orders </h1>
+    <hr>
+    {% for x in orders %}
+        <p>Order ID: {{ x['buyer'] }}</p>
+        {% for (order,quantity) in zip(x['product_list'], x['quantity_list']) %}
+            <p> {{ order }}: {{ quantity }} </p>
+        {% endfor %}
+    {% endfor %}
 {% endblock %}
