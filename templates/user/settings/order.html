@@ -27,9 +27,13 @@
         <br>
 
         {% for product_id in product_ids %}
-            <a href="{{ url_for('product', id=product_id) }}" style="text-decoration: none;">
-                <p class="profile_user_data" name="product" id="product">{{ quantities[loop.index-1] }}x {{ getProductName(product_id) }} for {{ getCartProductPrice(product_id, quantities[loop.index-1]) }} {{ getUsedCurrency() }}</p>
+            {% if isProductActive(product_id) %}
+                <a href="{{ url_for('product', id=product_id) }}" style="text-decoration: none;">
+            {% endif %}
+                <p class="profile_user_data" name="product" id="product">{{ quantities[loop.index-1] }} {{ getProductQuantityString(product_id) }} {{ getProductName(product_id, True) }} for {{ getCartProductPrice(product_id, quantities[loop.index-1], True) }} {{ getUsedCurrency() }}</p>
+            {% if isProductActive(product_id) %}
             </a>
+            {% endif %}
         {% endfor %}
     </div>
     <div class="register_form box" style="width: 20%;">
