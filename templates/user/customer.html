@@ -1,26 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} Create category suggestion {% endblock %}</h1>
+    <h1>{% block title %} New category suggestion {% endblock %}</h1>
+    <p style="text-align: center;">Suggest us new category, where our products or subcategories can be placed.</p>
+    <br>
     <form class="sugg_form" method="post" action="{{ url_for('create_suggestion', id=user['id']) }}">
-        <label>Category name:</label>
-        <input type="text" name="category_name" id="category_name" placeholder="Category name" required>
-        <br></br>
-        <label>Category parent:</label>
-        <input type="text" id="category_parent" name="category_parent" placeholder="Category parent" autocomplete="off" list="suggestions" required>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Category name"><br>
+        <input class="login_form_textbox" style="width: 20%;" type="text" name="category_name" id="category_name" placeholder="Suggested category name" required>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Category parent"><br>
+        <input class="login_form_textbox" style="width: 20%;"type="text" id="category_parent" name="category_parent" placeholder="Suggested parent category" autocomplete="off" list="suggestions" required>
         <datalist id="suggestions">
             {% for suggestion in suggestions %}
                 <option value="{{ suggestion }}">{{ suggestion }}</option>
             {% endfor %}
         </datalist>
-        <br></br>
-        <labe>Is this the final category?</label>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Request description"><br>
+        <textarea class="login_form_textbox" style="resize: none; width: 20%; height: 100px" name="category_description" id="category_description" placeholder="Write us here why we should add this category." required></textarea>
+        <br>
+        <input disabled class="profile_user_data" style="width: 20%; margin-top: 10px; margin-bottom: 1px;" type="text" value="Is this the final category?">
         <input type="checkbox" id="final" name="final" value="final">
-        <br></br>
-        <label>Category description:</label>
-        <textarea name="category_description" id="category_description" placeholder="Category description" required></textarea>
-        <br></br>
-        <input type="submit" value="Create">
+        <br>
+        <input class="login_form_button" type="submit" value="Create">
     </form>
+    <br>
     {% if error == 0 %}
         <p style="color: green; text-align: center;">Suggestion created successfully</p>
     {% endif %}
@@ -30,23 +33,36 @@
     {% if error == 2 %}
         <p style="color: red; text-align: center;">Cannot create new category if parent is final category with products</p>
     {% endif %}
+    <br>
+    <br>
     <h1>My suggestions</h1>
+    <p style="text-align: center;">Category suggestions from you.</p><br>
     <div class="farmers">
         <table>
             <tr>
+                <th>#</th>
                 <th>Category name</th>
                 <th>Category parent</th>
                 <th>Status</th>
             </tr>
-            {% for x in all_suggestions%}
+            {% for x in all_suggestions %}
                 {% if x['suggester'] == user['id'] %}
                     <tr>
+                        <td>{{loop.index}}</td>
                         <td>{{ x.name }}</td>
                         <td>{{ getCategoryName(x.higher_category) }}</td>
                         <td>{{ suggestionResultToString(x.status) }}</td>
                     </tr>
                 {% endif %}
             {% endfor %}
+            {% if all_suggestions | length() == 0 %}
+                <tr>
+                    <td></td>
+                    <td>You did not send us any suggestion yet.</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {% endif %}
         </table>
     </div>
 {% endblock %}

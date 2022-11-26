@@ -2,11 +2,12 @@
 {% block content %}
     <h1>{% block title %} {{farmer.name}} {% endblock %}</h1>
     <div style="text-align: center;">
-        <p>Farmer Address: {{farmer.address}}</p>
-        <p>Farmer Phone: {{farmer.phone_number}}</p>
-        <p>Farmer Email: {{farmer.email}}</p>
+        <p>Address: {{farmer.address}}</p>
+        <p>Contact phone: {{farmer.phone_number}}</p>
+        <p>Email: {{farmer.email}}</p>
     </div>
-    <hr>
+    <br><br>
+    <h1>Farmer's products</h1>
     <div class="boxes">
         {% if products == [] %}
             <h1>This farmer has no products yet</h1>

@@ -7,6 +7,7 @@ import globals
 import database
 import re
 import datetime
+import random
 
 db = database
 nav_current_page = globals.nav_current_page
@@ -47,6 +48,20 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(zip=zip)
     app.jinja_env.globals.update(getProductSellType=getProductSellType)
     app.jinja_env.globals.update(today=today)
+    app.jinja_env.globals.update(getRandomProducts=getRandomProducts)
+
+def getRandomProducts():
+    ps = database.getProducts()
+    cnt = random.choice([3, 4, 5])
+    l = []
+    if (cnt > len(ps)):
+        cnt = len(ps)
+    for i in range(0, cnt):
+        prod = random.choice(ps)
+        l.append(prod)
+    return l
+
+
 
 def isProductActive(product_id):
     p = database.getProduct(product_id, True)
