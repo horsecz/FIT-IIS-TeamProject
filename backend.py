@@ -42,6 +42,19 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(userWrittenReview=userWrittenReview)
     app.jinja_env.globals.update(userBoughtProduct=userBoughtProduct)
     app.jinja_env.globals.update(isMyProduct=isMyProduct)
+    app.jinja_env.globals.update(zip=zip)
+    app.jinja_env.globals.update(getProductSellType=getProductSellType)
+
+def getProductSellType(product_id):
+    p = database.getProduct(product_id)
+    if p['sell_type'] == 0:
+        return "pieces"
+    elif p['sell_type'] == 1:
+        return "kg"
+    elif p['sell_type'] == 2:
+        return "g"
+    else:
+        return "Unknown sell type "+str(p['sell_type'])
 
 def isMyProduct(user_id, product_id):
     return database.isSellingProduct(product_id, user_id)
@@ -462,6 +475,9 @@ def removeUser(user_id=None):
 
 def editProductData(product_id, product_data, value):
     database.modifyData(database.Product, product_id, product_data, value)
+    
+def editCategoryData(category_id, category_data, value):
+    database.modifyData(database.Order, category_id, category_data, value)
 
 # returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
 def newUser(login, password, name, role):
