@@ -1,66 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
     <p hidden="true">{% block title %} New order {% endblock %}</p>
-    {% if repeatedOrder == true %}
-        <h1>Repeat order {{ order['id'] }}</h1>
+    {% if isRepeat == true %}
+        <h1>Repeating order {{ order['id'] }}</h1>
     {% else %}
         <h1>New order</h1>
     {% endif %}
     <root style="display:grid;">
     <div class="login_form">
-        <form method="post" action="{{ url_for('new_order_go') }}">
-            <p style="text-align: center;">Please check order information and fill the rest of the form to create new order.</p>
+        <form method="post" action="{{ url_for('new_order_go', isRepeat=isRepeat) }}">
+            <p style="text-align: center;">Please check order information before sending it!</p>
             <br><br>
-            <label for="buyer"><b>Buyer</b></label>
-            <input disabled=true class="profile_user_data" type="text" name="buyer" id="buyer" value="{{ user['name'] }} ({{ user['email'] }})" >
             <input hidden=true type="text" name="buyer_id" id="buyer_id" value="{{ user['id'] }}" >
+            
+            <label for="product"><b>Items</b></label>
+            {% for item in cart %}
+                <input disabled=true class="profile_user_data" type="text" name="product" id="product" value="{{ item['quantity'] }}x {{ getProductName(item['product_id']) }} from {{ getProductSellerName(item['product_id']) }} for {{ getCartProductPrice(item['product_id'], item['quantity']) }} {{ getUsedCurrency() }}" >
+            {% endfor %}
 
-            <label for="seller"><b>Seller</b></label>
-            <input disabled=true class="profile_user_data" type="text" name="seller" id="seller" value="{{ seller['name'] }} ({{ seller['email'] }})" >
-            <input hidden=true type="text" name="seller_id" id="seller_id" value="{{ seller['id'] }}" >
+            <label for="price"><b>Total price</b></label>
+            <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ total_price }} {{ getUsedCurrency() }}" >
 
-            <label for="product"><b>Product</b></label>
-            <select class="login_form_textbox" id="product" name="product">
-                {% for s_product in sellerProducts %}
-                    {% if product['id'] == s_product['id'] %}
-                        <option selected value="{{ s_product['id'] }}">{{ s_product['name'] }}</option>
-                    {% else %}
-                        <option value="{{ s_product['id'] }}">{{ s_product['name'] }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-
-            <label for="quantity"><b>Quantity</b> ({{ productSellTypeToString(product['id']) }})</label>
-            {% if order != None %}
-                <input class="login_form_textbox" type="text" name="quantity" id="quantity" value="{{ oldQuantity }}" >
-            {% else %}
-                <input disabled=true class="profile_user_data" type="text" name="quantity" id="quantity" value="{{ quantity }}" >
-            {% endif %}
-
-            <label for="price"><b>
-                {% if order != None %}
-                    Price per quantity
-                {% else %}
-                    Total price
-                {% endif %}
-            </b></label>
-
-            {% if order != None %}
-                <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ product['price'] }} {{ getUsedCurrency() }}" >
-            {% else %}
-                <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ quantity * prodct['price'] }} {{ getUsedCurrency() }}" >
-            {% endif %}
-
-            {% if order != None %}
-                <label for="av_quantity"><b>Available quantity</b></label>
-                <input disabled=true class="profile_user_data" type="text" name="av_quantity" id="av_quantity" value="{{ product['quantity'] }}" >
-            {% endif %}
-
-            {% if errorCode >= 160 and errorCode <= 163 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Invalid quantity!</p>
-            {% elif errorCode == 164 %}
-                <p style="text-align: center; height: 30px; color: red; text-decoration: solid; font-weight: bold;">Quantity exceeds available amount of product!</p>
-            {% endif %}
             <centerize style="display: inline-flexbox;">
                 <button style="float:inline-start;" class="login_form_button" type="submit" id="user_btn" name="user_btn">Create new order</button>
                 <input style="float:inline-end;" onclick="returnHome()" type="button" class="login_form_button" id="cancel_btn" name="cancel_btn" value="Cancel">
