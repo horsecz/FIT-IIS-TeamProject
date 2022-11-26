@@ -1,4 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{% block title %} My Products{% endblock %}</h1>
+    <hr>
+    <div class="boxes">
+        {% if products == [] %}
+            <h1>This farmer has no products yet</h1>
+        {% else %}
+            {% for y in products %}
+                    <a class="product_list farmer" href="{{ url_for('product', id=y.id) }}">
+                        <div>
+                            <h3>{{ y['name'] }}</h3>
+                            {% if y['sell_type'] == 0 %}    
+                                <p> {{ y['price'] }}€/kg</p>
+                            {% else %}
+                                <p> {{ y['price'] }}€/piece</p>
+                            {% endif %}
+                            {% if y['self_harvest'] %}
+                                <p>Self harvest</p>
+                            {% else %}
+                                <p>Harvested by us</p>
+                            {% endif %}
+                            <form action="{{ url_for('product_edit', id=y.id) }}" method="get">
+                                <button type="submit" class="login_form_button">Edit</button>
+                            </form>
+                            <form action="{{ url_for('product_remove', id=y.id) }}" method="post">
+                                <button type="submit" class="login_form_button">Remove</button>
+                            </form>
+                        </div>  
+                    </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% if error == 0 %}
+        <p style="color: green; text-align: center;">Saved successfully</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color: red; text-align: center;">Save Failed: Product already exists</p>
+    {% endif %}
+    <a href="{{ url_for('create_product') }}" class="login_form_button">Create new product</a>
+    {% if error == -1 %}
+        <p style="color: green; text-align: center;">Product created</p>
+    {% elif error == 2 %}
+        <p style="color: red; text-align: center;">Product name already exists</p>
+    {% elif error == 3 %}
+        <p style="color: red; text-align: center;">Category does not exist</p>
+    {% elif error == 4 %}
+        <p style="color: red; text-align: center;">Category is not final category with products</p>
+    {% endif %}
 {% endblock %}

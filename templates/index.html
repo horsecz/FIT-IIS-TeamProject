@@ -1,40 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="boxes">
-        {% if category['leaf']  %}
-            {% if products == [] %}
-                <h1>There are no products in this category</h1>
-            {% else %}
-                {% for y in products %}
-                        <a class="product_list" href="{{ url_for('product', id=y.id) }}">
-                            <div>
-                                <h3>{{ y['name'] }}</h3>
-                                {% if y['sell_type'] == 0 %}    
-                                    <p> {{ y['price'] }}€/kg</p>
-                                {% else %}
-                                    <p> {{ y['price'] }}€/piece</p>
-                                {% endif %}
-                                {% if y['self_harvest'] %}
-                                    <p>Self harvest</p>
-                                {% else %}
-                                    <p>Harvested by us</p>
-                                {% endif %}
-                            </div>
-                        </a>
-                {% endfor %}
-            {% endif %}
-        {% else %}
-            {% for x in categories %}
-                {% if x['name'] == 'root' %}
+    {% if product == 'not found' or category == 'not found' %}
+        <h1>Product or Category not found</h1>
+    {% else %}
+        <div class="boxes">
+            {% if category['leaf']  %}
+                {% if products_count == 0 %}
+                    <h1>There are no products in this category</h1>
                 {% else %}
-                    <a class="home_search" href="{{ url_for('category', id=x['id']) }}">
-                        <div >
-                                <h1>{{ x['name'] }}</h1>
-                        </div>
-                    </a>
+                    {% for y in products %}
+                            <a class="product_list" href="{{ url_for('product', id=y.id) }}">
+                                <div>
+                                    <h3>{{ y['name'] }}</h3>
+                                    {% if y['sell_type'] == 0 %}    
+                                        <p> {{ y['price'] }}€/kg</p>
+                                    {% else %}
+                                        <p> {{ y['price'] }}€/piece</p>
+                                    {% endif %}
+                                    {% if y['self_harvest'] %}
+                                        <p>Self harvest</p>
+                                    {% else %}
+                                        <p>Harvested by us</p>
+                                    {% endif %}
+                                </div>
+                            </a>
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
-    </div>
+            {% else %}
+                {% if categories == [] %}
+                    <h1>There are no subcategories in this category</h1>
+                {% else %}            
+                    {% for x in categories %}
+                        {% if x['name'] == 'root' %}
+                        {% else %}
+                            <a class="home_search" href="{{ url_for('category', id=x['id']) }}">
+                                <div >
+                                        <h1>{{ x['name'] }}</h1>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endif %}
     <br><br>  
 {% endblock %}
