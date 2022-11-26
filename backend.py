@@ -32,9 +32,6 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(suggestionResultToString=suggestionResultToString)
     app.jinja_env.globals.update(getUserEmail=getUserEmail)
     app.jinja_env.globals.update(checkSuggestionConflicts=checkSuggestionConflicts)
-    app.jinja_env.globals.update(getCurrentNavigationPathURL=getCurrentNavigationPathURL)
-    app.jinja_env.globals.update(translateNavigationPath=translateNavigationPath)
-    app.jinja_env.globals.update(getCurrentPathArguments=getCurrentPathArguments)
     app.jinja_env.globals.update(getUserBirthdate=getUserBirthdate)
     app.jinja_env.globals.update(getUserAddress=getUserAddress)
     app.jinja_env.globals.update(getUserPhoneNumber=getUserPhoneNumber)
@@ -59,63 +56,6 @@ def getUserBirthdate(user_element):
         return ""
     else:
         return data
-
-def translateNavigationPath():
-    result = []
-    path_url = globals.path[0]
-    if (path_url == "home"):
-        result.append('Home')
-    elif (path_url == 'offers'):
-        result.append('Farmers')
-    elif (path_url == "login"):
-        result.append('Login page')
-    elif (path_url == 'registration'):
-        result.append('Registration')
-    elif (path_url == 'user_customer'):
-        result.append('Farmers')
-    elif (path_url == 'user_farmer'):
-        result.append('My Products')
-    elif (path_url == 'user_settings'):
-        result.append('My Profile')
-    elif (path_url == 'admin_categories'):
-        result.append('Category management')
-    elif (path_url == 'admin_suggestions'):
-        result.append('Category suggestions')
-    elif (path_url == 'admin_users'):
-        result.append('User management')
-
-    elif (path_url == 'admin_user_selected'):
-        result.append('User management')
-        result.append('User ID '+str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_orders'):
-        result.append('My Profile')
-        result.append('Orders')
-    elif (path_url == 'user_settings_calendar'):
-        result.append('My Profile')
-        result.append('Calendar')
-    elif (path_url == 'user_settings_order'):
-        result.append('My Profile')
-        result.append('Orders')
-        result.append('Order '+ str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_event'):
-        result.append('My Profile')
-        result.append('Calendar')
-        result.append('Event '+str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_accountRemoval'):
-        result.append('My Profile')
-        result.append('Account removal')
-    elif (path_url == 'new_order'):
-        result.append('New Order')
-    elif (path_url == 'admin_categories_detail'):
-        result.append('Category management')
-        result.append('Category ID '+str(globals.path[1][0][1]))
-    else:
-        result = []
-
-    return result
-
-def getCurrentNavigationPathURL():
-    return globals.path[0]
 
 def checkSuggestionConflicts(sugg_id, higher_id):
     sugg = database.getCategorySuggestion(sugg_id)
@@ -297,9 +237,6 @@ def isQuantity(string):
 #   Current path functions
 #
 
-def getCurrentPathArguments():
-    return globals.path[1]
-
 def setCurrentPath(url_func_name):
     globals.path.clear()
     globals.path.append(url_func_name)
@@ -410,6 +347,9 @@ def removeUser(user_id=None):
         removal_id = user_id
         r = database.removeData(database.User, removal_id)
         return r
+
+def editProductData(product_id, product_data, value):
+    database.modifyData(database.Product, product_id, product_data, value)
 
 # returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
 def newUser(login, password, name, role):

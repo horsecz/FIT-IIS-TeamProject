@@ -228,6 +228,7 @@ def create_db():
     db.session.add(Category('Grapes', getCategoryByName('Fruits')['id'], False))
     db.session.add(Category('Peach', getCategoryByName('Fruits')['id'], True))
     db.session.add(Category('Pear', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Strawberry', getCategoryByName('Fruits')['id'], False))
     db.session.commit()
     
     db.session.add(Category('Red Apple', getCategoryByName('Apple')['id'], True))
@@ -271,7 +272,7 @@ def create_db():
     db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1'))
     db.session.commit()
     
-    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None))
+    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 1, "Best apple ever", False, None, None))
     db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer2')['id'], 5, 1, "Best apple ever", False, None, None))
     db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer3')['id'], 2, 1, "Best apple ever", False, None, None))
     db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20'))
@@ -522,15 +523,15 @@ def addOrder(buyer_id, product_id, quantity, price, date=None, status=None):
     return 0
 
 # returns: 0 OK; 1 too long string; 2 product (same name + category + seller) exists; 3 invalid price
-def addProduct(name, category, seller, price):
+def addProduct(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date):
     if len(name) > DB_STRING_SHORT_MAX:
         return 1
-    if isSellingProduct(name, category, seller):
-        return 2
-    if price < 0:
-        return 3
+    # if isSellingProduct(name, category, seller):
+    #     return 2
+    # if price < 0:
+    #     return 3
 
-    db.session.add(Product(name, category, None, seller, price, None, None, None, None, None))
+    db.session.add(Product(name, category, quantity, seller, price, sell_type, description, self_harvest, begin_date, end_date))
     db.session.commit()
     return 0   
 
@@ -540,7 +541,7 @@ def addCategorySuggestion(category_name, higher_category, leaf, description, sug
         return 1
     if not isCategoryID(higher_category):
         return 2
-
+    print(leaf)
     db.session.add(CategorySuggestion(category_name, higher_category, leaf, description, 0, suggester_id, None))
     db.session.commit()
     return 0    
