@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{% block title %} Shopping cart {% endblock %}</h1>
+    <br>
+    <root class="contents" style="display: inline-flexbox;">
+        <div class="register_form box" style="width: 95%;">
+            {% if ( cart_items | length() ) != 0 %}
+                <div style="display: inline;">
+                    <p style="float:inline-start;"><b>Items</b></p>
+                    <button onclick="orderItems()" style="float: inline-end;" id="cart_delete" class="login_form_button" style="margin: 0px;" value="0">Order items</button>
+                </div>
+                <br><br>
+            {% else %}
+                <p><b>Items</b></p>
+            {% endif %}
+            <table style="margin: 5px; padding: 5px; display: block;">
+                <tr>
+                    <th class="profile_orders_table_row">#</th>
+                    <th class="profile_orders_table_row" style="width: 35%;">Item</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Quantity</th>
+                    <th class="profile_orders_table_row" style="width: 10%;">Total price</th>
+                    <th class="profile_orders_table_row" style="width: 100%;"></th>
+                    <th class="profile_orders_table_row"></th>
+                </tr>
+                {% if ( cart_items | length() ) != 0 %}
+                    {% for item in cart_items %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row">{{ loop.index }}</td>
+                        <td onclick="showItem({{ item['product_id']}})" class="profile_orders_table_row">{{ getProductName(item['product_id']) }} (from {{ getProductSellerName(item['product_id']) }})</td>
+                        <td class="profile_orders_table_row">{{ item['quantity'] }}</td>
+                        <td class="profile_orders_table_row">{{ getCartProductPrice(item['product_id'], item['quantity']) }} {{ getUsedCurrency() }}</td>
+                        <td class="profile_orders_table_row"></td>
+
+                        <td id="buttonsRow2" class="profile_orders_table_row">
+                            <button onclick="deleteItem({{ item['product_id'] }})" id="cart_delete" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr style="cursor: default;" class="profile_orders_table_row_action">
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row">Your cart is empty.</td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                        <td class="profile_orders_table_row"></td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </root>
+
+    <script>
+        function deleteItem(id) {
+            window.location = "cart/delete%id="+id;
+        }
+        function showItem(id) {
+            window.location.href = "/product/"+id;
+        }
+        function orderItems() {
+            window.location.href = "{{ url_for('new_order', id=0, quantity=0, isRepeat=0) }}"
+        }
+    </script>
+{% endblock %}

@@ -39,6 +39,7 @@ class FlaskUser():
     id = 0
     email = ""
     logged = False
+    active = True
 
     def __init__(self, id, email):
         self.id = id
@@ -49,7 +50,7 @@ class FlaskUser():
         return self.logged
 
     def is_active(self):
-        return True
+        return self.active
 
     def is_anonymous(self):
         if (self.email == None):
@@ -78,8 +79,10 @@ class User(db.Model):
     role = db.Column(db.Integer)
     phone_number = db.Column(db.Integer)
     calendar = db.Column(MutableList.as_mutable(PickleType), default=[])
+    cart = db.Column(MutableList.as_mutable(PickleType), default=[])
+    account_status = db.Column(db.Boolean)
 
-    def __init__(self, email, name, birth_date, address, password, role, phone_number, calendar):
+    def __init__(self, email, name, birth_date, address, password, role, phone_number, calendar, cart, account_status):
         self.email = email
         self.name = name
         self.birth_date = birth_date
@@ -88,12 +91,14 @@ class User(db.Model):
         self.role = role
         self.phone_number = phone_number
         self.calendar = calendar
+        self.cart = cart
+        self.account_status = account_status
 
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'calendar')
+        fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'calendar', 'cart', 'account_status')
 
-unregistered_user = User(None, None, None, None, None, 4, None, None)
+unregistered_user = User(None, None, None, None, None, 4, None, None, None, False)
         
 
 class Product(db.Model):
@@ -143,23 +148,23 @@ class CategorySchema(ma.Schema):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     buyer = db.Column(db.Integer, db.ForeignKey('user.id'))
-    product = db.Column(db.Integer, db.ForeignKey('product.id'))
-    quantity = db.Column(db.Integer)
+    product_list = db.Column(MutableList.as_mutable(PickleType), default=[])
+    quantity_list = db.Column(MutableList.as_mutable(PickleType), default=[])
     price = db.Column(db.Integer)
     date = db.Column(db.Date)
     status = db.Column(db.Integer)
     
-    def __init__(self, buyer, product, quantity, price, date, status):
+    def __init__(self, buyer, product_list, quantity_list, price, date, status):
         self.buyer = buyer
-        self.product = product
-        self.quantity = quantity
+        self.product_list = product_list
+        self.quantity_list = quantity_list
         self.price = price
         self.date = date
         self.status = status
 
 class OrderSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'buyer', 'product', 'quantity', 'price', 'date', 'status')
+        fields = ('id', 'buyer', 'product_list', 'quantity_list', 'price', 'date', 'status')
 
 class CalendarRow(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -200,6 +205,24 @@ class CategorySuggestion(db.Model):
 class CategorySuggestionSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name', 'higher_category', 'leaf', 'description', 'status', 'suggester', 'approver')
+
+class ProductReview(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    reviewer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    text = db.Column(db.String(DB_STRING_LONG_MAX))
+    evaluation = db.Column(db.Integer)
+
+    def __init__(self, product_id, reviewer_id, text, evaluation):
+        self.product_id = product_id
+        self.reviewer_id = reviewer_id
+        self.text = text
+        self.evaluation = evaluation
+
+class ProductReviewSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'product_id', 'reviewer_id', 'text', 'evaluation')
+
 
 # Create database
 def create_db():
@@ -248,12 +271,12 @@ def create_db():
     db.session.commit()
 
     # add template users for show
-    db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, []))
-    db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, []))
-    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384, []))
-    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384, []))
-    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384, []))
-    db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, []))
+    db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, [], [], True))
+    db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, [], [], True))
+    db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384, [], [], True))
+    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384, [], [], True))
+    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384, [], [], True))
+    db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, [], [], True))
     db.session.commit()
 
     # dummy data
@@ -367,11 +390,13 @@ def getUserByEmail(email):
             return x
     return None
 
-def getUsersByRole(role):
+def getUsersByRole(role, includeDeleted=False):
     list = getUsers()
     result = []
     for x in list:
         if x['role'] == role:
+            if (includeDeleted == False and x['account_status'] == False):
+                continue
             result.append(x)
     return result
 
@@ -439,6 +464,29 @@ def getCategoryNames():
         result.append(x['name'])
     return result
 
+def getProductReview(id):
+    list = getProductReviews()
+    for x in list:
+        if x['id'] == id:
+            return x
+    return None
+
+def getReviewsOfOrder(order_id):
+    list = getProductReviews()
+    result = []
+    for x in list:
+        if x['order_id'] == order_id:
+            result.append(x)
+    return result
+
+def getReviewsOfProduct(product_id):
+    list = getProductReviews()
+    result = []
+    for x in list:
+        if x['product_id'] == product_id:
+            result.append(x)
+    return result
+
 #
 # Get everything
 # returns: list of <<x>> (See: XSchema)
@@ -482,6 +530,11 @@ def getCategorySuggestions():
     suggestions_schema = CategorySuggestionSchema(many=True)
     return suggestions_schema.dump(suggestions)
 
+def getProductReviews():
+    reviews = ProductReview.query.all()
+    reviews_schema = ProductReviewSchema(many=True)
+    return reviews_schema.dump(reviews)
+
 #
 ##  Adders
 #
@@ -493,7 +546,7 @@ def addUser(email, name, password, role):
         return 1
     if isUserEmail(email):
         return 2
-    db.session.add(User(email, name, None, None, password, role, None, []))
+    db.session.add(User(email, name, None, None, password, role, None, [], [], True))
     db.session.commit()
     return 0
 
@@ -507,18 +560,11 @@ def addCategory(name, higher_category=None, leaf=False):
     db.session.commit()
     return 0
 
-# returns: 0 OK; 1 buyer id invalid; 2 product id invalid; 3 quantity invalid; 4 price invalid
-def addOrder(buyer_id, product_id, quantity, price, date=None, status=None):
+# returns: 0 OK; 1 buyer id invalid
+def addOrder(buyer_id, product_id_list, quantity_list, total_price, date=None, status=None):
     if not isUserID(buyer_id):
         return 1
-    if not isProduct(product_id):
-        return 2
-    if quantity < 0:
-        return 3
-    if price < 0:
-        return 4
-
-    db.session.add(Order(buyer_id, product_id, quantity, price, date, status))
+    db.session.add(Order(buyer_id, product_id_list, quantity_list, total_price, date, status))
     db.session.commit()
     return 0
 
@@ -544,7 +590,20 @@ def addCategorySuggestion(category_name, higher_category, leaf, description, sug
     print(leaf)
     db.session.add(CategorySuggestion(category_name, higher_category, leaf, description, 0, suggester_id, None))
     db.session.commit()
-    return 0    
+    return 0
+
+# returns: 0 OK; 1 too long string; 2 invalid reviewer; 3 invalid product; 
+def addProductReview(product_id, reviewer_id, text="", evaluation=5):
+    if len(text) > DB_STRING_LONG_MAX:
+        return 1
+    if not isUserID(reviewer_id):
+        return 2
+    if not isProduct(product_id):
+        return 3
+
+    db.session.add(ProductReview(product_id, reviewer_id, text, evaluation))
+    db.session.commit()
+    return 0
 
 #
 ##  Removers

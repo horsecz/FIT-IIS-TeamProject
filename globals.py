@@ -33,3 +33,4 @@ nav_pages = []                  #   list of pages in navigation bar
 path = []                       #   current navigation path
 last_url = None                 #   last visited URL shared element
 logged_users = []               #   list of logged users
+temp_cart = []                  #   temporary cart

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="shortcut icon" href="#" />
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - BestIISApp</title>
     <link rel="shortcut icon" href="#" />
@@ -459,6 +460,7 @@
             {% if logged == True %}
                 <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
                 <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('cart') }}"><input class="button_topbar_login" type="button" value="Cart"></a>
             {% else %}
                 <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Log in"></a>
             {% endif %}

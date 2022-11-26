@@ -4,7 +4,6 @@
         <h1>{{ product.name }}</h1>
         <p>{{ product.description }}</p>
         <p>Seller: <a href="{{ url_for('open_farmer', id=seller['id']) }}">{{ seller['name'] }}</a></p>
-
         <br></br>
         {% if product['sell_type'] == 0 %}    
             <p> Price: {{ product['price'] }}€/kg</p>
@@ -20,22 +19,73 @@
             <p>Harvest starts: {{ product['begin_date']}}</p>
             <p>Harvest ends: {{ product['end_date']}}</p>
             <br></br>
-            <a href="{{ url_for('add_to_calendar', id=product['id']) }}">
+            {% if logged == True %}
+            <a href="{{ url_for('new_event', id=product['id']) }}">
                 <button class="btn btn-primary">Add to Calendar</button>
             </a>
+            {% else %}
+                <p style="color: darkred; font-weight: bold;">Registered users can add this event to their calendar.</p>
+            {% endif %}
         {% else %}
             <br></br>
-            <form action="{{ url_for('create_order', id=product['id']) }}" method="POST">
+            {% if logged == True %}
+            <form action="{{ url_for('add_to_cart', id=product['id']) }}" method="POST">
                 <label>Quantity:</label><br>
                 <input type="number" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" value="1" placeholder="Quantity">
                 <br></br>
-                <input type="submit" value="Order">
+                <input type="submit" class="login_form_button" style="display: inline;" value="Add to cart">
             </form>
+            {% else %}
+                <p style="color: darkred; font-weight: bold;">Only registered user can buy this product.</p>
+            {% endif %}
+        {% endif %}
+
+        {% if added_to_cart %}
+            <p>Added item to cart</p>
         {% endif %}
 
         {% if added %}
                 <p>Added to calendar</p>
         {% endif %}
+        <br><br>
+
+        {% if userBoughtProduct(user['id'], product['id']) and not userWrittenReview(user['id'], product['id']) and logged %}
+        <p style="text-align: center; font-weight: bold;">Review this product</p>
+        <p>We value your opinion. Please let us know how you are satisfied with this product.</p>
+        <div style="display: inline-flex;">
+            <form method="post" action="{{ url_for('product_review', id=product['id']) }}">
+                <select class="login_form_textbox" id="review_select" name="review_select">
+                    <option value="5">Very satisfied</option>
+                    <option value="4">Satisfied</option>
+                    <option value="3">Average</option>
+                    <option value="2">Not satisfied</option>
+                    <option value="1">Very disappointed</option>
+                </select>
+                <textarea style="resize:none; height: 100px;" class="login_form_textbox" id="review_desc" name="review_desc" placeholder="Description" maxlength="{{ getMaxStringLength() }}"></textarea>
+                <br><br>
+                
+                <button type="submit" style="float:inline-start;" class="login_form_button" id="review_button" name="review_button" value="0">Send review</button>
+                <br><br><br>
+            </form>
+        </div>
+        <br>
+        {% endif %}
+
+        <br><br>
+        <p><b>Reviews: </b></p>
+        {% if getProductReviews(product['id']) | length() == 0 %}
+            <p>Nobody reviewed this product yet. Be first and order this product!</p>
+        {% endif %}
         
+        {% for x in getProductReviews(product['id']) %}
+            <p style="font-weight: bold;">Review from: {{ getUserName(x['reviewer_id']) }}</p>
+            <p>Satisfaction:
+                {% for i in range(0, x['evaluation']) %}
+                    *
+                {% endfor %}
+            </p>
+            <p>{{ x['text'] }}</p>
+            <br>
+        {% endfor %}
     </div>
 {% endblock %}
