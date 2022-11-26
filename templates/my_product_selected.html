@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{ product['name'] }}</h1>
+    <form class="sugg_form" action="{{ url_for('save_product_edit', id=product['id']) }}" method="post">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ product['name'] }}">
+        <br></br>
+        <label>Price</label>
+        <input type="text" name="price" value="{{ product['price'] }}">
+        <br></br>
+        <label>Sell type</label>
+        <select name="sell_type">
+            {% if product['sell_type'] == 0%}
+                <option value="0" selected>Per unit</option>
+                <option value="1">Per kilogram</option>
+                <option value="2">Per gram</option>
+            {% elif product['sell_type'] == 1%}
+                <option value="0">Per unit</option>
+                <option value="1" selected>Per kilogram</option>
+                <option value="2">Per gram</option>
+            {% elif product['sell_type'] == 2%}
+                <option value="0">Per unit</option>
+                <option value="1">Per kilogram</option>
+                <option value="2" selected>Per gram</option>
+            {% endif %}
+        </select>
+        <br></br>
+        <label>Quantity</label>
+        <input type="text" name="quantity" value="{{ product['quantity'] }}">
+        <br></br>
+        <label>Description</label>
+        <textarea name="description">{{ product['description'] }}</textarea>
+        <br></br>
+        <label>Self Harvest</label>
+        <select name="self_harvest"> 
+            {% if product['self_harvest'] %}
+                <option value="True" selected>Yes</option>
+                <option value="False">No</option>
+            {% else %}
+                <option value="True">Yes</option>
+                <option value="False" selected>No</option>
+            {% endif %}
+        </select>
+        <br></br>
+        <label>Self harvest begin date</label>
+        <input type="date" name="begin_date" value="{{ product['begin_date'] }}">
+        <br></br>
+        <label>Self harvest end date</label>
+        <input type="date" name="end_date" value="{{ product['end_date'] }}">
+        <br></br>
+        <input type="submit" value="Save" class="login_form_button">
+    </form>
+{% endblock %}

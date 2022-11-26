@@ -75,17 +75,14 @@ def registration():
 def user_customer():
     be.setCurrentPath(user_customer.__name__)
     be.navigationSetPageActive('user_customer')
-    return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
     
-
-
 @app.route("/nav/user/farmer", methods=["GET"])
 def user_farmer():
     be.setCurrentPath(user_farmer.__name__)
     be.navigationSetPageActive('user_farmer')
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(be.getLoggedUser()['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
     
-
 @app.route("/nav/user/settings", methods=["GET"])
 def user_settings():
     be.setCurrentPath(user_settings.__name__)
@@ -279,7 +276,7 @@ def category(id):
     cat = database.getCategory(int(id))
     is_leaf = cat['leaf']
     if is_leaf:
-        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id), suggestions=database.getCategoryNames())
+        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id), suggestions=database.getCategoryNames(), products_count=len(database.getProductsByCategory(id)))
     else:
         return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(id), suggestions=database.getCategoryNames())
     
@@ -312,7 +309,115 @@ def search():
     elif prod:
         return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(prod['id']), seller=database.getUser(prod['seller']), suggestions=database.getCategoryNames())
     else:
-        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), category=None)
+        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), category='not found', product='not found')
+
+@app.route("/nav/user/customer/<int:id>", methods=["POST"])
+def create_suggestion(id):
+    name = request.form['category_name']
+    parent = request.form['category_parent']
+    description = request.form['category_description']
+    leaf = request.form.get('final', False)
+    if leaf == 'final':
+        leaf = True
+        
+    
+    parent_db = database.getCategoryByName(parent)
+    if parent_db is None:
+        return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=1, suggestions=database.getCategoryNames())
+
+    if parent_db['leaf']:
+        return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=2, suggestions=database.getCategoryNames())
+    
+    database.addCategorySuggestion(name, parent_db['id'],  leaf, description, id)
+    return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), error=0, nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+ 
+@app.route("/nav/user/<int:id>", methods=["GET"])
+def product_edit(id):
+    product = database.getProduct(id)
+    return render_template('my_product_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+
+@app.route("/nav/user/farmer/<int:id>", methods=["POST"])
+def product_remove(id):
+    product = database.getProduct(id)
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames())
+
+@app.route("/nav/user/farmer/<int:id>", methods=["POST"])
+def save_product_edit(id):
+    product = database.getProduct(id)
+    name = request.form['name']
+    price = request.form['price']
+    sell_type = request.form['sell_type']
+    quantity = request.form['quantity']
+    description = request.form['description']
+    self_harvest = request.form['self_harvest']
+    begin_date = request.form['begin_date']
+    end_date = request.form['end_date']
+    
+    print(name, category, price, sell_type, quantity, description, self_harvest, begin_date, end_date)
+    
+    name_db = database.getProductByNameOnly(name)
+    
+    if name_db is not None and name_db['id'] != id:
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1)
+    
+    be.editProductData(id, 'name', name)
+    be.editProductData(id, 'price', price)
+    be.editProductData(id, 'sell_type', sell_type)
+    be.editProductData(id, 'quantity', quantity)
+    be.editProductData(id, 'description', description)
+    
+    
+    if self_harvest == "True":
+        be.editProductData(id, 'self_harvest', True)
+        be.editProductData(id, 'begin_date', begin_date)
+        be.editProductData(id, 'end_date', end_date)
+    else:
+        be.editProductData(id, 'self_harvest', False)
+        be.editProductData(id, 'begin_date', None)
+        be.editProductData(id, 'end_date', None)
+    
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), category=database.getCategory(product['category']), product=product, error=0)
+
+@app.route("/nav/user/new_product", methods=["GET"])
+def create_product():
+    return render_template('create_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+
+@app.route("/nav/user/new_product", methods=["POST"])
+def create_new_product():
+    name = request.form['name']
+    category = request.form['category']
+    price = request.form['price']
+    sell_type = request.form['sell_type']
+    quantity = request.form['quantity']
+    description = request.form['description']
+    self_harvest = request.form['self_harvest']
+    begin_date = request.form['begin_date']
+    end_date = request.form['end_date']
+    user=be.getLoggedUser()
+    
+    name_db = database.getProductByNameOnly(name)
+    category_db = database.getCategoryByName(category)
+    
+    if name_db is not None:
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=2)
+    
+    if category_db is None:
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=3)
+    
+    if category_db['leaf'] == False:
+        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=4)
+    
+    if self_harvest == "True":
+        self_harvest = True
+    else:
+        self_harvest = False
+        begin_date = None
+        end_date = None
+        
+    database.addProduct(name, category_db['id'], quantity, user['id'], price, sell_type, description, self_harvest, begin_date, end_date)
+    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=-1)
+        
+
   
 @app.route("/nav/user/settings/orders", methods=["GET"])
 def user_settings_orders():
@@ -573,7 +678,7 @@ def admin_category_edit(type, id):
 def admin_suggestion_approve(id):
     category = database.getCategorySuggestion(id)
     database.modifyData(database.CategorySuggestion, id, 'status', 1)
-    database.addCategory(category['name'], category['higher_category'])
+    database.addCategory(category['name'], category['higher_category'], category['leaf'])
     return admin_suggestions()
 
 @app.route("/nav/admin/suggestion_deny%id=<int:id>", methods=["GET"])

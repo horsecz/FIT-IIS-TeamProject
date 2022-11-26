@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>New Product</h1>
+    <form class="sugg_form" action="{{ url_for('create_new_product') }}" method="post">
+        <label>Name</label>
+        <input type="text" name="name" required>
+        <br></br>
+        <label>Category</label>
+        <input type="text" name="category" autocomplete="off" list="suggestions" required>
+        <datalist id="suggestions">
+            {% for suggestion in suggestions %}
+                <option value="{{ suggestion }}">{{ suggestion }}</option>
+            {% endfor %}
+        </datalist>
+        <br></br>
+        <label>Price</label>
+        <input type="number" min="1" name="price" required>
+        <br></br>
+        <label>Sell type</label required>
+        <select name="sell_type">
+                <option value="0" selected>Per unit</option>
+                <option value="1">Per kilogram</option>
+                <option value="2">Per gram</option>
+        </select>
+        <br></br>
+        <label>Quantity</label>
+        <input type="number" min="1" name="quantity" required>
+        <br></br>
+        <label>Description</label>
+        <textarea name="description"></textarea>
+        <br></br>
+        <label>Self Harvest</label>
+        <select name="self_harvest" required> 
+            <option value="True">Yes</option>
+            <option value="False">No</option>
+        </select>
+        <br></br>
+        <label>Self harvest begin date</label>
+        <input type="date" name="begin_date">
+        <br></br>
+        <label>Self harvest end date</label>
+        <input type="date" name="end_date">
+        <br></br>
+        <input type="submit" value="Create" class="login_form_button">
+    </form>
+
+{% endblock %}
