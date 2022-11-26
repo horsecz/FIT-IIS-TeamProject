@@ -41,6 +41,10 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(getProductName=getProductName)
     app.jinja_env.globals.update(userWrittenReview=userWrittenReview)
     app.jinja_env.globals.update(userBoughtProduct=userBoughtProduct)
+    app.jinja_env.globals.update(isMyProduct=isMyProduct)
+
+def isMyProduct(user_id, product_id):
+    return database.isSellingProduct(product_id, user_id)
 
 def userBoughtProduct(user_id, product_id):
     u = database.getUser(user_id)

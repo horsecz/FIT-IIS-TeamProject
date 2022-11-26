@@ -28,15 +28,23 @@
             {% endif %}
         {% else %}
             <br></br>
-            {% if logged == True %}
-            <form action="{{ url_for('add_to_cart', id=product['id']) }}" method="POST">
-                <label>Quantity:</label><br>
-                <input type="number" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" value="1" placeholder="Quantity">
-                <br></br>
-                <input type="submit" class="login_form_button" style="display: inline;" value="Add to cart">
-            </form>
+            {% if logged == True and not isMyProduct(user['id'], product['id']) %}
+                {% if product['quantity'] != 0 %}
+                <form action="{{ url_for('add_to_cart', id=product['id']) }}" method="POST">
+                    <label>Quantity:</label><br>
+                    <input type="number" id="quantity" name="quantity" min="1" max="{{ product.quantity }}" value="1" placeholder="Quantity">
+                    <br></br>
+                    <input type="submit" class="login_form_button" style="display: inline;" value="Add to cart">
+                </form>
+                {% else %}
+                    <p style="color: darkred; font-weight: bold;">We're sorry, but this product is out of stock. Come back later!</p>
+                {% endif %}
             {% else %}
-                <p style="color: darkred; font-weight: bold;">Only registered user can buy this product.</p>
+                {% if logged == False %}
+                    <p style="color: darkred; font-weight: bold;">Only registered user can buy this product.</p>
+                {% else %}
+                    <p style="color: darkred; font-weight: bold;">Sorry, you can not order your own product.</p>
+                {% endif %}
             {% endif %}
         {% endif %}
 
