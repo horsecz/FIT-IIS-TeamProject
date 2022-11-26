@@ -464,6 +464,14 @@ def getCategoryNames():
         result.append(x['name'])
     return result
 
+def getLeafCategories():
+    list = getCategories(True)
+    result = []
+    for x in list:
+        if x['leaf'] == True:
+            result.append(x['name'])
+    return result
+
 def getProductReview(id):
     list = getProductReviews()
     for x in list:
