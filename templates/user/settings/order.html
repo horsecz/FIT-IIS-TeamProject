@@ -27,7 +27,9 @@
         <br>
 
         {% for product_id in product_ids %}
-            <input disabled=true class="profile_user_data" typ  e="text" name="product" id="product" value="{{ quantities[loop.index-1] }}x {{ getProductName(product_id) }} for {{ getCartProductPrice(product_id, quantities[loop.index-1]) }} {{ getUsedCurrency() }}">
+            <a href="{{ url_for('product', id=product_id) }}" style="text-decoration: none;">
+                <p class="profile_user_data" name="product" id="product">{{ quantities[loop.index-1] }}x {{ getProductName(product_id) }} for {{ getCartProductPrice(product_id, quantities[loop.index-1]) }} {{ getUsedCurrency() }}</p>
+            </a>
         {% endfor %}
     </div>
     <div class="register_form box" style="width: 20%;">

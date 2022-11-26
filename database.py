@@ -314,6 +314,20 @@ def create_db():
     db.session.add(Product('Joes Red Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None))
     db.session.commit()
 
+    id1 = getUserByEmail('farmer2')
+    id1 = id1['id']
+
+    id2 = getUserByEmail('user')
+    id2 = id2['id']
+
+    prods = getProducts()
+
+    db.session.add(Order(id1, [prods[0]['id'], prods[1]['id']], [5, 10], 69, '1999-01-01', 1))
+    db.session.add(Order(id2, [prods[3]['id'], prods[4]['id']], [10, 1], 120, '1999-01-01', 1))
+    db.session.add(Order(id2, [prods[5]['id'], prods[6]['id'], prods[7]['id']], [10, 1, 5], 200, '1999-01-01', 0))
+    db.session.add(Order(id2, [prods[9]['id']], [15], 100, '1999-01-01', -1))
+    db.session.commit()
+
 #
 ##  Checkers
 #
