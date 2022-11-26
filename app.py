@@ -497,7 +497,7 @@ def user_settings_event(id):
     be.addPathArgument('id', id)
     cal = be.getUserCalendar(be.getLoggedUser())
     event = be.getCalendarEvent(cal, id)
-    prod = database.getProduct(event[0])
+    prod = database.getProduct(event[0], True)
     seller = database.getUser(prod['seller'])
     return render_template('/user/settings/calendar.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id, actionShow=True, suggestions=database.getCategoryNames())
 
@@ -627,7 +627,7 @@ def product_review(id):
     user = be.getLoggedUser()
     database.addProductReview(prod['id'], user['id'], request.form['review_desc'], int(request.form['review_select']))
     database.modifyData(database.Order, id, 'status', 2)
-    return redirect(url_for('home'))
+    return product(id)
 
 @app.route("/nav/user/settings/order/repeat%id=<int:id>%page=<int:page>", methods=["GET"])
 def user_settings_order_repeat(id, page):

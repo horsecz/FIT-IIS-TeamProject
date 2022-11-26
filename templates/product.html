@@ -24,7 +24,7 @@
             <br></br>
             {% if logged == True %}
             <a href="{{ url_for('new_event', id=product['id']) }}">
-                <button class="btn btn-primary">Add to Calendar</button>
+                <button class="login_form_button" class="btn btn-primary">Add to Calendar</button>
             </a>
             {% else %}
                 <p style="color: darkred; font-weight: bold;">Registered users can add this event to their calendar.</p>
