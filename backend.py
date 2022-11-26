@@ -32,12 +32,53 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(suggestionResultToString=suggestionResultToString)
     app.jinja_env.globals.update(getUserEmail=getUserEmail)
     app.jinja_env.globals.update(checkSuggestionConflicts=checkSuggestionConflicts)
-    app.jinja_env.globals.update(getCurrentNavigationPathURL=getCurrentNavigationPathURL)
-    app.jinja_env.globals.update(translateNavigationPath=translateNavigationPath)
-    app.jinja_env.globals.update(getCurrentPathArguments=getCurrentPathArguments)
     app.jinja_env.globals.update(getUserBirthdate=getUserBirthdate)
     app.jinja_env.globals.update(getUserAddress=getUserAddress)
     app.jinja_env.globals.update(getUserPhoneNumber=getUserPhoneNumber)
+    app.jinja_env.globals.update(getProductReviews=getProductReviews)
+    app.jinja_env.globals.update(getCartProductPrice=getCartProductPrice)
+    app.jinja_env.globals.update(getProductSellerName=getProductSellerName)
+    app.jinja_env.globals.update(getProductName=getProductName)
+    app.jinja_env.globals.update(userWrittenReview=userWrittenReview)
+    app.jinja_env.globals.update(userBoughtProduct=userBoughtProduct)
+    app.jinja_env.globals.update(isMyProduct=isMyProduct)
+
+def isMyProduct(user_id, product_id):
+    return database.isSellingProduct(product_id, user_id)
+
+def userBoughtProduct(user_id, product_id):
+    u = database.getUser(user_id)
+    o = getUserOrders(u)
+    for order in o:
+        for bought_product_id in order['product_list']:
+            if (bought_product_id == product_id):
+                if (order['status'] == 0):
+                    return True
+    return False
+
+def userWrittenReview(user_id, product_id):
+    u = database.getUser(user_id)
+    p_reviews = database.getReviewsOfProduct(product_id)
+    for review in p_reviews:
+        if review['reviewer_id'] == user_id:
+            return True
+    return False
+
+def getCartProductPrice(product_id, quantity):
+    p = database.getProduct(product_id)
+    return (p['price'] * int(quantity))
+
+def getProductSellerName(product_id):
+    p = database.getProduct(product_id)
+    s = database.getUser(p['seller'])
+    return s['name']
+
+def getProductName(product_id):
+    p = database.getProduct(product_id)
+    return p['name']
+
+def getProductReviews(product_id):
+    return database.getReviewsOfProduct(product_id)
 
 def getUserPhoneNumber(user_element):
     data = user_element['phone_number']
@@ -59,63 +100,6 @@ def getUserBirthdate(user_element):
         return ""
     else:
         return data
-
-def translateNavigationPath():
-    result = []
-    path_url = globals.path[0]
-    if (path_url == "home"):
-        result.append('Home')
-    elif (path_url == 'offers'):
-        result.append('Farmers')
-    elif (path_url == "login"):
-        result.append('Login page')
-    elif (path_url == 'registration'):
-        result.append('Registration')
-    elif (path_url == 'user_customer'):
-        result.append('Farmers')
-    elif (path_url == 'user_farmer'):
-        result.append('My Products')
-    elif (path_url == 'user_settings'):
-        result.append('My Profile')
-    elif (path_url == 'admin_categories'):
-        result.append('Category management')
-    elif (path_url == 'admin_suggestions'):
-        result.append('Category suggestions')
-    elif (path_url == 'admin_users'):
-        result.append('User management')
-
-    elif (path_url == 'admin_user_selected'):
-        result.append('User management')
-        result.append('User ID '+str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_orders'):
-        result.append('My Profile')
-        result.append('Orders')
-    elif (path_url == 'user_settings_calendar'):
-        result.append('My Profile')
-        result.append('Calendar')
-    elif (path_url == 'user_settings_order'):
-        result.append('My Profile')
-        result.append('Orders')
-        result.append('Order '+ str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_event'):
-        result.append('My Profile')
-        result.append('Calendar')
-        result.append('Event '+str(globals.path[1][0][1]))
-    elif (path_url == 'user_settings_accountRemoval'):
-        result.append('My Profile')
-        result.append('Account removal')
-    elif (path_url == 'new_order'):
-        result.append('New Order')
-    elif (path_url == 'admin_categories_detail'):
-        result.append('Category management')
-        result.append('Category ID '+str(globals.path[1][0][1]))
-    else:
-        result = []
-
-    return result
-
-def getCurrentNavigationPathURL():
-    return globals.path[0]
 
 def checkSuggestionConflicts(sugg_id, higher_id):
     sugg = database.getCategorySuggestion(sugg_id)
@@ -140,6 +124,40 @@ def suggestionResultToString(result):
         return "Approved"
     else:
         return "Denied"
+
+def userCartNewItem(product_id, quantity):
+    item = {
+        "product_id": product_id,
+        "quantity": quantity
+    }
+    return item
+
+def userCartAddItem(user_id, item):
+    u = database.getUser(user_id)
+    c = u['cart']
+    c.append(item)
+    database.modifyData(database.User, user_id, 'cart', c)
+
+def userCartRemoveItem(user_id, item):
+    u = database.getUser(user_id)
+    c = u['cart']
+    c.remove(item)
+    database.modifyData(database.User, user_id, 'cart', c)
+
+def getTotalCartPrice(user_id, temp_cart=None):
+    if (user_id == None):
+        c = temp_cart
+    else:
+        u = database.getUser(user_id)
+        c = u['cart']
+    price = 0
+    for item in c:
+        price = price + getCartProductPrice(item['product_id'], item['quantity'])
+    return price
+
+def getUserCart(user_id):
+    u = database.getUser(user_id)
+    return u['cart']
 
 def getUserName(user_id):
     u = database.getUser(user_id)
@@ -167,13 +185,15 @@ def productSellTypeToString(sell_type):
     elif sell_type == 2:
         return "in 1 g"
     else:
-        return "Unknown"
+        return "Unknown sell type "+str(sell_type)
 
 def orderStatusToString(order_status):
     if order_status == 0:
         return "Completed"
     elif order_status == 1:
         return "Processing"
+    elif order_status == 2:
+        return "Reviewed"
     elif order_status == -1:
         return "Cancelled"
     else:
@@ -195,10 +215,20 @@ def getLoggedUserSells():
 
     if len(product_list) == 0:
         return list
+
+    print(product_list)
     
+    orderAdd = False
     for order in database.getOrders():
-        if order['product'] in product_list:
-            list.append(order)
+        for prod in order['product_list']:
+            for farmer_prods in product_list:
+                if farmer_prods['id'] == prod:
+                    orderAdd = True
+                    break
+            if (orderAdd == True):
+                list.append(order)
+                break
+
     
     return list
 
@@ -296,9 +326,6 @@ def isQuantity(string):
 #
 #   Current path functions
 #
-
-def getCurrentPathArguments():
-    return globals.path[1]
 
 def setCurrentPath(url_func_name):
     globals.path.clear()
@@ -399,17 +426,42 @@ def getUserRow(user_id=None, user_email=None):
 def editUserData(user_id, user_data, value):
     database.modifyData(database.User, user_id, user_data, value)
 
-# returns None OK; or string of error/exception
+# returns None OK; or string of first error/exception
 def removeUser(user_id=None):
     if user_id == None:
         getLoggedUser()
         removal_id = globals.logged_user['id']
-        r = database.removeData(database.User, removal_id)
-        return r
     else:
         removal_id = user_id
-        r = database.removeData(database.User, removal_id)
+
+    r = database.modifyData(database.User, removal_id, 'account_status', False)
+    if (r != None):
         return r
+    r = database.modifyData(database.User, removal_id, 'email', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'address', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'phone_number', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'birth_date', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'password', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'calendar', None)
+    if (r != None):
+        return r
+    r = database.modifyData(database.User, removal_id, 'cart', None)
+    return r
+    
+    
+
+def editProductData(product_id, product_data, value):
+    database.modifyData(database.Product, product_id, product_data, value)
 
 # returns: 0 OK; 1 user exists; 2 bad password format; 3 too long name; 4 invalid email format
 def newUser(login, password, name, role):
@@ -428,7 +480,7 @@ def newUser(login, password, name, role):
 
 def validateUser(login, password):
     user = database.getUserByEmail(login)
-    if (user != None and user['password'] == password):
+    if (user != None and user['password'] == password and user['account_status']):
         return True
     return False
 
@@ -488,11 +540,8 @@ def isUserAdmin(user):
 #   Orders
 #
 
-# returns 0 OK; 1 exceeded maximum product quantity
-def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
+def addOrder(user_id, product_id_list, quantity_list, price=None, date=None, status=1):
     user_id = int(user_id)
-    product_id = int(product_id)
-    quantity = int(quantity)
     if (date == None):
         today = datetime.datetime.today()
         day = today.day
@@ -500,15 +549,7 @@ def addOrder(user_id, product_id, quantity, price=None, date=None, status=1):
         year = today.year
         date = str(year) + "-" + str(month) + "-" + str(day)
 
-    prod = database.getProduct(product_id)
-    if (price == None):
-        price = prod['price'] * quantity
-
-    if (prod['quantity'] < quantity):
-        return 1
-
-    database.addOrder(user_id, product_id, quantity, price, date, status)
-    return 0
+    database.addOrder(user_id, product_id_list, quantity_list, price, date, status)
 
 #
 #   Calendar (events, self collections)
@@ -560,6 +601,7 @@ def navigationLoadPages():
     navigationAddHiddenPage('login', 'Login page')
     navigationAddHiddenPage('registration', 'Registration')
     navigationAddHiddenPage('user_settings', 'My profile')
+    navigationAddHiddenPage('cart', 'Shopping cart')
 
 # sets page active in navigation bar
 def navigationSetPageActive(page_name):
@@ -588,8 +630,9 @@ def loadUsers():
     db_users = database.getUsers()
     globals.logged_users.clear()
     for u in db_users:
-        fu = database.FlaskUser(u['id'], u['email'])
-        globals.logged_users.append(fu)
+        if (u['account_status'] == True):
+            fu = database.FlaskUser(u['id'], u['email'])
+            globals.logged_users.append(fu)
 
 def init():
     database.create_db()

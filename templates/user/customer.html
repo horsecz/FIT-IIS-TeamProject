@@ -1,10 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} TO BE DONE {% endblock %}</h1>
+    <h1>{% block title %} Create category suggestion {% endblock %}</h1>
     <hr>
-    <p><b>This page is not completed</b></p>
-    <form method="get" action="{{ url_for('home') }}">
-        <button type="submit" id="user_btn" name="user_btn">leave</button>
+    <form class="sugg_form" method="post" action="{{ url_for('create_suggestion', id=user['id']) }}">
+        <label>Category name:</label>
+        <input type="text" name="category_name" id="category_name" placeholder="Category name" required>
+        <br></br>
+        <label>Category parent:</label>
+        <input type="text" id="category_parent" name="category_parent" placeholder="Category parent" autocomplete="off" list="suggestions" required>
+        <datalist id="suggestions">
+            {% for suggestion in suggestions %}
+                <option value="{{ suggestion }}">{{ suggestion }}</option>
+            {% endfor %}
+        </datalist>
+        <br></br>
+        <labe>Is this the final category?</label>
+        <input type="checkbox" id="final" name="final" value="final">
+        <br></br>
+        <label>Category description:</label>
+        <textarea name="category_description" id="category_description" placeholder="Category description" required></textarea>
+        <br></br>
+        <input type="submit" value="Create">
     </form>
-    <br><br>
+    {% if error == 0 %}
+        <p style="color: green; text-align: center;">Suggestion created successfully</p>
+    {% endif %}
+    {% if error == 1 %}
+        <p style="color: red; text-align: center;">Category parent does not exist</p>
+    {% endif %}
+    {% if error == 2 %}
+        <p style="color: red; text-align: center;">Cannot create new category if parent is final category with products</p>
+    {% endif %}
 {% endblock %}

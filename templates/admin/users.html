@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{% block title %} User management {% endblock %}</h1>
-    <root style="display:inline-flex;">
+    <root style="display:flexbox;">
         {% for x in all_users %}
             <form method="post" action="{{ url_for('admin_selected_user_action', id=x['id']) }}">
                 {% if selectedID != x['id'] %}

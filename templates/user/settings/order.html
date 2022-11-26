@@ -18,25 +18,19 @@
         <label for="status" style="font-weight: bold;">Status</label>
         <input disabled=true class="profile_user_data" typ  e="text" name="status" id="status" value="{{ orderStatusToString(order['status']) }}">
 
-        <label for="product" style="font-weight: bold;">Product</label>
-        <input disabled=true class="profile_user_data" typ  e="text" name="product" id="product" value="{{ product['name'] }}">
-
         <label for="price" style="font-weight: bold;">Total price</label>
         <input disabled=true class="profile_user_data" type="text" name="price" id="price" value="{{ order['price'] }} {{ getUsedCurrency() }}">
     </div>
     <div class="register_form box" style="width: 20%;">
-        <p style="text-align: center; font-weight: bold;">Details</p>
+        <p style="text-align: center; font-weight: bold;">Items</p>
         <br>
         <br>
 
-        <label for="seller" style="font-weight: bold;">Seller</label>
-        <input disabled=true class="profile_user_data" typ  e="text" name="seller" id="seller" value="{{ seller['name'] }}">
-
-        <label for="price_piece" style="font-weight: bold;">Price per piece</label>
-        <input disabled=true class="profile_user_data" typ  e="text" name="price_piece" id="price_piece" value="{{ product['price'] }} {{ getUsedCurrency() }}">
-
-        <label for="sell_type" style="font-weight: bold;">One piece</label>
-        <input disabled=true class="profile_user_data" typ  e="text" name="sell_type" id="sell_type" value="{{ productSellTypeToString(product['sell_type']) }}">
+        {% for product_id in product_ids %}
+            <a href="{{ url_for('product', id=product_id) }}" style="text-decoration: none;">
+                <p class="profile_user_data" name="product" id="product">{{ quantities[loop.index-1] }}x {{ getProductName(product_id) }} for {{ getCartProductPrice(product_id, quantities[loop.index-1]) }} {{ getUsedCurrency() }}</p>
+            </a>
+        {% endfor %}
     </div>
     <div class="register_form box" style="width: 20%;">
     {% if actionShow == true %}
@@ -44,16 +38,15 @@
             <br>
             <br>
 
-            <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
             {% if order['status'] == 1 %}
-            <input onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
-            {% else %}
-            <input disabled=true onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
+                <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
+                <input onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">    
+            {% elif order['status'] == 0 %} 
+            {% elif order['status'] == -1 %}
+                <label for="cancel">If you want to cancel this order, you can cancel it any time while it's being processed.</label>
+                <input disabled onclick="orderCancel({{ order['id'] }})" type="button" class="login_form_button" name="cancel" id="cancel" value="Cancel order">
+            {% elif order['status'] == 2 %}
             {% endif %}
-            <br><br>
-    
-            <label for="order_more">Do you wanna order more products from this seller?</label>
-            <input onclick="showFarmer()" type="button" class="login_form_button" name="order_more" id="order_more" value="Show products">
             <br><br>
             
             <label for="order_repeat">What about that you will order this item(s) once again?</label>
@@ -69,9 +62,6 @@
         }
         function orderRepeat(order_id) {
             window.location = "{{ url_for('new_order', id=order['id'], isRepeat=1, quantity=0) }}";
-        }
-        function showFarmer() {
-            window.location.href = "{{ url_for('open_farmer', id=product['seller']) }}";
         }
     </script>
     </root>

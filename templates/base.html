@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="shortcut icon" href="#" />
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - BestIISApp</title>
+    <link rel="shortcut icon" href="#" />
     <style>
         body {
             margin: 0;
@@ -403,10 +405,6 @@
             flex-direction: row;
             justify-content: space-between;
         }
-
-        .sub-nav navpath p{
-            margin: 0;
-        }
         
         input[required], select[required] {
             border: 1px solid #bbb;
@@ -416,6 +414,18 @@
             content:" *";
             color: red;
         }
+        
+        .search_bar {
+            display: flex;
+            justify-content: right;
+            margin-right: 2%;
+        }
+
+        .sugg_form {
+            justify-content: center;
+            text-align: center;
+        }
+
     </style>    
 
 </head>
@@ -450,46 +460,24 @@
             {% if logged == True %}
                 <a class="page_select" style="float:right;" href="{{ url_for('logout') }}"><input class="button_topbar_login" type="button" value="Log out"></a>
                 <a class="page_select" style="float:right;" href="{{ url_for('user_settings') }}"><input class="button_topbar_login" type="button" value="My Profile"></a>
+                <a class="page_select" style="float:right;" href="{{ url_for('cart') }}"><input class="button_topbar_login" type="button" value="Cart"></a>
             {% else %}
                 <a class="page_select" style="float:right;" href="{{ url_for('login') }}"><input class="button_topbar_login" type="button" value="Log in"></a>
             {% endif %}
             <br>
     </ul>
-    <div class="sub-nav">
-        <navpath>
-            <p>
-            Current path: 
-            {% for path_part in translateNavigationPath() %}
-                {% if getCurrentPathArguments() | length() != 0 %}
-                    <a style="text-decoration: none;" href="{{ url_for('home') }}"> %TODO%
-                {% else %}
-                    <a style="text-decoration: none;" href="{{ url_for(getCurrentNavigationPathURL()) }}">
-                {% endif %}
-                {{ path_part }}
-                </a>
-                {% if loop.index < translateNavigationPath() | length() %}
-                    > 
-                {% endif %}
+    <form class="search_bar" action="{{ url_for('search') }}" method="post">
+        <input type="text" id="search" name="search" placeholder="Search..." autocomplete="off" list="suggestions">
+        <datalist id="suggestions">
+            {% for suggestion in suggestions %}
+                <option value="{{ suggestion }}">{{ suggestion }}</option>
             {% endfor %}
-            </p>
-        </navpath>
-        <div class="search_bar">
-            <form action="{{ url_for('search') }}" method="post">
-                <input type="text" id="search" name="search" placeholder="Search..." autocomplete="off" list="suggestions">
-                <datalist id="suggestions">
-                    {% for suggestion in suggestions %}
-                        <option value="{{ suggestion }}">{{ suggestion }}</option>
-                    {% endfor %}
-                    {% for product in products %}
-                        <option value="{{ product['name'] }}">{{ product['name'] }}</option>
-                    {% endfor %}
-                </datalist>
-                <input type="submit" value="Search">
-                
-            </form>
-        </div>
-        
-    </div>
+            {% for product in products %}
+                <option value="{{ product['name'] }}">{{ product['name'] }}</option>
+            {% endfor %}
+        </datalist>
+        <input type="submit" value="Search">
+    </form>
     <br>
     <div class="content">
         {% block content %} {% endblock %}
