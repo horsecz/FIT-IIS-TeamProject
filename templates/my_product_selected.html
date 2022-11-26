@@ -42,11 +42,19 @@
             {% endif %}
         </select>
         <br></br>
-        <label>Self harvest begin date</label>
-        <input type="date" name="begin_date" value="{{ product['begin_date'] }}">
-        <br></br>
-        <label>Self harvest end date</label>
-        <input type="date" name="end_date" value="{{ product['end_date'] }}">
+        {% if product['self_harvest'] %}
+            <label>Self harvest begin date</label>
+            <input type="date" name="begin_date" value="{{ product['begin_date'] }}">
+            <br></br>
+            <label>Self harvest end date</label>
+            <input type="date" name="end_date" value="{{ product['end_date'] }}">
+        {% else %}
+            <label>Self harvest begin date</label>
+            <input type="date" name="begin_date" value="{{ today() }}">
+            <br></br>
+            <label>Self harvest end date</label>
+            <input type="date" name="end_date" value="{{ today() }}">
+        {% endif %}
         <br></br>
         {% if error == 10 %}
         <p style="text-align: center; color:darkred;">Invalid name of product</p>
