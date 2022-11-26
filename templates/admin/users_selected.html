@@ -65,7 +65,7 @@
     </div>
 
     <div class="register_form" style="float: none; height: 30%; width: 25%;">
-        <p style="font-weight: bold;">Status</p>
+        <p style="font-weight: bold;">Edit status</p>
         {% if error < 0 %}
             No changes done.
         {% elif error == 0 %}
@@ -87,7 +87,15 @@
         {% else %}
             Unspecified error.
         {% endif %}
+        <br><br><br>
+        <p style="font-weight: bold;">Remove account</p>
+        <button onclick="remove({{ selectedUser['id'] }})" class="login_form_button" type="submit" name="user_btn" id="user_btn" value="0">Proceed</button>
     </div>
     </root>
+    <script>
+        function remove(id) {
+            window.location.href = "/nav/admin/users/remove/"+id;
+        }
+    </script>
     <br><br>
 {% endblock %}

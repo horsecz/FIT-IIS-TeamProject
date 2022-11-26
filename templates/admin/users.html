@@ -1,18 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{% block title %} User management {% endblock %}</h1>
-    <root style="display:flexbox;">
+    <p style="text-align: center;">Manage users.</p>
+    <br>
+    {% if error == 1 %}
+        <p style="text-align: center; font-weight: bold; color: red;">You can not remove your own account!</p>
+    {% endif %}
+    {% if done and error != 1 %}
+        <p style="text-align: center; font-weight: bold; color: darkgreen;">Account removed successfuly.</p>
+    {% endif %}
+    {% if confirm %}
+        <p style="text-align: center; font-weight: bold; color: brown;">Proceed?</p>
+    {% endif %}
+    <root>
+        <table style="margin: 5px; padding: 5px; display: block;">
+            <tr>
+                <th class="profile_orders_table_row"></th>
+                <th class="profile_orders_table_row" style="width: 25%;"></th>
+                <th class="profile_orders_table_row" style="width: 35%;"></th>
+                <th class="profile_orders_table_row" style="width: 35%;"></th>
+                <th class="profile_orders_table_row" style="width: 35%;"></th>
+                <th class="profile_orders_table_row" style="width: 100%;"></th>
+            </tr>
         {% for x in all_users %}
             <form method="post" action="{{ url_for('admin_selected_user_action', id=x['id']) }}">
                 {% if selectedID != x['id'] %}
-                    <a href="{{ url_for('admin_selected_user', id=x['id']) }}" style="text-decoration: none; color: black;">
-                    <div class="admin_users_form">
+                    <tr onclick="redirect({{ x['id'] }})" class="admin_users_form" style="width: 90%; height: 50px; cursor: default;" >
                 {% else %}
-                    <div class="admin_users_form_nohover">
+                    <tr onclick="redirect({{ x['id'] }})" class="admin_users_form_nohover" style="width: 90%; height: 50px;">
                 {% endif %}
-                        <h3 style="margin-bottom: 0.8cm;">{{ x['email'] }}</h3>
-                        <p><b>Name:</b> {{ x['name'] }}</p>
-                        <p><b>Authority:</b>
+                        <td>{{loop.index}}</td>
+                        <td onclick="redirect({{ x['id'] }})" style="margin-bottom: 0.8cm;">{{ x['email'] }}</td>
+                        <td>{{ x['name'] }}</td>
+                        <td>
                             {% if x['role'] == 0 %}
                                 Administrator
                             {% elif x['role'] == 1 %}
@@ -22,30 +42,27 @@
                             {% elif x['role'] == 3 %}
                                 User (Customer)
                             {% endif %}
-                        </p>
-                        <p><b>Birthday:</b> {{ x['birth_date'] }}</p>
-                        <p><b>Address:</b> {{ x['address'] }}</p>
-                        <p><b>Phone number:</b> {{ x['phone_number'] }}</p>
-                        {% if selectedID == x['id'] %}
-                            {% if error == 1 %}
-                                <p style="text-align: center; font-weight: bold; color: red;">You can not remove your own account!</p>
-                            {% endif %}
+                        </td>
+                        <td>
                             {% if confirm == True %}
-                                <p style="text-align: center; font-weight: bold; color: brown;">Proceed?</p>
+                            {% else %}
+                                <button class="login_form_button" id="modify_btn" name="modify_btn" value="0">Modify</button>
                             {% endif %}
-                            {% if confirm != True %}
-                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="0">Remove account</button>
-                            {% else %} 
-                                <button type="submit" class="login_form_button" id="user_btn" name="user_btn" value="1">Yes</button>
-                            {% endif %}
-                            <button class="login_form_button" id="modify_btn" name="modify_btn" value="0">Modify</button>
-                        {% endif %}
-                    </div>
-                {% if selectedID != x['id'] %}
-                    </a>
-                {% endif %}
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
             </form>
         {% endfor %}
+        </table>
     </root>
     <br><br>
+    <script>
+        redirect(id) {
+            window.location = "users/"+id;
+        }
+        reset() {
+            window.location = "";
+        }
+    </script>
 {% endblock %}

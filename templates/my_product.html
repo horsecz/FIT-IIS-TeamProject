@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>{% block title %} My Products{% endblock %}</h1>
-    <hr>
+    <h1>{% block title %} My Products {% endblock %}</h1>
+    <p style="text-align: center;">Products you sell or harvest.</p>
+    <br>
     <div class="boxes">
         {% if products == [] %}
-            <h1>This farmer has no products yet</h1>
+            <h1>You don't have any products yet!</h1>
         {% else %}
             {% for y in products %}
                         <div class="product_list farmer" style="cursor:default;">
@@ -39,7 +40,8 @@
     {% if error == 1 %}
         <p style="color: red; text-align: center;">Save Failed: Product already exists</p>
     {% endif %}
-    <a href="{{ url_for('create_product') }}" class="login_form_button">Create new product</a>
+
+    <a style="width: 10%; font-size: large;" href="{{ url_for('create_product') }}" class="login_form_button">Create new product</a>
     {% if error == -1 %}
         <p style="color: green; text-align: center;">Product created</p>
     {% elif error == 2 %}
@@ -50,8 +52,11 @@
         <p style="color: red; text-align: center;">Category is not final category with products</p>
     {% endif %}
     <br></br>
-    <hr>
+    <br>
+    <br>
+    {% if products != [] %}
     <h1> Pending Orders </h1>
+    <p style="text-align: center;">Unfinished orders that are being processed.</p><br>
     <div class="farmers">
         <table>
             <tr>
@@ -89,7 +94,9 @@
             {% endfor %}
         </table>
     </div>
+    <br>
     <h1> Finished Orders </h1>
+    <p style="text-align: center;"> Finished orders, either cancelled or completed.</p><br>
     <div class="farmers">
         <table>
             <tr>
@@ -118,6 +125,7 @@
             {% endfor %}
         </table>
     </div>
+    {% endif %}
     <script>
         function clicked(edit, id){
             if (edit == 0) {
