@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{% block title %} Create category suggestion {% endblock %}</h1>
-    <hr>
     <form class="sugg_form" method="post" action="{{ url_for('create_suggestion', id=user['id']) }}">
         <label>Category name:</label>
         <input type="text" name="category_name" id="category_name" placeholder="Category name" required>
@@ -31,4 +30,23 @@
     {% if error == 2 %}
         <p style="color: red; text-align: center;">Cannot create new category if parent is final category with products</p>
     {% endif %}
+    <h1>My suggestions</h1>
+    <div class="farmers">
+        <table>
+            <tr>
+                <th>Category name</th>
+                <th>Category parent</th>
+                <th>Status</th>
+            </tr>
+            {% for x in all_suggestions%}
+                {% if x['suggester'] == user['id'] %}
+                    <tr>
+                        <td>{{ x.name }}</td>
+                        <td>{{ getCategoryName(x.higher_category) }}</td>
+                        <td>{{ suggestionResultToString(x.status) }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}
