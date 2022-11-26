@@ -211,10 +211,20 @@ def getLoggedUserSells():
 
     if len(product_list) == 0:
         return list
+
+    print(product_list)
     
+    orderAdd = False
     for order in database.getOrders():
-        if order['product'] in product_list:
-            list.append(order)
+        for prod in order['product_list']:
+            for farmer_prods in product_list:
+                if farmer_prods['id'] == prod:
+                    orderAdd = True
+                    break
+            if (orderAdd == True):
+                list.append(order)
+                break
+
     
     return list
 
