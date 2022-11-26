@@ -359,6 +359,12 @@ def product_remove(id):
     be.removeProduct(id)
     return redirect(url_for('user_farmer'))
 
+@app.route("/nav/admin/product_remove%id=<int:id>", methods=["GET"])
+def product_remove_admin(id):
+    product = database.getProduct(id)
+    be.removeProduct(id)
+    return redirect(url_for('admin_categories'))
+
 @app.route("/nav/user/farmer/edit<int:id>", methods=["POST"])
 def save_product_edit(id):
     product = database.getProduct(id)

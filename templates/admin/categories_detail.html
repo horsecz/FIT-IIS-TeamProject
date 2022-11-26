@@ -70,9 +70,6 @@
                             <td id="buttonsRow" class="profile_orders_table_row">
                                 <button onclick="productClicked(0, {{ cat['id'] }})" id="v_remove" value="Remove" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Remove</button>
                             </td>
-                            <td id="buttonsRow2" class="profile_orders_table_row">
-                                <button onclick="productClicked(1, {{ cat['id'] }})" id="v_edit" value="Edit" class="login_form_button" style="margin: 0px;" value="{{ loop.index }}">Edit</button>
-                            </td>
                         </tr>
                         {% endfor %}
                     {% else %}
@@ -101,8 +98,6 @@
         function productClicked(edit, id) {
             if (edit == 0) {
                 window.location = "product_remove%id="+id;
-            } else if (edit == 1) {
-                window.location = "product_edit%id="+id;
             } else {
                 window.location.href = "/product/"+id;
             }

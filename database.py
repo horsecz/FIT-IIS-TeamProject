@@ -681,7 +681,7 @@ def removeData(Class, element_ID):
         prods = backend.getCategoryProducts(element_ID)
         if (len(prods) != 0):
             for product in prods:
-                removeData(Product, product['id'])
+                backend.removeProduct(product['id'])
     try:
         db.session.delete(removal)
         db.session.commit()
