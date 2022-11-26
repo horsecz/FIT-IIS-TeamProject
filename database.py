@@ -240,45 +240,159 @@ def create_db():
     db.session.add(Category('Vegetables', root['id'], False))
     db.session.commit()
     
+    #Fruits
     db.session.add(Category('Apple', getCategoryByName('Fruits')['id'], False))
-    db.session.add(Category('Orange', getCategoryByName('Fruits')['id'], True))
-    db.session.add(Category('Tomato', getCategoryByName('Vegetables')['id'], False))
-    db.session.add(Category('Potato', getCategoryByName('Vegetables')['id'], False))
-    db.session.add(Category('Cucumber', getCategoryByName('Vegetables')['id'], True))
-    db.session.add(Category('Carrot', getCategoryByName('Vegetables')['id'], True))
-    db.session.add(Category('Onion', getCategoryByName('Vegetables')['id'], False))
-    db.session.add(Category('Garlic', getCategoryByName('Vegetables')['id'], True))
-    db.session.add(Category('Lettuce', getCategoryByName('Vegetables')['id'], True))
-    db.session.add(Category('Cabbage', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Citrus', getCategoryByName('Fruits')['id'], False))
+    db.session.add(Category('Berries', getCategoryByName('Fruits')['id'], False))
+    db.session.add(Category('Melon', getCategoryByName('Fruits')['id'], False))
     db.session.add(Category('Grapes', getCategoryByName('Fruits')['id'], False))
-    db.session.add(Category('Peach', getCategoryByName('Fruits')['id'], True))
     db.session.add(Category('Pear', getCategoryByName('Fruits')['id'], True))
-    db.session.add(Category('Strawberry', getCategoryByName('Fruits')['id'], False))
+    db.session.add(Category('Banana', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Cherry', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Pineapple', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Peach', getCategoryByName('Fruits')['id'], True))
+    #db.session.add(Category('Pomegranate', getCategoryByName('Fruit')['id'], True))
+    db.session.add(Category('Mango', getCategoryByName('Fruits')['id'], True))
+    db.session.add(Category('Kiwi', getCategoryByName('Fruits')['id'], True))
     db.session.commit()
     
+    #Melon subcategories
+    db.session.add(Category('Red Watermelon', getCategoryByName('Melon')['id'], True))
+    db.session.add(Category('Yellow Melon', getCategoryByName('Melon')['id'], True))
+    
+    #Berries subcategories
+    db.session.add(Category('Raspberry', getCategoryByName('Berries')['id'], True))
+    db.session.add(Category('Blueberry', getCategoryByName('Berries')['id'], True))
+    db.session.add(Category('Blackberry', getCategoryByName('Berries')['id'], True))
+    db.session.add(Category('Cranberry', getCategoryByName('Berries')['id'], True))
+    db.session.add(Category('Strawberry', getCategoryByName('Berries')['id'], True))
+    
+    #Citrus subcategories
+    db.session.add(Category('Orange', getCategoryByName('Citrus')['id'], True))  
+    db.session.add(Category('Tangerine', getCategoryByName('Citrus')['id'], True))
+    db.session.add(Category('Lemon', getCategoryByName('Citrus')['id'], True))
+    db.session.add(Category('Lime', getCategoryByName('Citrus')['id'], True))
+    db.session.add(Category('Grapefruit', getCategoryByName('Citrus')['id'], True))
+    db.session.add(Category('Pomelo', getCategoryByName('Citrus')['id'], True))
+    
+    #Apple subcategories
     db.session.add(Category('Red Apple', getCategoryByName('Apple')['id'], True))
     db.session.add(Category('Green Apple', getCategoryByName('Apple')['id'], True))
     db.session.add(Category('Yellow Apple', getCategoryByName('Apple')['id'], True))
+    
+    #Grapes subcategories
+    db.session.add(Category('White Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.add(Category('Red Grapes', getCategoryByName('Grapes')['id'], True))
+    db.session.commit()
+    
+    #Vegetables
+    db.session.add(Category('Tomato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Potato', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Cabbage', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Onion', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Cucumber', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Carrot', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Garlic', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Mushroom', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Pepper', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Corn', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Pumpkin', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Radish', getCategoryByName('Vegetables')['id'], False))
+    db.session.add(Category('Beans', getCategoryByName('Vegetables')['id'], False))      
+    db.session.add(Category('Lettuce', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Brocolli', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Spinach', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Eggplant', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Zuchini', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Cauliflower', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Celery', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Asparagus', getCategoryByName('Vegetables')['id'], True))
+    db.session.add(Category('Beet', getCategoryByName('Vegetables')['id'], True)) 
+
+    db.session.commit()
+    
+    #Beans subcategories
+    db.session.add(Category('Green Bean', getCategoryByName('Beans')['id'], True))
+    db.session.add(Category('Black Bean', getCategoryByName('Beans')['id'], True))
+    db.session.add(Category('Lentil', getCategoryByName('Beans')['id'], True))
+    db.session.add(Category('SoyBean', getCategoryByName('Beans')['id'], True))
+    db.session.add(Category('Peas', getCategoryByName('Beans')['id'], True))
+
+    #Radish subcategories
+    db.session.add(Category('Red Radish', getCategoryByName('Radish')['id'], True))
+    db.session.add(Category('White Radish', getCategoryByName('Radish')['id'], True))
+    
+    #Pumpkin subcategories
+    db.session.add(Category('Jack O Lantern', getCategoryByName('Pumpkin')['id'], True))
+    db.session.add(Category('Sweet Pumpkin', getCategoryByName('Pumpkin')['id'], True))
+    db.session.add(Category('Hokkaido Pumpkin', getCategoryByName('Pumpkin')['id'], True))
+    
+    #Corn subcategories
+    db.session.add(Category('Sweet Corn', getCategoryByName('Corn')['id'], True))
+    db.session.add(Category('Dent Corn', getCategoryByName('Corn')['id'], True))
+ 
+    #Pepper subcategories
+    db.session.add(Category('Red Pepper', getCategoryByName('Pepper')['id'], True))
+    db.session.add(Category('Green Pepper', getCategoryByName('Pepper')['id'], True))
+    db.session.add(Category('Yellow Pepper', getCategoryByName('Pepper')['id'], True))
+    db.session.add(Category('Orange Pepper', getCategoryByName('Pepper')['id'], True))
+    db.session.add(Category('Chilli Pepper', getCategoryByName('Pepper')['id'], False))
+    
+    #Chilli Pepper subcategories
+    db.session.add(Category('Red Chili Pepper', getCategoryByName('Chilli Pepper')['id'], True))
+    db.session.add(Category('Green Chili Pepper', getCategoryByName('Chilli Pepper')['id'], True))
+    db.session.add(Category('Jalapeno Pepper', getCategoryByName('Chilli Pepper')['id'], True))
+    db.session.add(Category('Habanero Pepper', getCategoryByName('Chilli Pepper')['id'], True))
+    db.session.add(Category('Cayenne Pepper', getCategoryByName('Chilli Pepper')['id'], True))
+    
+    #Mushroom subcategories
+    db.session.add(Category('Champignon Mushroom', getCategoryByName('Mushroom')['id'], True))
+    db.session.add(Category('Portobello Mushroom', getCategoryByName('Mushroom')['id'], True))
+    db.session.add(Category('Oyster Mushroom', getCategoryByName('Mushroom')['id'], True))
+    db.session.add(Category('Shiitake Mushroom', getCategoryByName('Mushroom')['id'], True))
+
+    #Garlic subcategories
+    db.session.add(Category('White Garlic', getCategoryByName('Garlic')['id'], True))
+    db.session.add(Category('Red Garlic', getCategoryByName('Garlic')['id'], True))
+    
+    #Carrot subcategories
+    db.session.add(Category('Baby Carrot', getCategoryByName('Carrot')['id'], True))
+    db.session.add(Category('Regular Carrot', getCategoryByName('Carrot')['id'], True))
+    
+    #Cucumber subcategories
+    db.session.add(Category('Salad Cucumber', getCategoryByName('Cucumber')['id'], True))
+    db.session.add(Category('Pickling Cucumber', getCategoryByName('Cucumber')['id'], True))
+    db.session.add(Category('Garden Cucumber', getCategoryByName('Cucumber')['id'], True))
+    
+    #Tomato subcategories
     db.session.add(Category('Red Tomato', getCategoryByName('Tomato')['id'], True))
     db.session.add(Category('Yellow Tomato', getCategoryByName('Tomato')['id'], True))
     db.session.add(Category('Cherry Tomato', getCategoryByName('Tomato')['id'], True))
+    
+    #Potato subcategories
     db.session.add(Category('Red Potato', getCategoryByName('Potato')['id'], True))
     db.session.add(Category('White Potato', getCategoryByName('Potato')['id'], True))
+    db.session.add(Category('Sweet Potato', getCategoryByName('Potato')['id'], True))
+    
+    #Onion subcategories
     db.session.add(Category('White Onion', getCategoryByName('Onion')['id'], True))
     db.session.add(Category('Red Onion', getCategoryByName('Onion')['id'], True))
+    
+    #Cabbage subcategories
     db.session.add(Category('White Cabbage', getCategoryByName('Cabbage')['id'], True))
     db.session.add(Category('Red Cabbage', getCategoryByName('Cabbage')['id'], True))
-    db.session.add(Category('White Grapes', getCategoryByName('Grapes')['id'], True))
-    db.session.add(Category('Red Grapes', getCategoryByName('Grapes')['id'], True))
     db.session.commit()
 
     # add template users for show
     db.session.add(User('admin', 'RGB', '1995-1-1', '7th Street', 'admin', 0, 905240384, [], [], True))
     db.session.add(User('mod', 'RGB', '1995-1-1', '7th Street', 'mod', 1, 905240384, [], [], True))
     db.session.add(User('farmer', 'Frank Green', '1995-1-1', '7th Street', 'farmer', 2, 905240384, [], [], True))
-    db.session.add(User('farmer2', 'Jim Helper', '1995-1-1', '7th Street', 'farmer2', 2, 905240384, [], [], True))
-    db.session.add(User('farmer3', 'Joe Mama', '1995-1-1', '7th Street', 'farmer3', 2, 905240384, [], [], True))
     db.session.add(User('user', 'RGB', '1995-1-1', '7th Street', 'user', 3, 905240384, [], [], True))
+    
+    db.session.add(User('jhelper@gmail.com', 'Jim Helper', '1995-2-1', '7th Street', 'farmer2', 2, 905240384, [], [], True))
+    db.session.add(User('bigmama69@gmail.com', 'Joe Mama', '1969-5-21', 'Red Light Street 21', 'farmer3', 2, 905253384, [], [], True))
+    db.session.add(User('smith112@gmail.com', 'John Smith', '1978-6-4', 'Lincoln Street', 'farmer4', 2, 905247434, [], [], True))
+    db.session.add(User('acook@gmail.com', 'Alice Cook', '1999-10-4', '7th Street', 'farmer5', 2, 950010384, [], [], True))
     db.session.commit()
 
     # dummy data
@@ -292,31 +406,405 @@ def create_db():
     norm_toms = getCategoryByName('Normal Tomatoes')
 
     user = getUserByEmail('farmer')
-    db.session.add(Product('Tomato', norm_toms['id'], 100, user['id'], 50, 0, 'the great red tomato', None, None, None, True))
-    db.session.add(Product('Blue Tomato', norm_toms['id'], 100, user['id'], 500, 0, 'the great blue tomato from 8428713 dimension', None, None, None, True))
-    db.session.add(Product('Pickle', picks['id'], 690, user['id'], 40, 0, 'pickle rick', True, '2022-1-1', '2022-6-1', True))
-    db.session.commit()
+    user1 = getUserByEmail('jhelper@gmail.com')
+    user2 = getUserByEmail('bigmama69@gmail.com')
+    user3 = getUserByEmail('smith112@gmail.com')
+    user4 = getUserByEmail('acook@gmail.com')
     
-    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 1, "Best apple ever", False, None, None, True))
-    db.session.add(Product('Jims Green Apple', getCategoryByName('Green Apple')['id'], 200, getUserByEmail('farmer2')['id'], 5, 1, "Best apple ever", False, None, None, True))
-    db.session.add(Product('Joes Golden Apple', getCategoryByName('Green Apple')['id'], 100, getUserByEmail('farmer3')['id'], 2, 1, "Best apple ever", False, None, None, True))
-    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, getUserByEmail('farmer')['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20', True))
-    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False , None, None, True))
-    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best apple ever", False, None, None, True))
-    db.session.add(Product('Franks Red Tomato', getCategoryByName('Red Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None, True))
-    db.session.add(Product('Franks Yellow Tomato', getCategoryByName('Yellow Tomato')['id'], 500, getUserByEmail('farmer')['id'], 10, 0, "Best tomato ever", False, None, None, True))
-    db.session.add(Product('Jims Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best tomato ever", False, None, None, True))
-    db.session.add(Product('Jims Red Potato', getCategoryByName('Red Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None, True))
-    db.session.add(Product('Jims White Potato', getCategoryByName('White Potato')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best potato ever", False, None, None, True))
-    db.session.add(Product('Jims White Onion', getCategoryByName('White Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None, True))
-    db.session.add(Product('Jims Red Onion', getCategoryByName('Red Onion')['id'], 500, getUserByEmail('farmer2')['id'], 10, 0, "Best onion ever", False, None, None, True))
-    db.session.add(Product('Joes White Cabbage', getCategoryByName('White Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None, True))
-    db.session.add(Product('Joes Red Cabbage', getCategoryByName('Red Cabbage')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best cabbage ever", False, None, None, True))
-    db.session.add(Product('Joes White Grapes', getCategoryByName('White Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None, True))
-    db.session.add(Product('Joes Red Grapes', getCategoryByName('Red Grapes')['id'], 500, getUserByEmail('farmer3')['id'], 10, 0, "Best grapes ever", False, None, None, True))
+    #Pear Products
+    db.session.add(Product('Franks Pear', getCategoryByName('Pear')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joes Pear', getCategoryByName('Pear')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Banana Products
+    db.session.add(Product('Jims Banana', getCategoryByName('Banana')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Special Banana', getCategoryByName('Banana')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Big Banana', getCategoryByName('Banana')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Cherry Products
+    db.session.add(Product('Morello Cherry', getCategoryByName('Cherry')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Quenn Ann Cherry', getCategoryByName('Cherry')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Pineapple Products
+    db.session.add(Product('Queen Pineapple', getCategoryByName('Pineapple')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jims Pineapple', getCategoryByName('Pineapple')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Peach Products
+    db.session.add(Product('Donut Peach', getCategoryByName('Peach')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Peach', getCategoryByName('Peach')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Peach', getCategoryByName('Peach')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Pomegranate Products
+    #db.session.add(Product('Eversweet Pomegranate', getCategoryByName('Pomegranate')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    #db.session.add(Product('Red Silk Pomegranate', getCategoryByName('Pomegranate')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    #db.session.add(Product('Purple Heart Pomegranate', getCategoryByName('Pomegranate')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Mango Products
+    db.session.add(Product('Alphonso Mango', getCategoryByName('Mango')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Kent Mango', getCategoryByName('Mango')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Dasher Mango', getCategoryByName('Mango')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Kiwi Products
+    db.session.add(Product('Jims Kiwi', getCategoryByName('Kiwi')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alices Kiwi', getCategoryByName('Kiwi')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Watermelon Products
+    db.session.add(Product('Sultan Watermelon', getCategoryByName('Red Watermelon')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Yellow Watermelon Products
+    db.session.add(Product('Yellow Crimson Watermelon', getCategoryByName('Yellow Melon')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Sugar Baby', getCategoryByName('Yellow Melon')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Raspberry Products
+    db.session.add(Product('Royalty Raspberry', getCategoryByName('Raspberry')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Fall Gold Raspberry', getCategoryByName('Raspberry')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Blueberry Products
+    db.session.add(Product('Jims Blueberry', getCategoryByName('Blueberry')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Strawberry Products
+    db.session.add(Product('Pineberry', getCategoryByName('Strawberry')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joes Strawberry', getCategoryByName('Strawberry')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Blackberry Products
+    db.session.add(Product('Arapaho', getCategoryByName('Blackberry')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Kiowa Blackberry', getCategoryByName('Blackberry')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Cranberry Products
+    db.session.add(Product('Nicolaus Cranberry', getCategoryByName('Cranberry')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Early Black Cranberry', getCategoryByName('Cranberry')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Scarlet Knight', getCategoryByName('Blackberry')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Orange Products
+    db.session.add(Product('Valencia Orange', getCategoryByName('Orange')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Navel Orange', getCategoryByName('Orange')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Blood Orange', getCategoryByName('Orange')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Lemon Products
+    db.session.add(Product('Eureka Lemon', getCategoryByName('Lemon')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Lisbon Lemon', getCategoryByName('Lemon')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Avalon Lemon', getCategoryByName('Lemon')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Lime Products
+    db.session.add(Product('Key Lime', getCategoryByName('Lime')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Persian Lime', getCategoryByName('Lime')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Australian Finger', getCategoryByName('Lime')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Tangerine Products
+    db.session.add(Product('Mandarin', getCategoryByName('Tangerine')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Satsuma', getCategoryByName('Tangerine')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Clementines', getCategoryByName('Tangerine')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Pomelo Products
+    db.session.add(Product('Alices Pomelo', getCategoryByName('Pomelo')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Grapefruit Products
+    db.session.add(Product('Ruby Red Grapefruit', getCategoryByName('Grapefruit')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Grapefruit', getCategoryByName('Grapefruit')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Pink Grapefruit', getCategoryByName('Grapefruit')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Oro Blanco Grapefruit', getCategoryByName('Grapefruit')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Green Apple Products
+    db.session.add(Product('Franks Golden Apple', getCategoryByName('Green Apple')['id'], 500, user['id'], 10, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Smeralda Apple', getCategoryByName('Green Apple')['id'], 200, user1['id'], 5, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Granny Smith Apple', getCategoryByName('Green Apple')['id'], 100, user3['id'], 2, 1, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Golden Apple', getCategoryByName('Green Apple')['id'], 3300, user4['id'], 7, 0, "Best apple ever", True, '2022-12-12', '2022-12-20', True))
+    
+    #Red Apple Products
+    db.session.add(Product('Franks Red Apple', getCategoryByName('Red Apple')['id'], 500, user['id'], 10, 0, "Best apple ever", False , None, None, True))
+    db.session.add(Product('Fuji Apple', getCategoryByName('Red Apple')['id'], 200, user1['id'], 5, 0, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Red Delicious Apple', getCategoryByName('Red Apple')['id'], 100, user3['id'], 2, 0, "Best apple ever", False, None, None, True))
+    
+    #Yellow Apple Products
+    db.session.add(Product('Franks Yellow Apple', getCategoryByName('Yellow Apple')['id'], 500, user['id'], 10, 0, "Best apple ever", False, None, None, True))
+    db.session.add(Product('Jonagold Apple', getCategoryByName('Yellow Apple')['id'], 200, user1['id'], 5, 0, "Best apple ever", False, None, None, True))
+     
+    #White Grape Products
+    db.session.add(Product('Thompson Seedless', getCategoryByName('White Grapes')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Concord Grape', getCategoryByName('White Grapes')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Chardonnay', getCategoryByName('White Grapes')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Red Grape Products
+    db.session.add(Product('Red Globe', getCategoryByName('Red Grapes')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Flame', getCategoryByName('Red Grapes')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Seedless', getCategoryByName('Red Grapes')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Lettuce Products
+    db.session.add(Product('Iceberg Lettuce', getCategoryByName('Lettuce')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Romaine Lettuce', getCategoryByName('Lettuce')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Leaf Lettuce', getCategoryByName('Lettuce')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))    
+
+    #Brocolli Products
+    db.session.add(Product('Purple Brocolli', getCategoryByName('Brocolli')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Belstar Brocolli', getCategoryByName('Brocolli')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Spinach Products
+    db.session.add(Product('Pepek Spinach', getCategoryByName('Spinach')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Baby Spinach', getCategoryByName('Spinach')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Eggplant Products
+    db.session.add(Product('Black Beauty Eggplant', getCategoryByName('Eggplant')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Purple Eggplant', getCategoryByName('Eggplant')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Chinese Eggplant', getCategoryByName('Eggplant')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Fairy Tail Eggplant', getCategoryByName('Eggplant')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Graffiti Eggplant', getCategoryByName('Eggplant')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Zuchini Products
+    db.session.add(Product('Black Beauty Zuchini', getCategoryByName('Zuchini')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Golden Egg Zuchini', getCategoryByName('Zuchini')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Magda Zuchini', getCategoryByName('Zuchini')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Couliflower Products
+    db.session.add(Product('Purple Cauliflower', getCategoryByName('Cauliflower')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Cauliflower', getCategoryByName('Cauliflower')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Romanesco Cauliflower', getCategoryByName('Cauliflower')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Celery Products
+    db.session.add(Product('Pascal Celery', getCategoryByName('Celery')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Celery', getCategoryByName('Celery')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Celery', getCategoryByName('Celery')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Asparagus Products
+    db.session.add(Product('Erasmus Asparagus', getCategoryByName('Asparagus')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jersey Giant Asparagus', getCategoryByName('Asparagus')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Grande Hybrid Asparagus', getCategoryByName('Asparagus')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Purple Passion Asparagus', getCategoryByName('Asparagus')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Spartakus Asparagus', getCategoryByName('Asparagus')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Beet Products
+    db.session.add(Product('Bulls Blood Beet', getCategoryByName('Beet')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Detroit Dark Red Beet', getCategoryByName('Beet')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Chioggia Beet', getCategoryByName('Beet')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Cylindra Beet', getCategoryByName('Beet')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Golden Beet', getCategoryByName('Beet')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Green Bean Products
+    db.session.add(Product('French Green Bean', getCategoryByName('Green Bean')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Romano Bean', getCategoryByName('Green Bean')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Purple String Bean', getCategoryByName('Green Bean')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Black Bean Products
+    db.session.add(Product('Domino Bean', getCategoryByName('Black Bean')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Raven Bean', getCategoryByName('Black Bean')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Black Magic Bean', getCategoryByName('Black Bean')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Lentil Products
+    db.session.add(Product('Black Lentil', getCategoryByName('Lentil')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Lentil', getCategoryByName('Lentil')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Lentil', getCategoryByName('Lentil')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Soybean Products
+    db.session.add(Product('Black Soybean', getCategoryByName('Soybean')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Soybean', getCategoryByName('Soybean')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Soybean', getCategoryByName('Soybean')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Peas Products
+    db.session.add(Product('English Peas', getCategoryByName('Peas')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Snow Peas', getCategoryByName('Peas')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Sugar Snap Peas', getCategoryByName('Peas')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Radish Products
+    db.session.add(Product('Cherry Belle Radish', getCategoryByName('Red Radish')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Beuty Radish', getCategoryByName('Red Radish')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Japanese Radish', getCategoryByName('Red Radish')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #White Radish Products
+    db.session.add(Product('White Icicle Radish', getCategoryByName('White Radish')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Daikon Radish', getCategoryByName('White Radish')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Plum Radish', getCategoryByName('White Radish')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Jack O Lantern Products
+    db.session.add(Product('Franks Jack O Lantern', getCategoryByName('Jack O Lantern')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jims Jack O Lantern', getCategoryByName('Jack O Lantern')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joes Jack O Lantern', getCategoryByName('Jack O Lantern')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Johns Jack O Lantern', getCategoryByName('Jack O Lantern')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alices Jack O Lantern', getCategoryByName('Jack O Lantern')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Sweet Pumpkin Products
+    db.session.add(Product('Sugar Pie Pumpkin', getCategoryByName('Sweet Pumpkin')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Sugar Baby Pumpkin', getCategoryByName('Sweet Pumpkin')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Sugar Cube Pumpkin', getCategoryByName('Sweet Pumpkin')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Cinderella Pumpkin', getCategoryByName('Sweet Pumpkin')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Sugar Pie Pumpkin', getCategoryByName('Sweet Pumpkin')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Hokkaido Pumpkin Products
+    db.session.add(Product('Frank Hokkaido Pumpkin', getCategoryByName('Hokkaido Pumpkin')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jim Hokkaido Pumpkin', getCategoryByName('Hokkaido Pumpkin')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joe Hokkaido Pumpkin', getCategoryByName('Hokkaido Pumpkin')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Sweet Corn Products
+    db.session.add(Product('Blue Hopy Corn', getCategoryByName('Sweet Corn')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Ambrosia Hybrid Corn', getCategoryByName('Sweet Corn')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Nirvana Hybrid Corn', getCategoryByName('Sweet Corn')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Peaches and Cream Corn', getCategoryByName('Sweet Corn')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Picasso Hybrid Corn', getCategoryByName('Sweet Corn')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Dent Corn Products
+    db.session.add(Product('Frank Dent Corn', getCategoryByName('Dent Corn')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jim Dent Corn', getCategoryByName('Dent Corn')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('joe Dent Corn', getCategoryByName('Dent Corn')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Pepper Products
+    db.session.add(Product('Red Bell Pepper', getCategoryByName('Red Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Cherry Pepper', getCategoryByName('Red Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Banana Pepper', getCategoryByName('Red Pepper')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Yellow Pepper Products
+    db.session.add(Product('Yellow Bell Pepper', getCategoryByName('Yellow Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Lemon Drop Pepper', getCategoryByName('Yellow Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Banana Pepper', getCategoryByName('Yellow Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Hungarian Wax Pepper', getCategoryByName('Yellow Pepper')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Orange Pepper Products
+    db.session.add(Product('Orange Bell Pepper', getCategoryByName('Orange Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Orange Cherry Pepper', getCategoryByName('Orange Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Orange Banana Pepper', getCategoryByName('Orange Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Green Pepper Products
+    db.session.add(Product('Green Bell Pepper', getCategoryByName('Green Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Cherry Pepper', getCategoryByName('Green Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Banana Pepper', getCategoryByName('Green Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Chili Pepper Products
+    db.session.add(Product('Red Chili Pepper', getCategoryByName('Red Chili Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Cherry Chili Pepper', getCategoryByName('Red Chili Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Banana Chili Pepper', getCategoryByName('Red Chili Pepper')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Green Chili Pepper Products
+    db.session.add(Product('Green Chili Pepper', getCategoryByName('Green Chili Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Poblano Greeb Chili Pepper', getCategoryByName('Green Chili Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Green Banana Chili Pepper', getCategoryByName('Green Chili Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Serrano Chili Pepper', getCategoryByName('Green Chili Pepper')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Jalapeno Pepper Products
+    db.session.add(Product('Purple Jalapeno', getCategoryByName('Jalapeno Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Lemon Spice Jalapeno', getCategoryByName('Jalapeno Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Mucho Nacho Jalapeno', getCategoryByName('Jalapeno Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Habanero Pepper Products
+    db.session.add(Product('Big Sun Habanero', getCategoryByName('Habanero Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Caribbean Red Habanero', getCategoryByName('Habanero Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Mustard Habanero', getCategoryByName('Habanero Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Cayenne Pepper Products
+    db.session.add(Product('Carolina Cayenne Pepper', getCategoryByName('Cayenne Pepper')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Dagger Pod Pepper', getCategoryByName('Cayenne Pepper')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Golden Cayenne Pepper', getCategoryByName('Cayenne Pepper')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Champignon Mushroom Products
+    db.session.add(Product('Joe Champignon Mushroom', getCategoryByName('Champignon Mushroom')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Champignon Mushroom', getCategoryByName('Champignon Mushroom')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alice Champignon Mushroom', getCategoryByName('Champignon Mushroom')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Portobello Mushroom Products
+    db.session.add(Product('Joe Portobello Mushroom', getCategoryByName('Portobello Mushroom')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Portobello Mushroom', getCategoryByName('Portobello Mushroom')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alice Portobello Mushroom', getCategoryByName('Portobello Mushroom')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Oyster Mushroom Products
+    db.session.add(Product('Joe Oyster Mushroom', getCategoryByName('Oyster Mushroom')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Oyster Mushroom', getCategoryByName('Oyster Mushroom')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alice Oyster Mushroom', getCategoryByName('Oyster Mushroom')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Shiitake Mushroom Products
+    db.session.add(Product('Joe Shiitake Mushroom', getCategoryByName('Shiitake Mushroom')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Shiitake Mushroom', getCategoryByName('Shiitake Mushroom')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alice Shiitake Mushroom', getCategoryByName('Shiitake Mushroom')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #White Garlic Products
+    db.session.add(Product('Frank White Garlic', getCategoryByName('White Garlic')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jim White Garlic', getCategoryByName('White Garlic')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Garlic Products
+    db.session.add(Product('Red Toch Garlic', getCategoryByName('Red Garlic')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Jim Red Garlic', getCategoryByName('Red Garlic')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Baby Carrot Products
+    db.session.add(Product('Baby Chantenay Carrot', getCategoryByName('Baby Carrot')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joe Baby Carrot', getCategoryByName('Baby Carrot')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+
+    #Regular Carrot Products
+    db.session.add(Product('Regular Chantenay Carrot', getCategoryByName('Regular Carrot')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joe Regular Carrot', getCategoryByName('Regular Carrot')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Danvers Carrot', getCategoryByName('Regular Carrot')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Imperator Carrot', getCategoryByName('Regular Carrot')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Salad cucumber Products
+    db.session.add(Product('Frank Salad Cucumber', getCategoryByName('Salad cucumber')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joe Salad Cucumber', getCategoryByName('Salad cucumber')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Salad Cucumber', getCategoryByName('Salad cucumber')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Alice Salad Cucumber', getCategoryByName('Salad cucumber')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Pickling cucumber Products
+    db.session.add(Product('Kalipso Pickling Cucumber', getCategoryByName('Pickling cucumber')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Burpee Pickling Cucumber', getCategoryByName('Pickling cucumber')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Fresh Pickling Cucumber', getCategoryByName('Pickling cucumber')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Hokus Pickling Cucumber', getCategoryByName('Pickling cucumber')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Garden cucumber Products
+    db.session.add(Product('Frank Garden Cucumber', getCategoryByName('Garden cucumber')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Joe Garden Cucumber', getCategoryByName('Garden cucumber')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('John Garden Cucumber', getCategoryByName('Garden cucumber')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Tomato Products
+    db.session.add(Product('Sunset Red Horizon Tomato', getCategoryByName('Red Tomato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Roma Tomato', getCategoryByName('Red Tomato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Beefsteak Tomato', getCategoryByName('Red Tomato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Grape Tomato', getCategoryByName('Red Tomato')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Plum Tomato', getCategoryByName('Red Tomato')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Yellow Tomato Products
+    db.session.add(Product('Yellow Pear Tomato', getCategoryByName('Yellow Tomato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Cherry Tomato', getCategoryByName('Yellow Tomato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Yellow Grape Tomato', getCategoryByName('Yellow Tomato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Golden Queen Tomato', getCategoryByName('Yellow Tomato')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Cherry Tomato Products
+    db.session.add(Product('Black Pearl Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Midnight Snack Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Orange Sunsugar Cherry Tomato', getCategoryByName('Cherry Tomato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Potato Products
+    db.session.add(Product('Red Pontiac Potato', getCategoryByName('Red Potato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Norland Potato', getCategoryByName('Red Potato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('La Rouge Potato', getCategoryByName('Red Potato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('NorDonna Potato', getCategoryByName('Red Potato')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Thumbelina Potato', getCategoryByName('Red Potato')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #White Potato Products
+    db.session.add(Product('Lamoka Potato', getCategoryByName('White Potato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Mont Blanc Potato', getCategoryByName('White Potato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Lady Rosetta Potato', getCategoryByName('White Potato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Sweet Potato Products
+    db.session.add(Product('Batata Sweet Potato', getCategoryByName('Sweet Potato')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Covington Sweet Potato', getCategoryByName('Sweet Potato')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Georgia Jet Sweet Potato', getCategoryByName('Sweet Potato')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Okinawa Sweet Potato', getCategoryByName('Sweet Potato')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #White Onion Products
+    db.session.add(Product('White Sweet Spanish Onion', getCategoryByName('White Onion')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Bermuda Onion', getCategoryByName('White Onion')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Granex Onion', getCategoryByName('White Onion')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Granex Onion', getCategoryByName('White Onion')['id'], 100, user3['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Pearl Onion', getCategoryByName('White Onion')['id'], 100, user4['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Onion Products
+    db.session.add(Product('Red Bermuda Onion', getCategoryByName('Red Onion')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Beuty Onion', getCategoryByName('Red Onion')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Mars Red Onion', getCategoryByName('Red Onion')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #White Cabbage Products
+    db.session.add(Product('White Savoy Cabbage', getCategoryByName('White Cabbage')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Napa Cabbage', getCategoryByName('White Cabbage')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('White Chinese Cabbage', getCategoryByName('White Cabbage')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
+    
+    #Red Cabbage Products
+    db.session.add(Product('Red Savoy Cabbage', getCategoryByName('Red Cabbage')['id'], 100, user['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Napa Cabbage', getCategoryByName('Red Cabbage')['id'], 100, user1['id'], 3, 1, "Best ever", False, None, None, True))
+    db.session.add(Product('Red Chinese Cabbage', getCategoryByName('Red Cabbage')['id'], 100, user2['id'], 3, 1, "Best ever", False, None, None, True))
     db.session.commit()
 
-    id1 = getUserByEmail('farmer2')
+    id1 = getUserByEmail('farmer')
     id1 = id1['id']
 
     id2 = getUserByEmail('user')
