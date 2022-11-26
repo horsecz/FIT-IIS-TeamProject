@@ -51,6 +51,10 @@ def isProductActive(product_id):
     return p['active']
     app.jinja_env.globals.update(zip=zip)
     app.jinja_env.globals.update(getProductSellType=getProductSellType)
+    app.jinja_env.globals.update(today=today)
+
+def today():
+    return datetime.datetime.now().strftime("%Y-%m-%d")
 
 def getProductSellType(product_id):
     p = database.getProduct(product_id)
