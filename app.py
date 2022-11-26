@@ -195,6 +195,9 @@ def admin_selected_user_action(id):
     if 'modify_btn' in request.form.keys() and request.form['modify_btn'] == "0":
         return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
     
+    if 'reset_btn' in request.form.keys() and request.form['reset_btn'] == "0":
+        return redirect(url_for('admin_users'))
+
     if globals.logged_user['id'] == id:
         s = id
         error = 1
@@ -206,6 +209,20 @@ def admin_selected_user_action(id):
         error = 0
     return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
     
+@app.route("/nav/admin/users/remove/<int:id>", methods=["GET"])
+def admin_selected_user_remove(id):
+    if globals.logged_user['id'] == id:
+        s = id
+        error = 1
+    else:
+        r = be.removeUser(id)
+        if (r != None):
+            return be.printInternalError(r)
+        s = None
+        error = 0
+    return render_template('/admin/users.html', done=True, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
+    
+
 @app.route("/nav/admin/user_selected/<int:id>", methods=["POST"])
 def admin_user_selected(id):
     be.setCurrentPath(admin_user_selected.__name__)
@@ -367,7 +384,7 @@ def save_product_edit(id):
     if (r != 0):
         return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
-    r = be.isQuantity(name)
+    r = be.isQuantity(quantity)
     if (r != 0):
         return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 

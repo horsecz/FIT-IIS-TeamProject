@@ -541,8 +541,11 @@ def getReviewsOfProduct(product_id):
 #
 # Get everything
 # returns: list of <<x>> (See: XSchema)
-def getUsers():
-    users = User.query.all()
+def getUsers(inactive=False):
+    if (inactive == True):
+        users = User.query.all()
+    else:
+        users = User.query.filter(User.account_status == True).all()
     users_schema = UserSchema(many=True)
     return users_schema.dump(users)
 
