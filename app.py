@@ -560,6 +560,13 @@ def user_settings_order_cancel(id):
 @app.route("/nav/user/settings/order/cancel/go%id=<int:id>", methods=["POST"])
 def user_settings_order_cancel_go(id):
     order = database.getOrder(id)
+    products = order['product_list']
+    quantities = order['quantity_list']
+    i = 0
+    for product_id in products:
+        c_prod = database.getProduct(product_id)
+        database.modifyData(database.Product, product_id, 'quantity', c_prod['quantity'] + quantities[i])
+        i = i + 1
     database.modifyData(database.Order, id, 'status', -1)
     return redirect(url_for('user_settings_orders'))
 
@@ -735,6 +742,7 @@ def new_order_go(isRepeat):
         prod = database.getProduct(item['product_id'])
         prod_list.append(item['product_id'])
         quantity_list.append(int(item['quantity']))
+        newQuantity = prod['quantity'] - int(item['quantity'])
         database.modifyData(database.Product, prod['id'], 'quantity', newQuantity)
 
     be.addOrder(buyer['id'], prod_list, quantity_list, total_price)
