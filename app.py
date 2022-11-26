@@ -45,6 +45,7 @@ def before_request():
 ##
 ### Pages
 ##
+
 @app.route('/', methods=['GET'])
 @cross_origin()
 def home():
@@ -284,7 +285,8 @@ def category(id):
     
 @app.route("/product/<int:id>", methods=["GET"])
 def product(id):
-    return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
+    prod = database.getProduct(id)
+    return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/product/<int:id>", methods=["POST"])
 def create_order(id):
@@ -337,7 +339,8 @@ def product_edit(id):
 @app.route("/nav/user/farmer/<int:id>", methods=["POST"])
 def product_remove(id):
     product = database.getProduct(id)
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), orders=database.getOrders())
+    be.removeProduct(id)
+    return redirect(url_for('user_farmer'))
 
 @app.route("/nav/user/farmer/<int:id>", methods=["POST"])
 def save_product_edit(id):
@@ -351,13 +354,13 @@ def save_product_edit(id):
     begin_date = request.form['begin_date']
     end_date = request.form['end_date']
     
-    print(name, category, price, sell_type, quantity, description, self_harvest, begin_date, end_date)
-    
+    print('save product edit')
     name_db = database.getProductByNameOnly(name)
     
     if name_db is not None and name_db['id'] != id:
         return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1, orders=database.getOrders())
     
+    print('editing data')
     be.editProductData(id, 'name', name)
     be.editProductData(id, 'price', price)
     be.editProductData(id, 'sell_type', sell_type)
