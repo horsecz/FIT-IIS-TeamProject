@@ -334,15 +334,15 @@ def create_suggestion(id):
 @app.route("/nav/user/<int:id>", methods=["GET"])
 def product_edit(id):
     product = database.getProduct(id)
-    return render_template('my_product_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+    return render_template('my_product_selected.html', error=0, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
-@app.route("/nav/user/farmer/<int:id>", methods=["POST"])
+@app.route("/nav/user/farmer/remove<int:id>", methods=["POST"])
 def product_remove(id):
     product = database.getProduct(id)
     be.removeProduct(id)
     return redirect(url_for('user_farmer'))
 
-@app.route("/nav/user/farmer/<int:id>", methods=["POST"])
+@app.route("/nav/user/farmer/edit<int:id>", methods=["POST"])
 def save_product_edit(id):
     product = database.getProduct(id)
     name = request.form['name']
@@ -353,14 +353,24 @@ def save_product_edit(id):
     self_harvest = request.form['self_harvest']
     begin_date = request.form['begin_date']
     end_date = request.form['end_date']
-    
-    print('save product edit')
+
     name_db = database.getProductByNameOnly(name)
     
     if name_db is not None and name_db['id'] != id:
         return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1, orders=database.getOrders())
     
-    print('editing data')
+    r = be.isName(name)
+    if (r != 0):
+        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+
+    r = be.isPrice(price)
+    if (r != 0):
+        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+
+    r = be.isQuantity(name)
+    if (r != 0):
+        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+
     be.editProductData(id, 'name', name)
     be.editProductData(id, 'price', price)
     be.editProductData(id, 'sell_type', sell_type)

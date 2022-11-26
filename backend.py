@@ -45,12 +45,11 @@ def loadJinjaGlobals():
     app.jinja_env.globals.update(isProductActive=isProductActive)
     app.jinja_env.globals.update(getProductQuantityString=getProductQuantityString)
     app.jinja_env.globals.update(zip=zip)
+    app.jinja_env.globals.update(getProductSellType=getProductSellType)
 
 def isProductActive(product_id):
     p = database.getProduct(product_id, True)
     return p['active']
-    app.jinja_env.globals.update(zip=zip)
-    app.jinja_env.globals.update(getProductSellType=getProductSellType)
 
 def getProductSellType(product_id):
     p = database.getProduct(product_id)
@@ -371,6 +370,21 @@ def isQuantity(string):
         return 162
     if (x > database.DB_INT_MAX):
         return 163
+
+    return 0
+
+# 170 empty string; 171 NaN; 172 zero-negative number; 173 too great number;
+def isPrice(string):
+    if (len(string) < 1):
+        return 170
+    try:
+        x = int(string)
+    except:
+        return 171
+    if (x < 0):
+        return 172
+    if (x > database.DB_INT_MAX):
+        return 173
 
     return 0
 
