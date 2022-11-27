@@ -1,1 +1,1 @@
-web: Flask run
+Flask run
