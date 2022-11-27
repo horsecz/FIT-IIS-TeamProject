@@ -1,1 +1,1 @@
-web: Flask run app.py
+web: Flask run
