@@ -9,7 +9,7 @@
         {% else %}
             {% for y in products %}
                         <div class="product_list farmer" style="cursor:default;">
-                            <a href="{{ url_for('product', id=y.id) }}" style="text-decoration: none;">
+                            <a href="{{ url_for('product', id=y.id) }}" style="text-decoration: none; color: black;">
                             <h3>{{ y['name'] }}</h3>
                             {% if y['sell_type'] == 0 %}    
                                 <p> {{ y['price'] }} {{ getUsedCurrency() }} per piece</p>

@@ -118,7 +118,7 @@ def cart():
     be.navigationSetPageActive('cart')
     user = be.getLoggedUser()
     items = be.getUserCart(user['id'])
-    return render_template('/cart.html', cart_items=items, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    return render_template('/cart.html', cart_items=items, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), products=database.getProducts())
 
 @app.route("/nav/cart/delete%id=<int:id>", methods=["GET"])
 def cart_delete_item(id):
