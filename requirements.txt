@@ -1,13 +1,4 @@
-aniso8601==9.0.1
-brotlipy @ file:///home/conda/feedstock_root/build_artifacts/brotlipy_1648854164373/work
-certifi==2022.9.24
-cffi @ file:///home/conda/feedstock_root/build_artifacts/cffi_1666183769734/work
-charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1661170624537/work
 click==8.1.3
-colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1655412516417/work
-conda==22.9.0
-conda-package-handling @ file:///home/conda/feedstock_root/build_artifacts/conda-package-handling_1663583601640/work
-cryptography @ file:///home/conda/feedstock_root/build_artifacts/cryptography_1665535535464/work
 Flask==2.2.2
 Flask-Cors==3.0.10
 Flask-Login==0.6.2
@@ -16,7 +7,6 @@ Flask-RESTful==0.3.9
 Flask-SQLAlchemy==3.0.2
 greenlet==1.1.3.post0
 heroku==0.1.4
-idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1663625384323/work
 importlib-metadata==5.0.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
