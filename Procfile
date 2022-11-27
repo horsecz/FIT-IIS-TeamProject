@@ -1,1 +1,1 @@
-Flask run
+web: gunicorn app:app
