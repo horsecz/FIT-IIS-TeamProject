@@ -8,6 +8,7 @@ import database
 import re
 import datetime
 import random
+from flask import session, g
 
 db = database
 nav_current_page = globals.nav_current_page
@@ -578,12 +579,23 @@ def validateUser(login, password):
     return False
 
 def getLoggedUser():
-    if (globals.logged_user == None or globals.user_logged_in == False):
+    #if (globals.logged_user == None or globals.user_logged_in == False):
+    #    return database.unregistered_user
+    #user_id = globals.logged_user['id']
+    #new_user = database.getUser(user_id)
+    #globals.logged_user = new_user
+    if not '_user_id' in session:
+        print('not logged in!')
         return database.unregistered_user
-    user_id = globals.logged_user['id']
-    new_user = database.getUser(user_id)
-    globals.logged_user = new_user
-    return globals.logged_user
+    else:
+        print('logged in as: '+session['_user_id'])
+        return database.getUser(int(session['_user_id']))
+
+def isUserLogged():
+    if not '_user_id' in session:
+        return False
+    else:
+        return True
 
 def getFlaskUser(user_id):
     if (len(globals.logged_users) == 0):
@@ -601,11 +613,10 @@ def setLoggedUser(user):
     selectedUser.logged = True
 
 def logoutUser(user=None):
-    globals.user_logged_in = False
-    globals.logged_user = database.unregistered_user
     if user != None:
         selectedUser = getFlaskUser(user['id'])
         selectedUser.logged = False
+        g.user = None
 
 def getUserOrders(user):
     id = user['id']

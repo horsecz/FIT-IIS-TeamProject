@@ -51,44 +51,44 @@ def before_request():
 def home():
     be.setCurrentPath(home.__name__)
     be.navigationSetPageActive('home')
-    return render_template('/index.html', categories=database.getSubCategories(database.getCategoryByName('root')['id']), category=None, products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
+    return render_template('/index.html', categories=database.getSubCategories(database.getCategoryByName('root')['id']), category=None, products=database.getProducts(), orders=database.getOrders(), logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
 
 @app.route("/nav/offers", methods=["GET"])
 def offers():
     be.setCurrentPath(offers.__name__)
     be.navigationSetPageActive('offers')
-    return render_template('/offers.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, farmers=database.getUsersByRole(2), suggestions=database.getCategoryNames())
+    return render_template('/offers.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, farmers=database.getUsersByRole(2), suggestions=database.getCategoryNames())
     
     
 @app.route("/nav/login", methods=["GET"])
 def login():
     be.setCurrentPath(login.__name__)
     be.navigationSetPageActive('login')
-    return render_template('/login.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=False)
+    return render_template('/login.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=False)
 
 @app.route("/nav/registration", methods=["GET"])
 def registration():
     be.setCurrentPath(registration.__name__)
     be.navigationSetPageActive('registration')
-    return render_template('/registration.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=0)
+    return render_template('/registration.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=0)
 
 @app.route("/nav/user/customer", methods=["GET"])
 def user_customer():
     be.setCurrentPath(user_customer.__name__)
     be.navigationSetPageActive('user_customer')
-    return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
+    return render_template('/user/customer.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
     
 @app.route("/nav/user/farmer", methods=["GET"])
 def user_farmer():
     be.setCurrentPath(user_farmer.__name__)
     be.navigationSetPageActive('user_farmer')
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(be.getLoggedUser()['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), orders=database.getOrders())
+    return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(be.getLoggedUser()['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), orders=database.getOrders())
     
 @app.route("/nav/user/settings", methods=["GET"])
 def user_settings():
     be.setCurrentPath(user_settings.__name__)
     be.navigationSetPageActive('user_settings')
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, showPassword=None, suggestions=database.getCategoryNames())
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, showPassword=None, suggestions=database.getCategoryNames())
 
 @app.route("/nav/admin/categories", methods=["GET"])
 def admin_categories():
@@ -96,7 +96,7 @@ def admin_categories():
     be.navigationSetPageActive('admin_categories')
     fruits = be.getFruits()
     veggies = be.getVegetables()
-    return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
 
 @app.route("/nav/admin/suggestions", methods=["GET"])
 def admin_suggestions():
@@ -104,13 +104,13 @@ def admin_suggestions():
     be.navigationSetPageActive('admin_suggestions')
     suggestions = be.getCategorySuggestions(closed=False)
     closed_suggestions = be.getCategorySuggestions(closed=True)
-    return render_template('/admin/suggestions.html', cat_suggestions=suggestions, closed_suggestions=closed_suggestions, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
+    return render_template('/admin/suggestions.html', cat_suggestions=suggestions, closed_suggestions=closed_suggestions, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames())
 
 @app.route("/nav/admin/users", methods=["GET"])
 def admin_users():
     be.setCurrentPath(admin_users.__name__)
     be.navigationSetPageActive('admin_usres')
-    return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=None, suggestions=database.getCategoryNames())
+    return render_template('/admin/users.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=None, suggestions=database.getCategoryNames())
 
 @app.route("/nav/cart", methods=["GET"])
 def cart():
@@ -118,7 +118,7 @@ def cart():
     be.navigationSetPageActive('cart')
     user = be.getLoggedUser()
     items = be.getUserCart(user['id'])
-    return render_template('/cart.html', cart_items=items, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), products=database.getProducts())
+    return render_template('/cart.html', cart_items=items, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), products=database.getProducts())
 
 @app.route("/nav/cart/delete%id=<int:id>", methods=["GET"])
 def cart_delete_item(id):
@@ -155,13 +155,14 @@ def login_user():
         be.setLoggedUser(user)
         newUser = database.FlaskUser(user['id'], user['email'])
         flogin.login_user(newUser)
-        globals.logged_users.append(newUser)
+        #globals.logged_users.append(newUser)
         return redirect(url_for('home'))
     else:
-        return render_template('/login.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=True)
+        return render_template('/login.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=True)
 
 @app.route("/logout", methods=["GET"])
 def logout():
+    flogin.logout_user()
     be.logoutUser()
     return redirect(url_for('home')) 
 
@@ -174,26 +175,26 @@ def register_user():
     name = request.form.get("name")
     isFarmer = request.form.get("role")
     if (password != password2):
-        return render_template('/registration.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=-1)
+        return render_template('/registration.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=-1)
     result = be.newUser(login, password, name, 2 + int(isFarmer))
     if (result == 0):
         user = be.getUserRow(user_email=login)
         be.setLoggedUser(user)
         return redirect(url_for('home'))     # or: after registration page
     else:
-        return render_template('/registration.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=result)
+        return render_template('/registration.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=result)
 
 @app.route("/nav/admin/users/<int:id>")
 def admin_selected_user(id):
-    return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=id, error=0, confirm=None, suggestions=database.getCategoryNames())
+    return render_template('/admin/users.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=id, error=0, confirm=None, suggestions=database.getCategoryNames())
 
 @app.route("/nav/admin/users/<int:id>", methods=["POST"])
 def admin_selected_user_action(id):
     if 'user_btn' in request.form.keys() and request.form['user_btn'] == "0":
-        return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=id, error=0, confirm=True)
+        return render_template('/admin/users.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=id, error=0, confirm=True)
 
     if 'modify_btn' in request.form.keys() and request.form['modify_btn'] == "0":
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1)
     
     if 'reset_btn' in request.form.keys() and request.form['reset_btn'] == "0":
         return redirect(url_for('admin_users'))
@@ -207,7 +208,7 @@ def admin_selected_user_action(id):
             return be.printInternalError(r)
         s = None
         error = 0
-    return render_template('/admin/users.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
+    return render_template('/admin/users.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
     
 @app.route("/nav/admin/users/remove/<int:id>", methods=["GET"])
 def admin_selected_user_remove(id):
@@ -220,7 +221,7 @@ def admin_selected_user_remove(id):
             return be.printInternalError(r)
         s = None
         error = 0
-    return render_template('/admin/users.html', done=True, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
+    return render_template('/admin/users.html', done=True, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedID=s, error=error, confirm=False)
     
 
 @app.route("/nav/admin/user_selected/<int:id>", methods=["POST"])
@@ -255,31 +256,31 @@ def admin_user_selected(id):
 
     user = be.getUserRow(id)
     if (user['password'] == password and user['name'] == name and user['email'] == email and user['role'] == int(new_role) and user['birth_date'] == birthday and user['address'] == address and str(user['phone_number']) == phone):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1, suggestions=database.getCategoryNames())
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=-1, suggestions=database.getCategoryNames())
 
     r = be.isEmail(email)
     if (r != 0 and user['email'] != email):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
 
     r = be.isName(name)
     if (r != 0):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
     
     r = be.isPassword(password)
     if (r != 0):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
     
     r = be.isPhoneNumber(phone)
     if (r != 0):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
     
     r = be.isDate(birthday)
     if (r != 0):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
     
     r = be.isAddress(address)
     if (r != 0):
-        return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
+        return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=r)
 
     be.editUserData(id, 'name', name)
     be.editUserData(id, 'email', email)
@@ -288,7 +289,7 @@ def admin_user_selected(id):
     be.editUserData(id, 'address', address)
     be.editUserData(id, 'phone_number', phone)
     be.editUserData(id, 'password', password)
-    return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error, suggestions=database.getCategoryNames())
+    return render_template('/admin/users_selected.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error, suggestions=database.getCategoryNames())
   
 #renders home page with all subcategories of selected category
 @app.route("/home/cat=<string:id>", methods=["GET"])
@@ -296,22 +297,22 @@ def category(id):
     cat = database.getCategory(int(id))
     is_leaf = cat['leaf']
     if is_leaf:
-        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id), suggestions=database.getCategoryNames(), products_count=len(database.getProductsByCategory(id)))
+        return render_template('/index.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id), suggestions=database.getCategoryNames(), products_count=len(database.getProductsByCategory(id)))
     else:
-        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(id), suggestions=database.getCategoryNames())
+        return render_template('/index.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(id), suggestions=database.getCategoryNames())
     
 @app.route("/product/<int:id>", methods=["GET"])
 def product(id):
     prod = database.getProduct(id)
-    return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
+    return render_template('/product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/product/<int:id>", methods=["POST"])
 def create_order(id):
-    return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
+    return render_template('/product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/farmer/<int:id>", methods=["GET"])
 def open_farmer(id):
-    return render_template('/user/farmer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, farmer=database.getUser(id), products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+    return render_template('/user/farmer.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, farmer=database.getUser(id), products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
 @app.route("/home/search>", methods=["POST"])
 def search():
@@ -320,13 +321,13 @@ def search():
     prod = database.getProductByNameOnly(name)
     if cat:
         if cat['leaf']:
-            return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(cat['id']), suggestions=database.getCategoryNames())
+            return render_template('/index.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(cat['id']), suggestions=database.getCategoryNames())
         else:
-            return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(cat['id']), suggestions=database.getCategoryNames())
+            return render_template('/index.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, category=cat, categories=database.getSubCategories(cat['id']), suggestions=database.getCategoryNames())
     elif prod:
-        return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(prod['id']), seller=database.getUser(prod['seller']), suggestions=database.getCategoryNames())
+        return render_template('/product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(prod['id']), seller=database.getUser(prod['seller']), suggestions=database.getCategoryNames())
     else:
-        return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), category='not found', product='not found')
+        return render_template('/index.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), category='not found', product='not found')
 
 @app.route("/nav/user/customer/<int:id>", methods=["POST"])
 def create_suggestion(id):
@@ -340,18 +341,18 @@ def create_suggestion(id):
     
     parent_db = database.getCategoryByName(parent)
     if parent_db is None:
-        return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=1, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
+        return render_template('/user/customer.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=1, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
 
     if parent_db['leaf']:
-        return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=2, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
+        return render_template('/user/customer.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, error=2, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
     
     database.addCategorySuggestion(name, parent_db['id'],  leaf, description, id)
-    return render_template('/user/customer.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), error=0, nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
+    return render_template('/user/customer.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), error=0, nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), all_suggestions=database.getCategorySuggestions())
  
 @app.route("/nav/user/<int:id>", methods=["GET"])
 def product_edit(id):
     product = database.getProduct(id)
-    return render_template('my_product_selected.html', error=0, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+    return render_template('my_product_selected.html', error=0, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
 @app.route("/nav/user/farmer/remove<int:id>", methods=["POST"])
 def product_remove(id):
@@ -380,19 +381,19 @@ def save_product_edit(id):
     name_db = database.getProductByNameOnly(name)
     
     if name_db is not None and name_db['id'] != id:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1, orders=database.getOrders())
+        return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), error=1, orders=database.getOrders())
     
     r = be.isName(name)
     if (r != 0):
-        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+        return render_template('my_product_selected.html', error=r, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
     r = be.isPrice(price)
     if (r != 0):
-        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+        return render_template('my_product_selected.html', error=r, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
     r = be.isQuantity(quantity)
     if (r != 0):
-        return render_template('my_product_selected.html', error=r, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
+        return render_template('my_product_selected.html', error=r, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=database.getCategory(product['category']) , product=product , products=database.getProductsBySeller(id), suggestions=database.getCategoryNames())
 
     be.editProductData(id, 'name', name)
     be.editProductData(id, 'price', price)
@@ -410,11 +411,11 @@ def save_product_edit(id):
         be.editProductData(id, 'begin_date', None)
         be.editProductData(id, 'end_date', None)
     
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), category=database.getCategory(product['category']), product=product, error=0, orders=database.getOrders())
+    return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, products=database.getProductsBySeller(product['seller']), suggestions=database.getCategoryNames(), category=database.getCategory(product['category']), product=product, error=0, orders=database.getOrders())
 
 @app.route("/nav/user/new_product", methods=["GET"])
 def create_product():
-    return render_template('create_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getLeafCategories())
+    return render_template('create_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, suggestions=database.getLeafCategories())
 
 @app.route("/nav/user/new_product", methods=["POST"])
 def create_new_product():
@@ -433,13 +434,13 @@ def create_new_product():
     category_db = database.getCategoryByName(category)
     
     if name_db is not None:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=2, orders=database.getOrders())
+        return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=2, orders=database.getOrders())
     
     if category_db is None:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=3, orders=database.getOrders())
+        return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=3, orders=database.getOrders())
     
     if category_db['leaf'] == False:
-        return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=4, orders=database.getOrders())
+        return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=4, orders=database.getOrders())
     
     if self_harvest == "True":
         self_harvest = True
@@ -449,7 +450,7 @@ def create_new_product():
         end_date = None
         
     database.addProduct(name, category_db['id'], quantity, user['id'], price, sell_type, description, self_harvest, begin_date, end_date)
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=-1, orders=database.getOrders())
+    return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, suggestions=database.getCategoryNames(), error=-1, orders=database.getOrders())
         
 @app.route("/nav/user/order_confirm%id=<int:id>", methods=["GET"])
 def order_status_complete(id):
@@ -458,14 +459,14 @@ def order_status_complete(id):
     
     order = database.getOrder(id)
         
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, orders=database.getOrders(), suggestions=database.getCategoryNames(), error=6)
+    return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, orders=database.getOrders(), suggestions=database.getCategoryNames(), error=6)
 
 @app.route("/nav/user/order_cancel%id=<int:id>", methods=["GET"])
 def order_status_cancel(id):
     user = be.getLoggedUser()
     be.editCategoryData(id, 'status', -1)
         
-    return render_template('my_product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, orders=database.getOrders(), suggestions=database.getCategoryNames(), error=7)
+    return render_template('my_product.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProductsBySeller(user['id']), nav_pages=globals.nav_pages, orders=database.getOrders(), suggestions=database.getCategoryNames(), error=7)
 
   
 @app.route("/nav/user/settings/orders", methods=["GET"])
@@ -473,14 +474,14 @@ def user_settings_orders():
     be.setCurrentPath(user_settings_orders.__name__)
     user = be.getLoggedUser()
     orders = be.getUserOrders(user)
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, page=1, user_orders=orders, suggestions=database.getCategoryNames())
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, page=1, user_orders=orders, suggestions=database.getCategoryNames())
 
 @app.route("/nav/user/settings/calendar", methods=["GET"])
 def user_settings_calendar():
     be.setCurrentPath(user_settings_calendar.__name__)
     user = be.getLoggedUser()
     cal = be.getUserCalendar(user)
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, page=2, user_calendar=cal, suggestions=database.getCategoryNames())
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, page=2, user_calendar=cal, suggestions=database.getCategoryNames())
 
 @app.route("/nav/user/settings/order/<int:id>", methods=["GET"])
 def user_settings_order(id):
@@ -489,7 +490,7 @@ def user_settings_order(id):
     order = database.getOrder(id)
     prod = order['product_list']
     quan = order['quantity_list']
-    return render_template('/user/settings/order.html', order=order, quantities=quan, product_ids=prod, logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, actionShow=True, suggestions=database.getCategoryNames())
+    return render_template('/user/settings/order.html', order=order, quantities=quan, product_ids=prod, logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, actionShow=True, suggestions=database.getCategoryNames())
 
 @app.route("/nav/user/settings/calendar/<int:id>", methods=["GET"])
 def user_settings_event(id):
@@ -499,21 +500,21 @@ def user_settings_event(id):
     event = be.getCalendarEvent(cal, id)
     prod = database.getProduct(event[0], True)
     seller = database.getUser(prod['seller'])
-    return render_template('/user/settings/calendar.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id, actionShow=True, suggestions=database.getCategoryNames())
+    return render_template('/user/settings/calendar.html', logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id, actionShow=True, suggestions=database.getCategoryNames())
 
 
 @app.route("/nav/user/settings/account_removal", methods=["GET"])
 def user_settings_accountRemoval():
     be.setCurrentPath(user_settings_accountRemoval.__name__)
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=3, user_calendar=be.getUserCalendar(be.getLoggedUser()))
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=3, user_calendar=be.getUserCalendar(be.getLoggedUser()))
 
 @app.route("/nav/user/settings/edit_personal", methods=["GET"])
 def user_settings_edit_personal():
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=0)
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=0)
 
 @app.route("/nav/user/settings/edit_login", methods=["GET"])
 def user_settings_edit_login():
-    return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1)
+    return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1)
 
 @app.route("/nav/user/settings/edit_save/<int:t>", methods=["POST"])
 def user_settings_edit_save(t):
@@ -525,49 +526,49 @@ def user_settings_edit_save(t):
         user = be.getLoggedUser()
         
         if (name == user['name'] and bday == user['birth_date'] and address == user['address'] and phone == str(user['phone_number'])):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=-1)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=-1)
         
         if (len(name) == 0):
             user = "User"
 
         r = be.isName(name)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
         r = be.isDate(bday)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
         r = be.isAddress(address)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)    
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)    
         r = be.isPhoneNumber(phone)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=r)
         
         
         be.editUserData(user['id'], 'name', name)
         be.editUserData(user['id'], 'birth_date', bday)
         be.editUserData(user['id'], 'address', address)
         be.editUserData(user['id'], 'phone_number', phone)
-        return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=0)
+        return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=0, saved=True, error=0)
     elif (t == 1):
         email = request.form['email']
         password = request.form['password']
         user = be.getLoggedUser()
     
         if (email == user['email'] and password == user['password']):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=-1)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=-1)
         
         if (email == user['email']):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
         
         r = be.isEmail(email)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
 
         be.editUserData(user['id'], 'email', email)
         if (password == user['password']):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
-        return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
+        return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), edit=True, editType=1, confirmPass=False, newPass=password)
     else:
         email = request.form['email']
         password = request.form['password']
@@ -575,25 +576,25 @@ def user_settings_edit_save(t):
         user = be.getLoggedUser()
 
         if (repeat != password):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=-2)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=-2)
         
         r = be.isEmail(email)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
         
         r = be.isPassword(password)
         if (r != 0):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=r)
 
         be.editUserData(user['id'], 'email', email)
         be.editUserData(user['id'], 'password', password)
-        return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
+        return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=0, user_calendar=be.getUserCalendar(be.getLoggedUser()), editType=1, saved=True, error=0)
     
 @app.route("/nav/user/settings/remove", methods=["POST"])
 def user_settings_removeAccount():
     password = request.form['password']
     if (password != globals.logged_user['password']):
-            return render_template('/user/settings.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=3, user_calendar=be.getUserCalendar(be.getLoggedUser()), error=0)
+            return render_template('/user/settings.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, page=3, user_calendar=be.getUserCalendar(be.getLoggedUser()), error=0)
     
     r = be.removeUser()
     if (r != None):
@@ -606,7 +607,7 @@ def user_settings_order_cancel(id):
     order = database.getOrder(id)
     prod = order['product_list']
     quan = order['quantity_list']
-    return render_template('/user/settings/order_cancel.html', order=order, quantities=quan, product_ids=prod, logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, actionShow=False, suggestions=database.getCategoryNames())
+    return render_template('/user/settings/order_cancel.html', order=order, quantities=quan, product_ids=prod, logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, actionShow=False, suggestions=database.getCategoryNames())
 
 @app.route("/nav/user/settings/order/cancel/go%id=<int:id>", methods=["POST"])
 def user_settings_order_cancel_go(id):
@@ -635,11 +636,11 @@ def user_settings_order_repeat(id, page):
     prod = database.getProduct(order['product'])
     seller = database.getUser(prod['seller'])
     if (page == 0):
-        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=0)
+        return render_template('/user/settings/order_repeat.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=0)
     elif (page == 1):
-        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=1)
+        return render_template('/user/settings/order_repeat.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=1)
     elif (page == 2):
-        return render_template('/user/settings/order_repeat.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=2)
+        return render_template('/user/settings/order_repeat.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order, product=prod, seller=seller, page=2)
     else:
         return redirect(url_for('user_settings_orders'))
 
@@ -661,12 +662,12 @@ def new_order(id, isRepeat, quantity):
         cart = temp_cart
         globals.temp_cart = cart
         total_cart_price = be.getTotalCartPrice(None, temp_cart)
-        return render_template('/new_order.html', order=order, total_price=total_cart_price, cart=cart, isRepeat=True, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+        return render_template('/new_order.html', order=order, total_price=total_cart_price, cart=cart, isRepeat=True, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages)
     else:
         user = be.getLoggedUser()
         cart = be.getUserCart(user['id'])
         total_cart_price = be.getTotalCartPrice(user['id'])
-        return render_template('/new_order.html', total_price=total_cart_price, cart=cart, isRepeat=False, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+        return render_template('/new_order.html', total_price=total_cart_price, cart=cart, isRepeat=False, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages)
 
 @app.route("/product/order_product%id=<int:id>", methods=["POST"])
 def order_product(id):
@@ -679,7 +680,7 @@ def add_to_cart(id):
     item = be.userCartNewItem(id, quantity)
     u = be.getLoggedUser()
     be.userCartAddItem(u['id'], item)
-    return render_template('/product.html', added_to_cart=True,logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
+    return render_template('/product.html', added_to_cart=True,logged=be.isUserLogged(), user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
  
 @app.route("/nav/new_event%id=<int:id>", methods=["GET"])
 def new_event(id):
@@ -693,7 +694,7 @@ def user_settings_calendar_remove_q(id):
     event = be.getCalendarEvent(cal, id)
     prod = database.getProduct(event[0])
     seller = database.getUser(prod['seller'])
-    return render_template('/user/settings/calendar_cancel.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id)
+    return render_template('/user/settings/calendar_cancel.html', logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, product=prod, seller=seller, eventDate=event[1], eventIndex=id)
 
 @app.route("/nav/user/settings/calendar/remove%id=<int:id>", methods=["POST"])
 def user_settings_calendar_remove(id):
@@ -711,7 +712,7 @@ def admin_categories_detail(id):
     be.addPathArgument('id', id)
     category = database.getCategory(id)
     subs = be.getSubCategories(category['id'])
-    return render_template('/admin/categories_detail.html', category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+    return render_template('/admin/categories_detail.html', category=category, subcategories=subs, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages)
  
 @app.route("/nav/admin/category_remove%id=<int:id>", methods=["GET"])
 def admin_categories_remove(id):
@@ -733,12 +734,12 @@ def admin_categories_edit(id, type):
     fruits = be.getFruits()
     veggies = be.getVegetables()
     if (type == 1):
-        return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+        return render_template('/admin/categories.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages)
     else:
         higher = database.getCategory(category['higher_category'])
         category = higher
         subs = be.getSubCategories(category['id'])
-        return render_template('/admin/categories_detail.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages)
+        return render_template('/admin/categories_detail.html', fruit_categories=fruits, veggie_categories=veggies, edit=True, editID=id, category=category, subcategories=subs, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages)
     
 
 @app.route("/nav/admin/category_edit_go%type=<int:type>%id=<int:id>", methods=["POST"])
@@ -785,7 +786,7 @@ def new_order_go(isRepeat):
         newQuantity = prod['quantity'] - int(item['quantity'])
         if newQuantity < 0:
             r = 164
-            return render_template('/new_order.html', errorItem=item['product_id'], errorCode=r, repeatedOrder=True, logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order)
+            return render_template('/new_order.html', errorItem=item['product_id'], errorCode=r, repeatedOrder=True, logged=be.isUserLogged(), user=be.getLoggedUser(), nav_pages=globals.nav_pages, order=order)
     
     prod_list = []
     quantity_list = []
@@ -808,7 +809,6 @@ def new_order_go(isRepeat):
 
 be.loadJinjaGlobals()
 be.navigationLoadPages()
-be.logoutUser()
 
 if __name__ == '__main__': 
     be.init()

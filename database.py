@@ -99,6 +99,7 @@ class UserSchema(ma.Schema):
         fields = ('id', 'email', 'name', 'birth_date', 'address', 'password', 'role', 'phone_number', 'calendar', 'cart', 'account_status')
 
 unregistered_user = User(None, None, None, None, None, 4, None, None, None, False)
+globals.logged_user = unregistered_user
         
 
 class Product(db.Model):
