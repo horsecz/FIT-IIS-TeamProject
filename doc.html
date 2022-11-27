@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=unicode"/>
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<h1>Zelný trh</h1>
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Dominik Horký
+	    <a href="mailto:xhorky32@stud.fit.vutbr.cz">xhorky32@stud.fit.vutbr.cz</a> -
+		Analýza požadavků, návrh a (část implementace) front-endu, uživalteský profil, správa návrhů a kategorií, objednávky a nákupní košík
+	</dd>
+	<dd>Jakub Vaňo
+	    <a href="mailto:xvanoj00@stud.fit.vutbr.cz">xvanoj00@stud.fit.vutbr.cz</a> - 
+		Analýza požadavků, návrh relační databáze, implementace databáze, procházení produktů a kategorií, případy užití spojené s farmářem a registrovaným uživatelem
+	</dd>
+
+	<p>
+		Jelikož se jedná o týmový projekt, pracovali jsme ve dvojici. Z toho důvodu jsme na mnoha funkcích IS pracovali společně, vzájemně se opravovali a doplňovali. Výše uvedený výčet činností je tak pouze krátkým seznamem hlavních činností, na kterých dáný člen týmu pracoval.
+		Na práci jsme pracovali společně, každý stejně. K vypracování projektu jsme přistupovali jako k práci na společném dílu, nikoliv dvou separátních.
+	</p>
+
+	<dt>Poslední člen týmu</dt>
+	<dd>Jaromír Otevřel
+	    <a href="mailto:xotevr03@stud.fit.vutbr.cz">xotevr03@stud.fit.vutbr.cz</a> - 
+		účast na team meetingech, bývalý vedoucí (založení týmu, spuštění projektu do 25. 11.)
+
+		<p>
+			Kromě účasti na setkáních týmu a činností spojené s vedoucím týmu na začátku semestru (vytvoření týmu, přihlášení ostatních) kolega Otevřel neudělal nic.
+		</p>
+			O (ne)činnostech kolegy Otevřela byl vedoucí zadání projektů do IIS (<a href="mailto:hynek@fit.vut.cz">Ing. Jiří Hynek, Ph.D.</a>) informován e-mailem (dne 25. 11.) - na žádost v tomto e-mailu byla provedena změna vedoucího týmu na Dominika Horkého, za což děkujeme.
+			Jakožto studenti na vysoké škole předpokládáme, že každý v týmu ví, jaká je jeho zodpovědnost a při rozdělení práce v týmu (a odsouhlasení tohoto rozdělení) každý sám zvládneme svoji práci splnit. To se v případě kolegy Otevřela nestalo. Deadliny, kdy mají být hotové které části stanoveny striktně nebyly,
+			jelikož jsme na projektu s kolegou Vaňem pracovali průběžně a věděli jsme jak projekt stíháme v rámci časových možností.
+		<p>
+
+		<p>
+			Co nás však překvapilo bylo, když kolega Otevřel ani týden před odevzdáváním projektu neměl vůbec nic ze svojí části práce a tvrdil, resp. odůvodnil to tím, že mu nejde spustit projekt. Kolega však nadále tvrdil, že svoji část práce splní. Bohužel, ani do pátku 25. 11. nezačal a jeho část splněna nebyla.
+			Vzhledem k tomu, jsem se rozhodl kontaktovat vedoucího zadání projektů do IIS, změnit vedoucího týmu (kvůli obavám, že kolega Otevřel by náš projekt ani neodevzdal, jelikož se na něm nepodílel).
+			Na základě výše uvedených skutečností jsme byli s kolegou Vaňem nuceni k dokončení části kolegy Otevřela a to navíc ještě ve velmi krátkém čase.
+		</p>
+
+		<p>
+			Jelikož kolega Otevřel na projektu nepracoval (až na účast na meetingech a založení týmu), neuvádíme ho mezi autory tohoto projektu, jelikož autorem není, na projektu se téměř nepodílel.
+			Po konzultaci jsme se jako tým, tedy i s kolegou Otevřelem dohodli na tom, že autorem projektu není a budou zde uvedeny veškeré jeho činnosti v rámci práce na IIS projektu od začátku semestru a 
+			všichni členové týmu souhlasí s tím, že kolegovo hodnocení projektu by mělo reflektovat jeho veškerou vykonanou práci na projektu, která je uvedená výše.
+		</p>
+	</dd>
+
+	<dt>URL aplikace</dt>
+	<dd><a href="todo">todo</a></dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+<tr><th>Login*</th><th>Heslo*</th><th>Role</th></tr>
+<tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
+<tr><td>mod</td><td>mod</td><td>Moderátor</td></tr>
+<tr><td>farmer</td><td>farmer</td><td>Farmář</td></tr>
+<tr><td>user</td><td>user</td><td>Zákazník</td></tr>
+<tr><td>-</td><td>-</td><td>Host**</td></tr>
+</table>
+
+<p>*Login je v případě naší aplikace e-mailová adresa. Pro snažší účely testování aplikace jsou (výše) předvytvořené účty v daném formátu - ve formátu, který není e-mailovou adresou.
+	To však neznamená, že IS přijímá neplatné vstupy. Při registraci uživatele se formát loginu - e-mailové adresy kontroluje, stejně tak při úpravě profilu. Při přihlašování tak již předpokládáme správnost těchto údajů - díky tomu v případě předvytvořeného účtu můžeme obejít restrikce týkající se formátu loginu (stejné je to i u hesla účtu - IS požaduje minimální délku 5 znaků).</p>
+<p>**Zástupce role neregistrovaného uživatele (hosta) je každý uživatel, který není přihlášen do IS.</p>
+
+<h3>Video</h3>
+
+<p>Odkaz na komentované video demostrující použití informačního systému na VUT Googe Drive:</p>
+<a href="todo">todo</a> 
+
+<h2>Implementace</h2>
+<p>Stručná dokumentace k implementaci, která popisuje, které části projektu implementují jednotlivé případy užití.</p>
+
+<h3>Skripty</h3>
+<table>
+	<tr><th>Název skriptu</th><th>Účel</th><th>Detail</th></tr>
+	<tr><td>app.py</td><td>Hlavní skript aplikace, spouštěcí skript</td><td>Pomocí tohoto skriptu se projekt spouští. Zajišťuje dále přepínání mezi stránkami a provádění akcí v systému.</td></tr>
+	<tr><td>backend.py</td><td>Práce s daty, komunikace s ostatními skripty</td><td>Komunikace mezi app.py, database.py a frontendem. Zpracování dat.</td></tr>
+	<tr><td>database.py</td><td>Inicializace, definice databázových tabulek</td><td>Třídy tabulek v databázi, funkce pro inicializaci a práci s databází.</td></tr>
+	<tr><td>globals.py</td><td>Globalní proměnné</td><td>Sdílené proměnné ve všech skriptech.</td></tr>
+</table>
+
+<h3>Hlavní skript aplikace</h3>
+<p>
+	Inicializace a spuštění projektu. Obsahuje definice cest v projektu a funkcí, které se vyvolají při otevření dané cesty (např. v cestě '/' se vykreslí stránka 'index.html') s danými parametry.
+	Volá pouze funkce backendu (a nebo takové funkce, které zajišťují zobrazování na frontendu).
+</p>
+
+<p>
+	Kromě zobrazování jsou zde i nadefinované akce - všechny činnosti, které jdou v IS provádět. To znamená od přihlášení, registrace uživatele, po přidání zboží do košiku, objednávku a nebo smazání uživatele.
+	Spuštění aplikace je implementování úplně na konci souboru. Provádí se zde inicializace aplikace, frontendu, databáze a spuštění.
+</p>
+
+<h3>Backend</h3>
+<p>
+	K implementaci je použit Python. Modul backend zajišťuje komunikaci s ostatními moduly, načítá funkce do globálních hodnot tak, aby se daly používat ve frontendu.
+	Zároveň se zde provádí primárně kontroly návratových typů, hodnot.
+</p>
+
+<p>
+	Krátký příklad. Přidáváme nového uživatele - to se děje při registraci. Takže v app.py po kliknutí tlačítka registrovat zkontrolujeme stav polí a poté voláme funkci na přidání uživatele do databáze.
+	Při přídání uživatele se použije funkce addUser z modulu backend. Proč? Nebylo by jednodušší použít rovnou stejně pojmenovanou funkci z modulu databáze? Ne!
+	Databázová funkce se stará pouze o přidání informací do tabulky či databáze. Provádí pouze nejnutnější kontroly, aby nedošlo k nekonzistentnímu stavu v databázi. Při přidávání (neboli registraci) 
+	uživatele ale nepotřebujeme pouze zjistit, zda jeho jméno je řetězec o určité délce, ale i zkontrolovat, zda nám do formuláře bylo zadán správný formát loginu (e-mail), správná délka hesla, apod.
+</p>
+
+<p>
+	Proto, a i z důvodů lepší přehlednosti máme modul backend, který jediný je volaný z modulu aplikace. Stejně jako v případě přidání uživatele, každá další akce, kontrola se primárně zpracovává v tomto modulu.
+</p>
+
+<h3>Frontend</h3>
+<p>
+	Implementován v HTML za použití CSS a JavaScriptu. Spolupracuje s ostatními moduly díky modulu Python Flask.
+	Jelikož tento předmět není přímo zaměřen na uživatelská rozhraní, je možné, že některé prvky či části rozhraní IS mohou být méně intuitivní, než byste očekávali.
+</p>
+
+<p>
+	Veškeré zdrojové soubory všech HTML stránek jsou ve složce templates. Zde najdete důležité stránky jako je index, login nebo stránku produktu.
+	Další podsložky pak obsahují zdrojové soubory podle uživatelského přístupu, resp. role. Rozděleno je to tak čistě pouze kvůli přehlednosti.
+</p>
+
+<h3>Databáze</h3>
+<p>
+	Používáme databázi PostgreSQL. Implementace databáze v backendu je provedena pomocí modulů SQLAlchemy a Marsmallow.
+</p>
+
+<p>
+	Databáze se inicializuje v databázovém modulu funkcí db_init(), která je volána při spuštění aplikace (app.py).
+	Řádky a tabulky databáze, jejich sloupce jsou definované jako třídy. Jedná se o třídy:
+</p>
+
+<table>
+	<tr><th>Název tabulky (třídy)</th><th>Účel</th><th>Detail</th></tr>
+	<tr><td>User</td><td>Uživatelé systému</td><td>Veškeré informace o uživateli, včetně jeho kalendáře, košíku či stavu účtu</td></tr>
+	<tr><td>Product</td><td>Produkty</td><td>Prodejce, dostupné množství, popis či způsob prodeje</td></tr>
+	<tr><td>Category</td><td>Kategorie</td><td>Její název, identifikátor vyšší kategorie</td></tr>
+	<tr><td>Order</td><td>Objednávky</td><td>Nakupující, celková cena, datum či seznam produktů v objednávce</td></tr>
+	<tr><td>CategorySuggestion</td><td>Návrh kategorie</td><td>Podobné jako kategorie, akorát jde o návrh, takže jsou zde k tomu ukládána příslušná data</td></tr>
+	<tr><td>ProductReview</td><td>Hodnocení produktu</td><td>Jakého, kdo jej hodnotil, obsah či úroveň spokojenosti</td></tr>
+</table>
+
+<p>
+	Při vytváření tabulek a databáze jsme se řídili tím, že se budeme snažit ukládat do databáze co nejméně informací. Pokud jde nějaká informace získat odjinud, není v tabulce potřeba (například u hodnocení produktu nám stačí pouze identifikátory, díky kterým si ostatní informace získáme z jiných tabulek).
+</p>
+
+<h4>Další informace</h4>
+<p>
+	Jsou stanoveny limity pro velikosti některých hodnot v databázi - textový řetězec může být maximálně DB_STRING_SHORT_MAX nebo DB_STRING_LONG_MAX znaků dlouhý.
+	Za krátký retězec považujeme například jméno nebo e-mail. Dlouhý řetězec reprezentují zejména text hodnocení produktu či popis produktu. 
+</p>
+
+<p>
+	V případě, že do sloupce v tabulce potřebujeme ukládat seznam, používáme MutableList z SQLAlchemy, se kterým pak pracujeme jako s běžným seznamem v Pythonu.
+	Takovou potřebu máme u kalendáře uživatele, košíku uživatele, seznamu produktů a jejich množství u objednávek.
+</p>
+
+<p>
+	Pro účely session přihlášení máme navíc ještě definovanou třídu FlaskUser, která sice obsahuje duplicitní data (jako třída User v databázi), ale je nutná pro práce se session v rámci Flask session (a flask_login).
+</p>
+
+<h4>Grafické schéma relační databáze</h4>
+<img src="db_graph.png" alt="database graphic">
+
+<h2>Instalace</h2>
+<p>
+	Aplikace funguje na OS, na kterém máte nainstalovaný Python a webový prohlížeč.
+</p>
+
+<p>
+	Po rozbalení odevzdávaného archivu je nutné nainstalovat prerekvizity příkazem pip install -r requirements. Následně můžete spustit projekt příkazem python ./app.py
+</p>
+
+<h2>Známé problémy</h2>
+<p>
+	V rámci finálního testování projektu jsme nenašli žádný bod zadání, který bychom považovali za nesplněný.
+</p>
+<p>
+	Uvědomujeme si však nedostatky v našem projektu. Největším nedostatkem je uživatelské rozhraní. Při implementaci projektu jsme se totiž maximálně soustředili na jeho funkční část.
+	Styly či intuitivnost uživatelského rozhraní nepovažujeme bezchybné a myslíme, že v tomto ohledu by mohl být projekt vypracován lépe. Přednější však pro nás je, aby projekt fungoval a splňoval body zadání.
+</p>
+</body>
+</html>
