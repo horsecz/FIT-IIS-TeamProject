@@ -694,18 +694,19 @@ def navigationAddPage(url, text, hidden=False):
 
 # loads navigation bar pages
 def navigationLoadPages():
-    navigationAddPage('home', 'Home')
-    navigationAddPage('offers', 'Farmers')
-    navigationAddPage('user_customer', 'Suggestions')
-    navigationAddPage('user_farmer', 'My Products')
-    navigationAddPage('admin_suggestions', 'Category suggestions')
-    navigationAddPage('admin_categories', 'Category management')
-    navigationAddPage('admin_users', 'User management')
+    if (len(globals.nav_pages) == 0):
+        navigationAddPage('home', 'Home')
+        navigationAddPage('offers', 'Farmers')
+        navigationAddPage('user_customer', 'Suggestions')
+        navigationAddPage('user_farmer', 'My Products')
+        navigationAddPage('admin_suggestions', 'Category suggestions')
+        navigationAddPage('admin_categories', 'Category management')
+        navigationAddPage('admin_users', 'User management')
 
-    navigationAddHiddenPage('login', 'Login page')
-    navigationAddHiddenPage('registration', 'Registration')
-    navigationAddHiddenPage('user_settings', 'My profile')
-    navigationAddHiddenPage('cart', 'Shopping cart')
+        navigationAddHiddenPage('login', 'Login page')
+        navigationAddHiddenPage('registration', 'Registration')
+        navigationAddHiddenPage('user_settings', 'My profile')
+        navigationAddHiddenPage('cart', 'Shopping cart')
 
 # sets page active in navigation bar
 def navigationSetPageActive(page_name):
