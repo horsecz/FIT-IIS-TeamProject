@@ -46,7 +46,7 @@ def before_request():
 ### Pages
 ##
 
-@app.route('', methods=['GET'])
+@app.route('/', methods=['GET'])
 @cross_origin()
 def home():
     be.setCurrentPath(home.__name__)
