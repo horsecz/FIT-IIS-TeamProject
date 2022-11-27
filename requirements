@@ -1,0 +1,8 @@
+flask_cors
+flask_login
+flask
+datetime
+sqlalchemy
+flask_sqlalchemy
+flask_marshmallow
+flask_cors
