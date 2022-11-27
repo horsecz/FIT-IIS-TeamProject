@@ -51,7 +51,7 @@ def before_request():
 def home():
     be.setCurrentPath(home.__name__)
     be.navigationSetPageActive('home')
-    return render_template('/index.html', categories=database.getSubCategories(1), category=None, products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
+    return render_template('/index.html', categories=database.getSubCategories(database.getCategoryByName('root')['id']), category=None, products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
 
 @app.route("/nav/offers", methods=["GET"])
 def offers():
@@ -291,7 +291,7 @@ def admin_user_selected(id):
     return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error, suggestions=database.getCategoryNames())
   
 #renders home page with all subcategories of selected category
-@app.route("/home/<string:id>", methods=["GET"])
+@app.route("/home/cat=<string:id>", methods=["GET"])
 def category(id):
     cat = database.getCategory(int(id))
     is_leaf = cat['leaf']
@@ -805,9 +805,11 @@ def new_order_go(isRepeat):
 ###     INIT AND RUN
 #####
 
-if __name__ == '__main__':
-    be.navigationLoadPages()
-    be.loadJinjaGlobals()
-    be.logoutUser()
+
+be.loadJinjaGlobals()
+be.navigationLoadPages()
+be.logoutUser()
+
+if __name__ == '__main__': 
     be.init()
     globals.app.run(debug=True)
