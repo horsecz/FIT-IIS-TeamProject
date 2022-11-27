@@ -51,7 +51,7 @@ def before_request():
 def home():
     be.setCurrentPath(home.__name__)
     be.navigationSetPageActive('home')
-    return render_template('/index.html', categories=database.getSubCategories(getCategoryByName('root')['id']), category=None, products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
+    return render_template('/index.html', categories=database.getSubCategories(database.getCategoryByName('root')['id']), category=None, products=database.getProducts(), orders=database.getOrders(), logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_cats=database.getCategories(False), suggestions=database.getCategoryNames())
 
 @app.route("/nav/offers", methods=["GET"])
 def offers():
