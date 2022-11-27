@@ -799,9 +799,9 @@ def new_order_go(isRepeat):
 ###     INIT AND RUN
 #####
 
-if __name__ == '__main__':
-    be.navigationLoadPages()
-    be.loadJinjaGlobals()
-    be.logoutUser()
-    be.init()
-    globals.app.run(debug=True)
+
+be.navigationLoadPages()
+be.loadJinjaGlobals()
+be.logoutUser()
+be.init()
+globals.app.run(debug=True)
