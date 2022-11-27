@@ -306,7 +306,7 @@ def product(id):
     return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=prod, seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/product/<int:id>", methods=["POST"])
-def create_order(int(id)):
+def create_order(id):
     return render_template('/product.html', logged=globals.user_logged_in, user=be.getLoggedUser(), products=database.getProducts(), nav_pages=globals.nav_pages, product=database.getProduct(id), seller=database.getUser(database.getProduct(id)['seller']), suggestions=database.getCategoryNames())
 
 @app.route("/farmer/<int:id>", methods=["GET"])
