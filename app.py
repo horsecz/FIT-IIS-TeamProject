@@ -291,7 +291,7 @@ def admin_user_selected(id):
     return render_template('/admin/users_selected.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, all_users=database.getUsers(), selectedUser=database.getUser(id), error=error, suggestions=database.getCategoryNames())
   
 #renders home page with all subcategories of selected category
-@app.route("/home/<string:id>", methods=["GET"])
+@app.route("/home/cat=<string:id>", methods=["GET"])
 def category(id):
     cat = database.getCategory(int(id))
     is_leaf = cat['leaf']
