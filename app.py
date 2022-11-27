@@ -293,7 +293,7 @@ def admin_user_selected(id):
 #renders home page with all subcategories of selected category
 @app.route("/home/<string:id>", methods=["GET"])
 def category(id):
-    cat = database.getCategory(int(id))
+    cat = database.getCategory(id)
     is_leaf = cat['leaf']
     if is_leaf:
         return render_template('/index.html', logged=globals.user_logged_in, user=be.getLoggedUser(), nav_pages=globals.nav_pages, category=cat, products=database.getProductsByCategory(id), suggestions=database.getCategoryNames(), products_count=len(database.getProductsByCategory(id)))
